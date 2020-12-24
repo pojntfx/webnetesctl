@@ -1,5 +1,6 @@
 import { Node, EResourceKind } from "@pojntfx/webnetes";
 import { useEffect, useState } from "react";
+import Editor from "@monaco-editor/react";
 
 function HomePage() {
   const [node, setNode] = useState<Node>();
@@ -130,7 +131,17 @@ spec:
     }
   }, [node]);
 
-  return <h1>Hello, world!</h1>;
+  return (
+    <>
+      <h1>Webnetesctl Playground</h1>
+
+      <Editor
+        height="90vh"
+        language="yaml"
+        options={{ cursorSmoothCaretAnimation: true }}
+      />
+    </>
+  );
 }
 
 export default HomePage;
