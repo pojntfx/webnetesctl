@@ -12,21 +12,22 @@
     "build": "rm -rf dist && yarn build:lib && yarn build:app:node && yarn build:app:web && yarn build:docs",
     "build:lib": "rollup -c",
     "build:app:node": "rollup -c && chmod +x dist/nodeApp/main.js",
-    "build:app:web": "TODO",
+    "build:app:web": "next build && next export -o dist/webApp",
     "build:diagram": "mkdir -p dist/media && tplant -p tsconfig.json -i 'lib/**/*.ts*' --output 'dist/media/diagram.svg'",
-    "build:docs": "mkdir -p dist/docs && typedoc --tsconfig tsconfig.json --mode file --outDir dist/docs --out dist/docs --media dist/media --exclude '+(node_modules|dist|examples)' .",
+    "build:docs": "mkdir -p dist/docs && typedoc --tsconfig tsconfig.json --mode file --outDir dist/docs --out dist/docs --media dist/media --exclude '+(node_modules|dist|rollup.config.js|app)' .",
     "test": "jest || exit 0",
     "test:update": "jest --updateSnapshot || exit 0",
     "dev:tests": "jest ---watchAll",
     "dev:lib": "rollup -c -w",
     "dev:app:node": "LOG_LEVEL=debug DEBUG='' ts-node-dev --files app/webnetes_node/main.ts",
-    "dev:app:web": "TODO",
+    "dev:app:web": "next dev",
     "start:app:node": "./dist/nodeApp/main.js",
-    "start:app:web": "TODO",
+    "start:app:web": "next start",
+    "start:app:web:exported": "serve dist/webApp",
     "start:docs": "serve dist/docs"
   },
   "bin": {
-    "weblet": "dist/nodeApp/main.js"
+    "webnetesctl": "dist/nodeApp/main.js"
   },
   "files": [
     "dist/nodeApp",
@@ -47,6 +48,7 @@
   "devDependencies": {
     "@types/jest": "^26.0.16",
     "@types/node": "^14.14.10",
+    "@types/react": "^17.0.0",
     "@types/yargs": "^15.0.12",
     "esbuild": "^0.8.20",
     "jest": "^26.6.3",
@@ -62,6 +64,9 @@
     "typescript": "^4.1.2"
   },
   "dependencies": {
+    "next": "^10.0.4",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
     "yargs": "^16.2.0"
   },
   "jest": {
