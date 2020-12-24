@@ -1,9 +1,24 @@
-import { Node, EResourceKind } from "@pojntfx/webnetes";
-import { useEffect, useState } from "react";
 import Editor from "@monaco-editor/react";
+import { EResourceKind, Node } from "@pojntfx/webnetes";
+import dynamic from "next/dynamic";
+import { createRef, forwardRef, useEffect, useState } from "react";
+import { XTerm } from "xterm-for-react";
 
 function HomePage() {
+  const XTermComponent = dynamic(import("../components/xtermtest"));
+  const ForwardedXtermComponent = forwardRef((props, ref) => (
+    <XTermComponent {...props} forwardRef={ref} />
+  ));
+
   const [node, setNode] = useState<Node>();
+
+  const xtermRef = createRef<XTerm>();
+
+  useEffect(() => {
+    setInterval(() => {
+      xtermRef.current?.terminal.writeln("Hello, World!");
+    }, 1000);
+  }, [xtermRef]);
 
   useEffect(() => {
     setNode(
@@ -136,10 +151,14 @@ spec:
       <h1>Webnetesctl Playground</h1>
 
       <Editor
-        height="90vh"
+        height="60vh"
         language="yaml"
         options={{ cursorSmoothCaretAnimation: true }}
       />
+
+      {typeof window !== "undefined" && (
+        <ForwardedXtermComponent ref={xtermRef} />
+      )}
     </>
   );
 }
