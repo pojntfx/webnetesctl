@@ -12,6 +12,7 @@ import {
 
 const bundle = (format) => ({
   input: source,
+  inlineDynamicImports: true,
   output: {
     file: format == "cjs" ? main : format == "dts" ? types : module,
     format: format == "cjs" ? "cjs" : "es",
@@ -23,6 +24,7 @@ const bundle = (format) => ({
 
 const bundleBin = () => ({
   input: binSource,
+  inlineDynamicImports: true,
   output: {
     file: binMain,
     format: "cjs",
