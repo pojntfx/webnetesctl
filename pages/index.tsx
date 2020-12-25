@@ -1,11 +1,13 @@
-import Editor from "@monaco-editor/react";
+import Editor, { monaco } from "@monaco-editor/react";
 import { EResourceKind, Node } from "@pojntfx/webnetes";
+import { Button } from "antd";
 import dynamic from "next/dynamic";
 import { createRef, forwardRef, useEffect, useState } from "react";
 import { XTerm } from "xterm-for-react";
-import { Button } from "antd";
 
 function HomePage() {
+  const [themeSet, setThemeSet] = useState(false);
+
   const XTermComponent = dynamic(import("../components/xtermtest"));
   const ForwardedXtermComponent = forwardRef((props, ref) => (
     <XTermComponent {...props} forwardRef={ref} />
@@ -16,6 +18,29 @@ function HomePage() {
   const xtermRef = createRef<XTerm>();
 
   useEffect(() => {
+    typeof window !== "undefined" &&
+      monaco
+        .init()
+        .then((monaco) => {
+          monaco.editor.defineTheme("myTheme", {
+            base: "vs-dark",
+            inherit: true,
+            colors: {
+              "editor.background": "#0000008D",
+              "editorCodeLens.foreground": "#000000CC",
+            },
+            rules: [],
+          });
+
+          setThemeSet(true);
+        })
+        .catch((error) =>
+          console.error(
+            "An error occurred during initialization of Monaco: ",
+            error
+          )
+        );
+
     setInterval(() => {
       xtermRef.current?.terminal.writeln("Hello, World!");
     }, 1000);
@@ -153,11 +178,15 @@ spec:
 
       <Button type="primary">Run</Button>
 
-      <Editor
-        height="60vh"
-        language="yaml"
-        options={{ cursorSmoothCaretAnimation: true }}
-      />
+      {themeSet && (
+        <Editor
+          height="60vh"
+          language="yaml"
+          options={{ cursorSmoothCaretAnimation: true }}
+          theme="myTheme"
+          className="editor"
+        />
+      )}
 
       {typeof window !== "undefined" && (
         <ForwardedXtermComponent ref={xtermRef} />
