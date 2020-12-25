@@ -3,6 +3,7 @@ import { EResourceKind, Node } from "@pojntfx/webnetes";
 import dynamic from "next/dynamic";
 import { createRef, forwardRef, useEffect, useState } from "react";
 import { XTerm } from "xterm-for-react";
+import { Button } from "antd";
 
 function HomePage() {
   const XTermComponent = dynamic(import("../components/xtermtest"));
@@ -149,6 +150,8 @@ spec:
   return (
     <>
       <h1>Webnetesctl Playground</h1>
+
+      <Button type="primary">Run</Button>
 
       <Editor
         height="60vh"
