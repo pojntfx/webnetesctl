@@ -1,8 +1,8 @@
-const withTM = require("next-transpile-modules")(["xterm-for-react"]);
+const withPlugins = require("next-compose-plugins");
+const transpile = require("next-transpile-modules")(["xterm-for-react"]);
 
-module.exports = withTM({
+module.exports = withPlugins([transpile], {
   webpack: (config, { isServer }) => {
-    // Fixes npm packages that depend on `fs` module
     if (!isServer) {
       config.node = {
         fs: "empty",
