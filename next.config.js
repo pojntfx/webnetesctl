@@ -1,14 +1,35 @@
 const withPlugins = require("next-compose-plugins");
 const transpile = require("next-transpile-modules")(["xterm-for-react"]);
+const sass = require("@zeit/next-sass");
+const less = require("@zeit/next-less");
 
-module.exports = withPlugins([transpile], {
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.node = {
-        fs: "empty",
-      };
-    }
+// fix: prevents error when .less files are required by node
+if (typeof require !== "undefined") {
+  require.extensions[".less"] = (file) => {};
+}
 
-    return config;
-  },
-});
+module.exports = withPlugins(
+  [
+    transpile,
+    [
+      sass,
+      {
+        lessLoaderOptions: {
+          javascriptEnabled: true,
+        },
+      },
+    ],
+    less,
+  ],
+  {
+    webpack: (config, { isServer }) => {
+      if (!isServer) {
+        config.node = {
+          fs: "empty",
+        };
+      }
+
+      return config;
+    },
+  }
+);
