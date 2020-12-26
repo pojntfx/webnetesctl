@@ -1,10 +1,11 @@
-import { faGlobe } from "@fortawesome/free-solid-svg-icons";
+import { faGlobe, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Menu, Typography } from "antd";
-import Layout, { Content, Header } from "antd/lib/layout/layout";
+import { Button, Menu, Space as SpaceTmpl, Typography } from "antd";
+import Layout, { Content, Header as HeaderTmpl } from "antd/lib/layout/layout";
 import Paragraph from "antd/lib/typography/Paragraph";
 import Title from "antd/lib/typography/Title";
 import { useTranslation } from "react-i18next";
+import styled from "styled-components";
 
 function HomePage() {
   const { t } = useTranslation();
@@ -12,11 +13,24 @@ function HomePage() {
   return (
     <Layout>
       <Header>
-        <Menu theme="dark" mode="horizontal" defaultSelectedKeys={["overview"]}>
-          <Menu.Item icon={<FontAwesomeIcon icon={faGlobe} />} key="overview">
-            {t("overview")}
-          </Menu.Item>
-        </Menu>
+        <Space split>
+          <Menu
+            theme="dark"
+            mode="horizontal"
+            defaultSelectedKeys={["overview"]}
+          >
+            <Menu.Item icon={<FontAwesomeIcon icon={faGlobe} />} key="overview">
+              {t("overview")}
+            </Menu.Item>
+          </Menu>
+
+          <Button>
+            <Space>
+              <FontAwesomeIcon icon={faPlus} />
+              {t("create")}
+            </Space>
+          </Button>
+        </Space>
       </Header>
       <Content>
         <Typography>
@@ -33,5 +47,15 @@ function HomePage() {
     </Layout>
   );
 }
+
+const Header = styled(HeaderTmpl)`
+  display: flex;
+  align-items: center;
+`;
+
+const Space = styled(SpaceTmpl)`
+  width: 100%;
+  justify-content: space-between;
+`;
 
 export default HomePage;
