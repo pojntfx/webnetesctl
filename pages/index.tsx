@@ -1,4 +1,6 @@
 import {
+  faBinoculars,
+  faCogs,
   faGlobe,
   faHandshake,
   faPlus,
@@ -25,6 +27,15 @@ function HomePage() {
           >
             <Menu.Item icon={<FontAwesomeIcon icon={faGlobe} />} key="overview">
               {t("overview")}
+            </Menu.Item>
+            <Menu.Item
+              icon={<FontAwesomeIcon icon={faBinoculars} />}
+              key="explorer"
+            >
+              {t("explorer")}
+            </Menu.Item>
+            <Menu.Item icon={<FontAwesomeIcon icon={faCogs} />} key="config">
+              {t("config")}
             </Menu.Item>
           </Menu>
 
