@@ -7,4 +7,5 @@ export default {
   resource: "Resource",
   cluster: "Cluster",
   file: "File",
+  notifications: "Notifications",
 };
