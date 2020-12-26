@@ -1,4 +1,8 @@
-import { faGlobe, faPlus } from "@fortawesome/free-solid-svg-icons";
+import {
+  faGlobe,
+  faHandshake,
+  faPlus,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Menu, Space as SpaceTmpl, Typography } from "antd";
 import Layout, { Content, Header as HeaderTmpl } from "antd/lib/layout/layout";
@@ -24,12 +28,21 @@ function HomePage() {
             </Menu.Item>
           </Menu>
 
-          <Button>
-            <Space>
-              <FontAwesomeIcon icon={faPlus} />
-              {t("create")}
-            </Space>
-          </Button>
+          <SpaceTmpl>
+            <Button>
+              <Space>
+                <FontAwesomeIcon icon={faPlus} />
+                {t("create")}
+              </Space>
+            </Button>
+
+            <Button type="primary">
+              <Space>
+                <FontAwesomeIcon icon={faHandshake} />
+                {t("invite")}
+              </Space>
+            </Button>
+          </SpaceTmpl>
         </Space>
       </Header>
       <Content>
