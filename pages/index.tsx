@@ -1,12 +1,16 @@
 import {
   faBinoculars,
+  faCaretDown,
   faCogs,
+  faCube,
+  faFile,
   faGlobe,
   faHandshake,
+  faNetworkWired,
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Menu, Space as SpaceTmpl, Typography } from "antd";
+import { Button, Dropdown, Menu, Space, Typography } from "antd";
 import Layout, { Content, Header as HeaderTmpl } from "antd/lib/layout/layout";
 import Paragraph from "antd/lib/typography/Paragraph";
 import Title from "antd/lib/typography/Title";
@@ -19,7 +23,7 @@ function HomePage() {
   return (
     <Layout>
       <Header>
-        <Space split>
+        <MainSpace split>
           <Menu
             theme="dark"
             mode="horizontal"
@@ -39,13 +43,39 @@ function HomePage() {
             </Menu.Item>
           </Menu>
 
-          <SpaceTmpl>
-            <Button>
-              <Space>
-                <FontAwesomeIcon icon={faPlus} />
-                {t("create")}
-              </Space>
-            </Button>
+          <Space>
+            <Dropdown
+              overlay={
+                <Menu>
+                  <Menu.Item key="resource">
+                    <Space>
+                      <FontAwesomeIcon fixedWidth icon={faCube} />
+                      {t("resource")}
+                    </Space>
+                  </Menu.Item>
+                  <Menu.Item key="cluster">
+                    <Space>
+                      <FontAwesomeIcon fixedWidth icon={faNetworkWired} />
+                      {t("cluster")}
+                    </Space>
+                  </Menu.Item>
+                  <Menu.Item key="file">
+                    <Space>
+                      <FontAwesomeIcon fixedWidth icon={faFile} />
+                      {t("file")}
+                    </Space>
+                  </Menu.Item>
+                </Menu>
+              }
+            >
+              <Button>
+                <Space>
+                  <FontAwesomeIcon icon={faPlus} />
+                  {t("create")}
+                  <FontAwesomeIcon icon={faCaretDown} />
+                </Space>
+              </Button>
+            </Dropdown>
 
             <Button type="primary">
               <Space>
@@ -53,8 +83,8 @@ function HomePage() {
                 {t("invite")}
               </Space>
             </Button>
-          </SpaceTmpl>
-        </Space>
+          </Space>
+        </MainSpace>
       </Header>
       <Content>
         <Typography>
@@ -77,7 +107,7 @@ const Header = styled(HeaderTmpl)`
   align-items: center;
 `;
 
-const Space = styled(SpaceTmpl)`
+const MainSpace = styled(Space)`
   width: 100%;
   justify-content: space-between;
 `;

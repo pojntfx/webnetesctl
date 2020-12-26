@@ -4,4 +4,7 @@ export default {
   invite: "Invite",
   explorer: "Explorer",
   config: "Config",
+  resource: "Resource",
+  cluster: "Cluster",
+  file: "File",
 };
