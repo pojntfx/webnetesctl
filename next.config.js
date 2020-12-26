@@ -3,11 +3,6 @@ const transpile = require("next-transpile-modules")(["xterm-for-react"]);
 const sass = require("@zeit/next-sass");
 const less = require("@zeit/next-less");
 
-// fix: prevents error when .less files are required by node
-if (typeof require !== "undefined") {
-  require.extensions[".less"] = (file) => {};
-}
-
 module.exports = withPlugins(
   [
     transpile,
