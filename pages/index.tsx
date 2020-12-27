@@ -17,6 +17,8 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
+import earthTexture from "three-globe/example/img/earth-night.jpg";
+import universeTexture from "three-globe/example/img/night-sky.png";
 
 const Globe = dynamic(() => import("react-globe.gl"), { ssr: false });
 
@@ -119,7 +121,11 @@ function HomePage() {
           </NavigationBar>
         </Header>
         <Content>
-          <Globe height={windowHeight} />
+          <Globe
+            globeImageUrl={earthTexture as string}
+            backgroundImageUrl={universeTexture as string}
+            height={windowHeight}
+          />
         </Content>
       </Layout>
     </>

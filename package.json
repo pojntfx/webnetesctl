@@ -81,11 +81,13 @@
     "i18next": "^19.8.4",
     "monaco-editor": "^0.21.2",
     "next": "^10.0.4",
+    "next-images": "^1.6.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-globe.gl": "^2.13.0",
     "react-i18next": "^11.8.4",
     "styled-components": "^5.2.1",
+    "three-globe": "^2.11.1",
     "xterm-for-react": "^1.0.4",
     "yargs": "^16.2.0"
   },
