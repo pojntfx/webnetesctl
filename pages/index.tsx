@@ -32,6 +32,7 @@ import earthElevation from "three-globe/example/img/earth-topology.png";
 import universeTexture from "three-globe/example/img/night-sky.png";
 import connections from "../data/connections.json";
 import nodes from "../data/nodes.json";
+import Animate from "rc-animate";
 
 const Globe = dynamic(() => import("react-globe.gl"), { ssr: false });
 
@@ -183,18 +184,23 @@ function HomePage() {
             />
           </GlobeWrapper>
 
-          {selectedNode && (
-            <Inspector
-              title={`${t("node")} ${selectedNode.privateIP}`}
-              extra={
-                <Button type="text" onClick={() => setSelectedNode(undefined)}>
-                  <FontAwesomeIcon icon={faTimes} />
-                </Button>
-              }
-            >
-              <p>Hello, world!</p>
-            </Inspector>
-          )}
+          <Animate transitionName="fade" transitionAppear>
+            {selectedNode && (
+              <Inspector
+                title={`${t("node")} ${selectedNode.privateIP}`}
+                extra={
+                  <Button
+                    type="text"
+                    onClick={() => setSelectedNode(undefined)}
+                  >
+                    <FontAwesomeIcon icon={faTimes} />
+                  </Button>
+                }
+              >
+                <p>Hello, world!</p>
+              </Inspector>
+            )}
+          </Animate>
         </Content>
       </Layout>
     </>
