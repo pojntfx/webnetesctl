@@ -184,9 +184,14 @@ function HomePage() {
             />
           </GlobeWrapper>
 
+          <Stats size="small" title={`${t("clusterStatistics")}`}>
+            <div>Hello, world!</div>
+          </Stats>
+
           <Animate transitionName="fade" transitionAppear>
             {selectedNode && (
               <Inspector
+                size="small"
                 title={`${t("node")} ${selectedNode.privateIP}`}
                 extra={
                   <Button
@@ -197,7 +202,7 @@ function HomePage() {
                   </Button>
                 }
               >
-                <p>Hello, world!</p>
+                <div>Hello, world!</div>
               </Inspector>
             )}
           </Animate>
@@ -257,7 +262,18 @@ const Inspector = styled(Card)`
   min-width: 20rem;
   margin: 1rem;
   top: 64px;
-  right: 0;
+  right: 50px;
+  margin-right: 0;
+  ${glass}
+`;
+
+const Stats = styled(Card)`
+  position: absolute;
+  margin: 1rem;
+  top: 64px;
+  left: 50px;
+  margin-left: 0;
+  min-width: calc(5rem * 3); // NavigationButton * 3
   ${glass}
 `;
 
