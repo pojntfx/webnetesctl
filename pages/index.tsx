@@ -134,18 +134,13 @@ function HomePage() {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      document.addEventListener(
-        "keydown",
-        () => setSelectedNode(undefined),
-        false
-      );
+      const handleEscape = (e: KeyboardEvent) =>
+        e.code === "Escape" && setSelectedNode(undefined);
+
+      document.addEventListener("keydown", handleEscape, false);
 
       return () => {
-        document.removeEventListener(
-          "keydown",
-          () => setSelectedNode(undefined),
-          false
-        );
+        document.removeEventListener("keydown", handleEscape, false);
       };
     }
   }, []);
