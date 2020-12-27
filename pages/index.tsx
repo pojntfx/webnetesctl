@@ -9,6 +9,7 @@ import {
   faHandshake,
   faNetworkWired,
   faPlus,
+  faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -39,6 +40,7 @@ function HomePage() {
 
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [connectionPaths, setConnectionPaths] = useState<any[]>([]);
+  const [selectedNode, setSelectedNode] = useState<any>();
 
   useEffect(() => {
     setConnectionPaths([
@@ -156,7 +158,11 @@ function HomePage() {
               Math.sqrt((d as typeof nodes[0]).size) * 4e-4
             }
             labelColor={() => "rgba(255, 165, 0, 0.75)"}
-            onLabelClick={(label) => console.log("Clicked", label)}
+            onLabelClick={(node: any) =>
+              selectedNode?.privateIP === node.privateIP
+                ? setSelectedNode(undefined)
+                : setSelectedNode(node)
+            }
             pathsData={connectionPaths}
             pathPoints="coords"
             pathPointLat={(c) => c[1]}
@@ -170,9 +176,19 @@ function HomePage() {
             bumpImageUrl={earthElevation as string}
             backgroundImageUrl={universeTexture as string}
           />
-          <Inspector title="Node 127.0.0.0">
-            <p>Hello, world!</p>
-          </Inspector>
+
+          {selectedNode && (
+            <Inspector
+              title={`${t("node")} ${selectedNode.privateIP}`}
+              extra={
+                <Button type="text" onClick={() => setSelectedNode(undefined)}>
+                  <FontAwesomeIcon icon={faTimes} />
+                </Button>
+              }
+            >
+              <p>Hello, world!</p>
+            </Inspector>
+          )}
         </Content>
       </Layout>
     </>

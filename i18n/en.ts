@@ -9,4 +9,5 @@ export default {
   file: "File",
   notifications: "Notifications",
   findNodeOrResource: "Find a node or resource",
+  node: "Node",
 };
