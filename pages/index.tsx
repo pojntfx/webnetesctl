@@ -11,26 +11,24 @@ import {
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  Button,
-  Dropdown,
-  Input,
-  List,
-  Menu,
-  Popover,
-  Space,
-  Typography,
-} from "antd";
+import { Button, Dropdown, Input, List, Menu, Popover, Space } from "antd";
 import Layout, { Content, Header as HeaderTmpl } from "antd/lib/layout/layout";
-import Paragraph from "antd/lib/typography/Paragraph";
-import Title from "antd/lib/typography/Title";
-import { useState } from "react";
+import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
+
+const Globe = dynamic(() => import("react-globe.gl"), { ssr: false });
 
 function HomePage() {
   const { t } = useTranslation();
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [windowHeight, setWindowHeight] = useState(0);
+
+  useEffect(() => {
+    typeof window !== "undefined" &&
+      setWindowHeight(document.querySelector("body")!.clientHeight - 64);
+  }, []);
 
   return (
     <>
@@ -121,16 +119,7 @@ function HomePage() {
           </NavigationBar>
         </Header>
         <Content>
-          <Typography>
-            <Title level={1}>Hello, world!</Title>
-
-            <Paragraph>
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ducimus
-              at aliquam, nobis est voluptates magnam blanditiis a delectus.
-              Nesciunt odit minus esse debitis molestias voluptate voluptatem
-              sapiente, corporis suscipit officia.
-            </Paragraph>
-          </Typography>
+          <Globe height={windowHeight} />
         </Content>
       </Layout>
     </>

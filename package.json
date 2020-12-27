@@ -83,6 +83,7 @@
     "next": "^10.0.4",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-globe.gl": "^2.13.0",
     "react-i18next": "^11.8.4",
     "styled-components": "^5.2.1",
     "xterm-for-react": "^1.0.4",
