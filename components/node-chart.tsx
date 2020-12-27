@@ -22,7 +22,6 @@ const NodeChart: React.FC<INodeChartProps> = ({ data, colors, onClick }) => (
         textAlign: "center",
       },
     }}
-    autoFit
     height={300}
     interactions={[{ type: "element-active" }]}
     legend={{

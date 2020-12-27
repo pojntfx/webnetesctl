@@ -10,5 +10,6 @@ export default {
   notifications: "Notifications",
   findNodeOrResource: "Find a node or resource",
   node: "Node",
-  clusterStatistics: "Cluster Statistics",
+  computeDistribution: "Compute Distribution",
+  networkingDistribution: "Networking Distribution",
 };

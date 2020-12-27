@@ -18,6 +18,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Button,
   Card,
+  Collapse,
   Dropdown,
   Input,
   List,
@@ -287,57 +288,74 @@ function HomePage() {
             {statsOpen && (
               <Stats
                 size="small"
-                title={`${t("clusterStatistics")}`}
+                title={`${t("cluster")} 127.0.2`}
                 extra={
                   <Button type="text" onClick={() => setStatsOpen(false)}>
                     <FontAwesomeIcon icon={faWindowMinimize} />
                   </Button>
                 }
               >
-                <NodeChart
-                  data={nodeComputeStats}
-                  colors={[
-                    "#13c2c2",
-                    "#08979c",
-                    "#006d75",
-                    "#00474f",
-                    "#002329",
-                    "#002766",
-                    "#003a8c",
-                    "#0050b3",
-                    "#096dd9",
-                    "#1890ff",
-                  ]}
-                  onClick={(ip) =>
-                    setSelectedNode((selectedNode: any) =>
-                      selectedNode && selectedNode?.privateIP === ip
-                        ? undefined
-                        : nodes.find((candidate) => candidate.privateIP === ip)
-                    )
-                  }
-                />
-                <NodeChart
-                  data={networkingStats}
-                  colors={[
-                    "#a0d911",
-                    "#7cb305",
-                    "#5b8c00",
-                    "#3f6600",
-                    "#254000",
-                    "#092b00",
-                    "#135200",
-                    "#237804",
-                    "#389e0d",
-                    "#52c41a",
-                  ]}
-                  onClick={(ip) =>
-                    setSelectedNode((selectedNode: any) =>
-                      selectedNode && selectedNode?.privateIP === ip
-                        ? undefined
-                        : nodes.find((candidate) => candidate.privateIP === ip)
-                    )
-                  }
-                />
+                <Collapse defaultActiveKey={[]} ghost destroyInactivePanel>
+                  <Collapse.Panel
+                    header={t("computeDistribution")}
+                    key="computeDistribution"
+                  >
+                    <NodeChart
+                      data={nodeComputeStats}
+                      colors={[
+                        "#13c2c2",
+                        "#08979c",
+                        "#006d75",
+                        "#00474f",
+                        "#002329",
+                        "#002766",
+                        "#003a8c",
+                        "#0050b3",
+                        "#096dd9",
+                        "#1890ff",
+                      ]}
+                      onClick={(ip) =>
+                        setSelectedNode((selectedNode: any) =>
+                          selectedNode && selectedNode?.privateIP === ip
+                            ? undefined
+                            : nodes.find(
+                                (candidate) => candidate.privateIP === ip
+                              )
+                        )
+                      }
+                    />
+                  </Collapse.Panel>
+
+                  <Collapse.Panel
+                    header={t("networkingDistribution")}
+                    key="networkingDistribution"
+                  >
+                    <NodeChart
+                      data={networkingStats}
+                      colors={[
+                        "#a0d911",
+                        "#7cb305",
+                        "#5b8c00",
+                        "#3f6600",
+                        "#254000",
+                        "#092b00",
+                        "#135200",
+                        "#237804",
+                        "#389e0d",
+                        "#52c41a",
+                      ]}
+                      onClick={(ip) =>
+                        setSelectedNode((selectedNode: any) =>
+                          selectedNode && selectedNode?.privateIP === ip
+                            ? undefined
+                            : nodes.find(
+                                (candidate) => candidate.privateIP === ip
+                              )
+                        )
+                      }
+                    />
+                  </Collapse.Panel>
+                </Collapse>
               </Stats>
             )}
           </Animate>
@@ -450,6 +468,10 @@ const Stats = styled(Card)`
   left: 50px;
   margin-left: 0;
   min-width: calc(5rem * 3); // NavigationButton * 3
+  .ant-card-body {
+    padding: 0;
+  }
+
   ${glass}
 `;
 
@@ -459,10 +481,6 @@ const GlobeTmpl = dynamic(() => import("../components/globe"), {
 const Globe = forwardRef((props: any, ref) => (
   <GlobeTmpl {...props} forwardRef={ref} />
 ));
-
-const Pie = dynamic(async () => (await import("@ant-design/charts")).Pie, {
-  ssr: false,
-});
 
 const BottomToolbar = styled.div`
   position: absolute !important;
