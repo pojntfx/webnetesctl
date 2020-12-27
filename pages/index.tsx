@@ -58,8 +58,8 @@ function HomePage() {
     setNodeComputeStats([
       { ip: "127.0.2.0", score: 1000 },
       { ip: "127.0.2.1", score: 2000 },
+      { ip: "127.0.2.2", score: 1500 },
       { ip: "127.0.2.3", score: 500 },
-      { ip: "127.0.2.4", score: 1500 },
     ]);
   }, []);
 
@@ -170,7 +170,11 @@ function HomePage() {
               onLabelClick={(node: any) =>
                 selectedNode?.privateIP === node.privateIP
                   ? setSelectedNode(undefined)
-                  : setSelectedNode(node)
+                  : setSelectedNode(
+                      nodes.find(
+                        (candidate) => candidate.privateIP === node.privateIP
+                      )
+                    )
               }
               onLabelHover={(label) =>
                 label ? setHoverable(true) : setHoverable(false)
@@ -223,7 +227,19 @@ function HomePage() {
                   position: "bottom",
                   flipPage: false,
                 }}
-                onEvent={(c, e) => console.log("Handling event", c, e)}
+                onEvent={(_, e) => {
+                  if (e.type === "element:click" && e.data?.data?.ip) {
+                    setSelectedNode((selectedNode: any) =>
+                      selectedNode &&
+                      selectedNode?.privateIP === e.data?.data.ip
+                        ? undefined
+                        : nodes.find(
+                            (candidate) =>
+                              candidate.privateIP === e.data?.data.ip
+                          )
+                    );
+                  }
+                }}
               />
             </Stats>
           </Animate>
