@@ -24,6 +24,7 @@ import {
 } from "antd";
 import Layout, { Content, Header as HeaderTmpl } from "antd/lib/layout/layout";
 import dynamic from "next/dynamic";
+import Animate from "rc-animate";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
@@ -32,9 +33,6 @@ import earthElevation from "three-globe/example/img/earth-topology.png";
 import universeTexture from "three-globe/example/img/night-sky.png";
 import connections from "../data/connections.json";
 import nodes from "../data/nodes.json";
-import Animate from "rc-animate";
-
-const Globe = dynamic(() => import("react-globe.gl"), { ssr: false });
 
 function HomePage() {
   const { t } = useTranslation();
@@ -43,6 +41,7 @@ function HomePage() {
   const [connectionPaths, setConnectionPaths] = useState<any[]>([]);
   const [selectedNode, setSelectedNode] = useState<any>();
   const [hoverable, setHoverable] = useState(false);
+  const [nodeComputeStats, setNodeComputeStats] = useState<any[]>([]);
 
   useEffect(() => {
     setConnectionPaths([
@@ -54,6 +53,13 @@ function HomePage() {
         coords: conn,
         properties: { name: "Application", color: "#1890ff" },
       })),
+    ]);
+
+    setNodeComputeStats([
+      { ip: "127.0.2.0", score: 1000 },
+      { ip: "127.0.2.1", score: 2000 },
+      { ip: "127.0.2.3", score: 500 },
+      { ip: "127.0.2.4", score: 1500 },
     ]);
   }, []);
 
@@ -187,7 +193,38 @@ function HomePage() {
 
           <Animate transitionName="fade" transitionAppear>
             <Stats size="small" title={`${t("clusterStatistics")}`}>
-              <div>Hello, world!</div>
+              <Pie
+                appendPadding={0}
+                data={nodeComputeStats}
+                angleField="score"
+                colorField="ip"
+                color={[
+                  "#612500",
+                  "#ad4e00",
+                  "#d46b08",
+                  "#fa8c16",
+                  "#ffa940",
+                  "#faad14",
+                ]}
+                radius={0.9}
+                label={{
+                  type: "inner",
+                  offset: "-30%",
+                  content: (_ref: any) => Math.floor(_ref.percent * 100) + "%",
+                  style: {
+                    textAlign: "center",
+                  },
+                }}
+                autoFit
+                height={300}
+                interactions={[{ type: "element-active" }]}
+                legend={{
+                  layout: "vertical",
+                  position: "bottom",
+                  flipPage: false,
+                }}
+                onEvent={(c, e) => console.log("Handling event", c, e)}
+              />
             </Stats>
           </Animate>
 
@@ -279,5 +316,10 @@ const Stats = styled(Card)`
   min-width: calc(5rem * 3); // NavigationButton * 3
   ${glass}
 `;
+
+const Globe = dynamic(() => import("react-globe.gl"), { ssr: false });
+const Pie = dynamic(async () => (await import("@ant-design/charts")).Pie, {
+  ssr: false,
+});
 
 export default HomePage;

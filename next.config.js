@@ -1,5 +1,9 @@
 const withPlugins = require("next-compose-plugins");
-const transpile = require("next-transpile-modules")(["xterm-for-react"]);
+const transpile = require("next-transpile-modules")([
+  "xterm-for-react",
+  "@ant-design/charts",
+  "@antv/g6/es",
+]);
 const sass = require("@zeit/next-sass");
 const less = require("@zeit/next-less");
 const images = require("next-images");
