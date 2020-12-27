@@ -257,10 +257,10 @@ function HomePage() {
                 return `${node.privateIP} (${node.location}, ${node.publicIP})`;
               }}
               labelSize={(d: any) =>
-                Math.sqrt((d as typeof nodes[0]).size) * 4e-4
+                Math.sqrt((d as typeof nodes[0]).size) * 3e-4
               }
               labelDotRadius={(d: any) =>
-                Math.sqrt((d as typeof nodes[0]).size) * 4e-4
+                Math.sqrt((d as typeof nodes[0]).size) * 2e-4
               }
               labelColor={() => "#faad14CC"}
               onLabelClick={(node: any) =>
