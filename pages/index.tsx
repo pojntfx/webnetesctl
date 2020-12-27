@@ -23,7 +23,7 @@ import {
 } from "antd";
 import Layout, { Content, Header as HeaderTmpl } from "antd/lib/layout/layout";
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import earthTexture from "three-globe/example/img/earth-night.jpg";
@@ -36,18 +36,22 @@ const Globe = dynamic(() => import("react-globe.gl"), { ssr: false });
 
 function HomePage() {
   const { t } = useTranslation();
-  const [notificationsOpen, setNotificationsOpen] = useState(false);
 
-  const connectionPaths = [
-    ...connections.management.map((conn) => ({
-      coords: conn,
-      properties: { name: "Management", color: "#fa8c16" },
-    })),
-    ...connections.application.map((conn) => ({
-      coords: conn,
-      properties: { name: "Application", color: "#1890ff" },
-    })),
-  ];
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [connectionPaths, setConnectionPaths] = useState<any[]>([]);
+
+  useEffect(() => {
+    setConnectionPaths([
+      ...connections.management.map((conn) => ({
+        coords: conn,
+        properties: { name: "Management", color: "#fa8c16" },
+      })),
+      ...connections.application.map((conn) => ({
+        coords: conn,
+        properties: { name: "Application", color: "#1890ff" },
+      })),
+    ]);
+  }, []);
 
   return (
     <>
