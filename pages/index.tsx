@@ -354,16 +354,12 @@ function HomePage() {
                     <NodeChart
                       data={nodeComputeStats}
                       colors={[
+                        "#52c41a",
                         "#13c2c2",
-                        "#08979c",
-                        "#006d75",
-                        "#00474f",
-                        "#002329",
-                        "#002766",
-                        "#003a8c",
-                        "#0050b3",
-                        "#096dd9",
                         "#1890ff",
+                        "#2f54eb",
+                        "#722ed1",
+                        "#eb2f96",
                       ]}
                       onClick={(ip) =>
                         setSelectedNode((selectedNode: any) =>
@@ -384,16 +380,12 @@ function HomePage() {
                     <NodeChart
                       data={networkingStats}
                       colors={[
-                        "#a0d911",
-                        "#7cb305",
-                        "#5b8c00",
-                        "#3f6600",
-                        "#254000",
-                        "#092b00",
-                        "#135200",
-                        "#237804",
-                        "#389e0d",
                         "#52c41a",
+                        "#13c2c2",
+                        "#1890ff",
+                        "#2f54eb",
+                        "#722ed1",
+                        "#eb2f96",
                       ]}
                       onClick={(ip) =>
                         setSelectedNode((selectedNode: any) =>
