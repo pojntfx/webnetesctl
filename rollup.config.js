@@ -1,13 +1,14 @@
+import json from "@rollup/plugin-json";
 import dts from "rollup-plugin-dts";
 import esbuild from "rollup-plugin-esbuild";
 import hashbang from "rollup-plugin-hashbang";
 import {
+  binMain,
+  binSource,
   main,
   module,
   source,
   types,
-  binSource,
-  binMain,
 } from "./package.json";
 
 const bundle = (format) => ({
@@ -18,7 +19,7 @@ const bundle = (format) => ({
     format: format == "cjs" ? "cjs" : "es",
     sourcemap: format != "dts",
   },
-  plugins: format == "dts" ? [dts()] : [esbuild()],
+  plugins: format == "dts" ? [dts(), json()] : [esbuild(), json()],
   external: (id) => !/^[./]/.test(id),
 });
 
@@ -30,7 +31,7 @@ const bundleBin = () => ({
     format: "cjs",
     sourcemap: false,
   },
-  plugins: [esbuild(), hashbang()],
+  plugins: [esbuild(), hashbang(), json()],
   external: (id) => !/^[./]/.test(id),
 });
 
