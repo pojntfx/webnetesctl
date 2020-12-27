@@ -1,0 +1,101 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "MultiLineString",
+        "coordinates": [
+          [
+            [8.379289269218297, 48.50198441439295],
+            [121.436504678, 31.2164524526]
+          ]
+        ]
+      },
+      "properties": {
+        "color": "#fa8c16",
+        "slug": "Management"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "MultiLineString",
+        "coordinates": [
+          [
+            [8.379289269218297, 48.50198441439295],
+            [103.855820678, 1.29303346649]
+          ]
+        ]
+      },
+      "properties": {
+        "color": "#fa8c16",
+        "slug": "Management"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "MultiLineString",
+        "coordinates": [
+          [
+            [8.379289269218297, 48.50198441439295],
+            [114.185009317, 22.304980895]
+          ]
+        ]
+      },
+      "properties": {
+        "color": "#fa8c16",
+        "slug": "Management"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "MultiLineString",
+        "coordinates": [
+          [
+            [121.436504678, 31.2164524526],
+            [103.855820678, 1.29303346649]
+          ]
+        ]
+      },
+      "properties": {
+        "color": "#1890ff",
+        "slug": "Application"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "MultiLineString",
+        "coordinates": [
+          [
+            [103.855820678, 1.29303346649],
+            [114.185009317, 22.304980895]
+          ]
+        ]
+      },
+      "properties": {
+        "color": "#1890ff",
+        "slug": "Application"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "MultiLineString",
+        "coordinates": [
+          [
+            [114.185009317, 22.304980895],
+            [121.436504678, 31.2164524526]
+          ]
+        ]
+      },
+      "properties": {
+        "color": "#1890ff",
+        "slug": "Application"
+      }
+    }
+  ]
+}

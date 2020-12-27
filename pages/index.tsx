@@ -18,8 +18,10 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import earthTexture from "three-globe/example/img/earth-night.jpg";
+import earthElevation from "three-globe/example/img/earth-topology.png";
 import universeTexture from "three-globe/example/img/night-sky.png";
 import nodes from "../data/nodes.json";
+import cables from "../data/cables.json";
 
 const Globe = dynamic(() => import("react-globe.gl"), { ssr: false });
 
@@ -32,6 +34,13 @@ function HomePage() {
     typeof window !== "undefined" &&
       setWindowHeight(document.querySelector("body")!.clientHeight - 64);
   }, []);
+
+  let cablePaths = [];
+  cables.features.forEach(({ geometry, properties }) => {
+    geometry.coordinates.forEach((coords) =>
+      cablePaths.push({ coords, properties })
+    );
+  });
 
   return (
     <>
@@ -137,7 +146,17 @@ function HomePage() {
             }
             labelColor={() => "rgba(255, 165, 0, 0.75)"}
             labelResolution={2}
+            pathsData={cablePaths}
+            pathPoints="coords"
+            pathPointLat={(p) => p[1]}
+            pathPointLng={(p) => p[0]}
+            pathColor={(path) => path.properties.color}
+            pathLabel={(path) => path.properties.slug}
+            pathDashLength={0.1}
+            pathDashGap={0.008}
+            pathDashAnimateTime={12000}
             globeImageUrl={earthTexture as string}
+            bumpImageUrl={earthElevation as string}
             backgroundImageUrl={universeTexture as string}
             height={windowHeight}
           />
