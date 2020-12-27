@@ -2,6 +2,7 @@ import {
   faBell,
   faBinoculars,
   faCaretDown,
+  faChartPie,
   faCogs,
   faCube,
   faFile,
@@ -11,6 +12,7 @@ import {
   faNetworkWired,
   faPlus,
   faTimes,
+  faWindowMinimize,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -34,7 +36,9 @@ import earthTexture from "three-globe/example/img/earth-night.jpg";
 import earthElevation from "three-globe/example/img/earth-topology.png";
 import universeTexture from "three-globe/example/img/night-sky.png";
 import NodeChart from "../components/node-chart";
+import computeStats from "../data/compute-stats.json";
 import connections from "../data/connections.json";
+import networkingStats from "../data/networking-stats.json";
 import nodes from "../data/nodes.json";
 
 function HomePage() {
@@ -48,6 +52,7 @@ function HomePage() {
   const [handleCameraChange, setHandleCameraChange] = useState(false);
   const [userCoordinates, setUserCoordinates] = useState<number[]>([0, 0]);
   const [loadingUserCoordinates, setLoadingUserCoordinates] = useState(false);
+  const [statsOpen, setStatsOpen] = useState(true);
 
   const globeRef = createRef();
 
@@ -63,12 +68,7 @@ function HomePage() {
       })),
     ]);
 
-    setNodeComputeStats([
-      { ip: "127.0.2.0", score: 1000 },
-      { ip: "127.0.2.1", score: 2000 },
-      { ip: "127.0.2.2", score: 1500 },
-      { ip: "127.0.2.3", score: 500 },
-    ]);
+    setNodeComputeStats(computeStats);
   }, []);
 
   useEffect(() => {
@@ -283,30 +283,66 @@ function HomePage() {
             />
           </GlobeWrapper>
 
-          <Animate transitionName="fade" transitionAppear>
-            <Stats size="small" title={`${t("clusterStatistics")}`}>
-              <NodeChart
-                data={nodeComputeStats}
-                colors={[
-                  "#612500",
-                  "#ad4e00",
-                  "#d46b08",
-                  "#fa8c16",
-                  "#ffa940",
-                  "#faad14",
-                ]}
-                onClick={(ip) =>
-                  setSelectedNode((selectedNode: any) =>
-                    selectedNode && selectedNode?.privateIP === ip
-                      ? undefined
-                      : nodes.find((candidate) => candidate.privateIP === ip)
-                  )
+          <Animate transitionName="fadeandslide" transitionAppear>
+            {statsOpen && (
+              <Stats
+                size="small"
+                title={`${t("clusterStatistics")}`}
+                extra={
+                  <Button type="text" onClick={() => setStatsOpen(false)}>
+                    <FontAwesomeIcon icon={faWindowMinimize} />
+                  </Button>
                 }
-              />
-            </Stats>
+              >
+                <NodeChart
+                  data={nodeComputeStats}
+                  colors={[
+                    "#13c2c2",
+                    "#08979c",
+                    "#006d75",
+                    "#00474f",
+                    "#002329",
+                    "#002766",
+                    "#003a8c",
+                    "#0050b3",
+                    "#096dd9",
+                    "#1890ff",
+                  ]}
+                  onClick={(ip) =>
+                    setSelectedNode((selectedNode: any) =>
+                      selectedNode && selectedNode?.privateIP === ip
+                        ? undefined
+                        : nodes.find((candidate) => candidate.privateIP === ip)
+                    )
+                  }
+                />
+                <NodeChart
+                  data={networkingStats}
+                  colors={[
+                    "#a0d911",
+                    "#7cb305",
+                    "#5b8c00",
+                    "#3f6600",
+                    "#254000",
+                    "#092b00",
+                    "#135200",
+                    "#237804",
+                    "#389e0d",
+                    "#52c41a",
+                  ]}
+                  onClick={(ip) =>
+                    setSelectedNode((selectedNode: any) =>
+                      selectedNode && selectedNode?.privateIP === ip
+                        ? undefined
+                        : nodes.find((candidate) => candidate.privateIP === ip)
+                    )
+                  }
+                />
+              </Stats>
+            )}
           </Animate>
 
-          <Animate transitionName="fade" transitionAppear>
+          <Animate transitionName="fadeandzoom" transitionAppear>
             {selectedNode && (
               <Inspector
                 size="small"
@@ -325,13 +361,23 @@ function HomePage() {
             )}
           </Animate>
 
-          <Animate transitionName="fade" transitionAppear>
-            <LocateButton
-              type="text"
-              onClick={getUserCoordinates}
-              loading={loadingUserCoordinates}
-              icon={<FontAwesomeIcon icon={faLocationArrow} />}
-            />
+          <Animate transitionName="fadeandzoom" transitionAppear>
+            <BottomToolbar>
+              <Button
+                type="text"
+                onClick={getUserCoordinates}
+                loading={loadingUserCoordinates}
+                icon={<FontAwesomeIcon icon={faLocationArrow} />}
+              />
+
+              {!statsOpen && (
+                <Button
+                  type="text"
+                  onClick={() => setStatsOpen(true)}
+                  icon={<FontAwesomeIcon icon={faChartPie} />}
+                />
+              )}
+            </BottomToolbar>
           </Animate>
         </Content>
       </Layout>
@@ -385,7 +431,7 @@ const SearchInput = styled(Input.Search)`
 
 const Inspector = styled(Card)`
   position: absolute;
-  height: calc(100% - 64px - 2rem);
+  height: calc(100% - 64px - 2rem); // Navbar & self-margins
   min-width: 20rem;
   margin: 1rem;
   top: 64px;
@@ -396,6 +442,9 @@ const Inspector = styled(Card)`
 
 const Stats = styled(Card)`
   position: absolute;
+  // The last part is the bottom toolbar
+  max-height: calc(100% - 64px - 2rem - 32px - 1rem);
+  overflow-y: auto;
   margin: 1rem;
   top: 64px;
   left: 50px;
@@ -415,12 +464,13 @@ const Pie = dynamic(async () => (await import("@ant-design/charts")).Pie, {
   ssr: false,
 });
 
-const LocateButton = styled(Button)`
+const BottomToolbar = styled.div`
   position: absolute !important;
   margin: 1rem;
   bottom: 0;
   left: 50px;
   margin-left: 0;
+  border: 1px solid #303030;
   ${glass}
 `;
 

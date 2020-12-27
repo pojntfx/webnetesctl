@@ -1,6 +1,7 @@
 @import "~~antd/dist/antd.dark.less";
 
-.fade-enter {
+// Fade & zoom animation
+.fadeandzoom-enter {
   opacity: 0;
   animation-duration: 0.2s;
   animation-fill-mode: both;
@@ -8,7 +9,7 @@
   animation-play-state: paused;
 }
 
-.fade-appear {
+.fadeandzoom-appear {
   opacity: 0;
   animation-duration: 0.2s;
   animation-fill-mode: both;
@@ -16,29 +17,29 @@
   animation-play-state: paused;
 }
 
-.fade-leave {
+.fadeandzoom-leave {
   animation-duration: 0.2s;
   animation-fill-mode: both;
   animation-timing-function: cubic-bezier(0.55, 0, 0.55, 0.2);
   animation-play-state: paused;
 }
 
-.fade-enter.fade-enter-active {
-  animation-name: fadeIn;
+.fadeandzoom-enter.fadeandzoom-enter-active {
+  animation-name: fadeandzoomIn;
   animation-play-state: running;
 }
 
-.fade-appear.fade-appear-active {
-  animation-name: fadeIn;
+.fadeandzoom-appear.fadeandzoom-appear-active {
+  animation-name: fadeandzoomIn;
   animation-play-state: running;
 }
 
-.fade-leave.fade-leave-active {
-  animation-name: fadeOut;
+.fadeandzoom-leave.fadeandzoom-leave-active {
+  animation-name: fadeandzoomOut;
   animation-play-state: running;
 }
 
-@keyframes fadeIn {
+@keyframes fadeandzoomIn {
   0% {
     opacity: 0;
     transform: scale(0.95);
@@ -49,7 +50,7 @@
   }
 }
 
-@keyframes fadeOut {
+@keyframes fadeandzoomOut {
   0% {
     opacity: 1;
     transform: scale(1);
@@ -58,4 +59,68 @@
     opacity: 0;
     transform: scale(0.95);
   }
+}
+
+// Fade & slide animation
+.fadeandslide-enter {
+  opacity: 0;
+  animation-duration: 0.2s;
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.55, 0, 0.55, 0.2);
+  animation-play-state: paused;
+}
+
+.fadeandslide-appear {
+  opacity: 0;
+  animation-duration: 0.2s;
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.55, 0, 0.55, 0.2);
+  animation-play-state: paused;
+}
+
+.fadeandslide-leave {
+  animation-duration: 0.2s;
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.55, 0, 0.55, 0.2);
+  animation-play-state: paused;
+}
+
+.fadeandslide-enter.fadeandslide-enter-active {
+  animation-name: fadeandslideIn;
+  animation-play-state: running;
+}
+
+.fadeandslide-appear.fadeandslide-appear-active {
+  animation-name: fadeandslideIn;
+  animation-play-state: running;
+}
+
+.fadeandslide-leave.fadeandslide-leave-active {
+  animation-name: fadeandslideOut;
+  animation-play-state: running;
+}
+
+@keyframes fadeandslideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeandslideOut {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+}
+body {
+  overflow: hidden;
 }
