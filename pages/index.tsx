@@ -33,15 +33,17 @@ import earthElevation from "three-globe/example/img/earth-topology.png";
 import universeTexture from "three-globe/example/img/night-sky.png";
 import connections from "../data/connections.json";
 import nodes from "../data/nodes.json";
+import { unstable_batchedUpdates } from "react-dom";
 
 function HomePage() {
   const { t } = useTranslation();
 
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [connectionPaths, setConnectionPaths] = useState<any[]>([]);
-  const [selectedNode, setSelectedNode] = useState<any>();
+  const [selectedNode, _setSelectedNode] = useState<any>();
   const [hoverable, setHoverable] = useState(false);
   const [nodeComputeStats, setNodeComputeStats] = useState<any[]>([]);
+  const [handleCameraChange, setHandleCameraChange] = useState(false);
 
   const globeRef = createRef();
 
@@ -66,7 +68,7 @@ function HomePage() {
   }, []);
 
   useEffect(() => {
-    if (globeRef.current) {
+    if (globeRef.current && handleCameraChange) {
       if (selectedNode) {
         (globeRef.current as any).pointOfView(
           {
@@ -86,8 +88,17 @@ function HomePage() {
           1000
         );
       }
+
+      setHandleCameraChange(false);
     }
-  }, [globeRef, selectedNode]);
+  }, [globeRef, handleCameraChange, selectedNode]);
+
+  const setSelectedNode = (newNode: any) => {
+    unstable_batchedUpdates(() => {
+      setHandleCameraChange(true);
+      _setSelectedNode(newNode);
+    });
+  };
 
   return (
     <>
@@ -256,6 +267,7 @@ function HomePage() {
                   position: "bottom",
                   flipPage: false,
                 }}
+                animation={false}
                 pieStyle={{ cursor: "pointer" }}
                 onEvent={(_, e) => {
                   if (e.type === "element:click" && e.data?.data?.ip) {

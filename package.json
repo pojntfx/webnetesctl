@@ -50,6 +50,7 @@
     "@types/jest": "^26.0.16",
     "@types/node": "^14.14.10",
     "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
     "@types/styled-components": "^5.1.7",
     "@types/yargs": "^15.0.12",
     "@zeit/next-less": "^1.0.1",
