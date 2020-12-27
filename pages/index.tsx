@@ -7,6 +7,7 @@ import {
   faFile,
   faGlobe,
   faHandshake,
+  faLocationArrow,
   faNetworkWired,
   faPlus,
   faTimes,
@@ -25,7 +26,7 @@ import {
 import Layout, { Content, Header as HeaderTmpl } from "antd/lib/layout/layout";
 import dynamic from "next/dynamic";
 import Animate from "rc-animate";
-import { createRef, forwardRef, useEffect, useState } from "react";
+import { createRef, forwardRef, useCallback, useEffect, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
@@ -44,6 +45,8 @@ function HomePage() {
   const [hoverable, setHoverable] = useState(false);
   const [nodeComputeStats, setNodeComputeStats] = useState<any[]>([]);
   const [handleCameraChange, setHandleCameraChange] = useState(false);
+  const [userCoordinates, setUserCoordinates] = useState<number[]>([0, 0]);
+  const [loadingUserCoordinates, setLoadingUserCoordinates] = useState(false);
 
   const globeRef = createRef();
 
@@ -81,8 +84,8 @@ function HomePage() {
       } else {
         (globeRef.current as any).pointOfView(
           {
-            lat: 0,
-            lng: 0,
+            lat: userCoordinates[0],
+            lng: userCoordinates[1],
             altitude: 2.5,
           },
           1000
@@ -91,7 +94,33 @@ function HomePage() {
 
       setHandleCameraChange(false);
     }
-  }, [globeRef, handleCameraChange, selectedNode]);
+  }, [globeRef, handleCameraChange, selectedNode, userCoordinates]);
+
+  const getUserCoordinates = useCallback(() => {
+    setLoadingUserCoordinates(true);
+
+    typeof window !== "undefined" &&
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          unstable_batchedUpdates(() => {
+            setHandleCameraChange(true);
+            setUserCoordinates([
+              position.coords.latitude,
+              position.coords.longitude,
+            ]);
+            setLoadingUserCoordinates(false);
+          });
+        },
+        (e) => {
+          console.error(
+            "could not get user location, falling back to [0,0]",
+            e
+          );
+
+          setLoadingUserCoordinates(false);
+        }
+      );
+  }, []);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -322,6 +351,15 @@ function HomePage() {
               </Inspector>
             )}
           </Animate>
+
+          <Animate transitionName="fade" transitionAppear>
+            <LocateButton
+              type="text"
+              onClick={getUserCoordinates}
+              loading={loadingUserCoordinates}
+              icon={<FontAwesomeIcon icon={faLocationArrow} />}
+            />
+          </Animate>
         </Content>
       </Layout>
     </>
@@ -403,5 +441,14 @@ const Globe = forwardRef((props: any, ref) => (
 const Pie = dynamic(async () => (await import("@ant-design/charts")).Pie, {
   ssr: false,
 });
+
+const LocateButton = styled(Button)`
+  position: absolute !important;
+  margin: 1rem;
+  bottom: 0;
+  left: 50px;
+  margin-left: 0;
+  ${glass}
+`;
 
 export default HomePage;
