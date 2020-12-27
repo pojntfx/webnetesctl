@@ -21,7 +21,7 @@ import earthTexture from "three-globe/example/img/earth-night.jpg";
 import earthElevation from "three-globe/example/img/earth-topology.png";
 import universeTexture from "three-globe/example/img/night-sky.png";
 import nodes from "../data/nodes.json";
-import cables from "../data/cables.json";
+import connections from "../data/connections.json";
 
 const Globe = dynamic(() => import("react-globe.gl"), { ssr: false });
 
@@ -35,12 +35,16 @@ function HomePage() {
       setWindowHeight(document.querySelector("body")!.clientHeight - 64);
   }, []);
 
-  let cablePaths = [];
-  cables.features.forEach(({ geometry, properties }) => {
-    geometry.coordinates.forEach((coords) =>
-      cablePaths.push({ coords, properties })
-    );
-  });
+  const connectionPaths = [
+    ...connections.management.map((conn) => ({
+      coords: conn,
+      properties: { name: "Management", color: "#fa8c16" },
+    })),
+    ...connections.application.map((conn) => ({
+      coords: conn,
+      properties: { name: "Application", color: "#1890ff" },
+    })),
+  ];
 
   return (
     <>
@@ -146,12 +150,12 @@ function HomePage() {
             }
             labelColor={() => "rgba(255, 165, 0, 0.75)"}
             labelResolution={2}
-            pathsData={cablePaths}
+            pathsData={connectionPaths}
             pathPoints="coords"
-            pathPointLat={(p) => p[1]}
-            pathPointLng={(p) => p[0]}
-            pathColor={(path) => path.properties.color}
-            pathLabel={(path) => path.properties.slug}
+            pathPointLat={(c) => c[1]}
+            pathPointLng={(c) => c[0]}
+            pathLabel={(c: any) => c.properties.name}
+            pathColor={(c: any) => c.properties.color}
             pathDashLength={0.1}
             pathDashGap={0.008}
             pathDashAnimateTime={12000}
