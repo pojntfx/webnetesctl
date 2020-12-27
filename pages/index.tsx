@@ -25,7 +25,7 @@ import {
 import Layout, { Content, Header as HeaderTmpl } from "antd/lib/layout/layout";
 import dynamic from "next/dynamic";
 import Animate from "rc-animate";
-import { useEffect, useState } from "react";
+import { createRef, forwardRef, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import earthTexture from "three-globe/example/img/earth-night.jpg";
@@ -42,6 +42,8 @@ function HomePage() {
   const [selectedNode, setSelectedNode] = useState<any>();
   const [hoverable, setHoverable] = useState(false);
   const [nodeComputeStats, setNodeComputeStats] = useState<any[]>([]);
+
+  const globeRef = createRef();
 
   useEffect(() => {
     setConnectionPaths([
@@ -62,6 +64,30 @@ function HomePage() {
       { ip: "127.0.2.3", score: 500 },
     ]);
   }, []);
+
+  useEffect(() => {
+    if (globeRef.current) {
+      if (selectedNode) {
+        (globeRef.current as any).pointOfView(
+          {
+            lat: selectedNode.latitude,
+            lng: selectedNode.longitude,
+            altitude: 1,
+          },
+          1000
+        );
+      } else {
+        (globeRef.current as any).pointOfView(
+          {
+            lat: 0,
+            lng: 0,
+            altitude: 2.5,
+          },
+          1000
+        );
+      }
+    }
+  }, [globeRef, selectedNode]);
 
   return (
     <>
@@ -155,15 +181,17 @@ function HomePage() {
           <GlobeWrapper $hoverable={hoverable}>
             <Globe
               labelsData={nodes}
-              labelLat={(d) => (d as typeof nodes[0]).latitude}
-              labelLng={(d) => (d as typeof nodes[0]).longitude}
-              labelText={(d) => {
+              labelLat={(d: any) => (d as typeof nodes[0]).latitude}
+              labelLng={(d: any) => (d as typeof nodes[0]).longitude}
+              labelText={(d: any) => {
                 const node = d as typeof nodes[0];
 
                 return `${node.privateIP} (${node.location}, ${node.publicIP})`;
               }}
-              labelSize={(d) => Math.sqrt((d as typeof nodes[0]).size) * 4e-4}
-              labelDotRadius={(d) =>
+              labelSize={(d: any) =>
+                Math.sqrt((d as typeof nodes[0]).size) * 4e-4
+              }
+              labelDotRadius={(d: any) =>
                 Math.sqrt((d as typeof nodes[0]).size) * 4e-4
               }
               labelColor={() => "rgba(255, 165, 0, 0.75)"}
@@ -176,13 +204,13 @@ function HomePage() {
                       )
                     )
               }
-              onLabelHover={(label) =>
+              onLabelHover={(label: any) =>
                 label ? setHoverable(true) : setHoverable(false)
               }
               pathsData={connectionPaths}
               pathPoints="coords"
-              pathPointLat={(c) => c[1]}
-              pathPointLng={(c) => c[0]}
+              pathPointLat={(c: any) => c[1]}
+              pathPointLng={(c: any) => c[0]}
               pathLabel={(c: any) => c.properties.name}
               pathColor={(c: any) => c.properties.color}
               pathDashLength={0.1}
@@ -192,6 +220,7 @@ function HomePage() {
               bumpImageUrl={earthElevation as string}
               backgroundImageUrl={universeTexture as string}
               waitForGlobeReady
+              ref={globeRef}
             />
           </GlobeWrapper>
 
@@ -334,7 +363,13 @@ const Stats = styled(Card)`
   ${glass}
 `;
 
-const Globe = dynamic(() => import("react-globe.gl"), { ssr: false });
+const GlobeTmpl = dynamic(() => import("../components/globe"), {
+  ssr: false,
+});
+const Globe = forwardRef((props: any, ref) => (
+  <GlobeTmpl {...props} forwardRef={ref} />
+));
+
 const Pie = dynamic(async () => (await import("@ant-design/charts")).Pie, {
   ssr: false,
 });
