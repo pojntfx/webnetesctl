@@ -11,29 +11,32 @@ import {
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Dropdown, Input, List, Menu, Popover, Space } from "antd";
+import {
+  Button,
+  Card,
+  Dropdown,
+  Input,
+  List,
+  Menu,
+  Popover,
+  Space,
+} from "antd";
 import Layout, { Content, Header as HeaderTmpl } from "antd/lib/layout/layout";
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import earthTexture from "three-globe/example/img/earth-night.jpg";
 import earthElevation from "three-globe/example/img/earth-topology.png";
 import universeTexture from "three-globe/example/img/night-sky.png";
-import nodes from "../data/nodes.json";
 import connections from "../data/connections.json";
+import nodes from "../data/nodes.json";
 
 const Globe = dynamic(() => import("react-globe.gl"), { ssr: false });
 
 function HomePage() {
   const { t } = useTranslation();
   const [notificationsOpen, setNotificationsOpen] = useState(false);
-  const [windowHeight, setWindowHeight] = useState(0);
-
-  useEffect(() => {
-    typeof window !== "undefined" &&
-      setWindowHeight(document.querySelector("body")!.clientHeight - 64);
-  }, []);
 
   const connectionPaths = [
     ...connections.management.map((conn) => ({
@@ -162,17 +165,27 @@ function HomePage() {
             globeImageUrl={earthTexture as string}
             bumpImageUrl={earthElevation as string}
             backgroundImageUrl={universeTexture as string}
-            height={windowHeight}
           />
+          <Inspector title="Node 127.0.0.0">
+            <p>Hello, world!</p>
+          </Inspector>
         </Content>
       </Layout>
     </>
   );
 }
 
+const glass = `background: rgba(20, 20, 20, 0.5);
+  backdrop-filter: blur(5px);`;
+
 const Header = styled(HeaderTmpl)`
   display: flex;
   align-items: center;
+  position: absolute;
+  z-index: 9999;
+  width: 100%;
+  border-bottom: 1px solid #303030;
+  ${glass}
 `;
 
 const NavigationBar = styled.div`
@@ -200,6 +213,16 @@ const NavigationButton = styled(Button)`
 
 const SearchInput = styled(Input.Search)`
   max-width: 22.5rem;
+`;
+
+const Inspector = styled(Card)`
+  position: absolute;
+  height: calc(100% - 64px - 2rem);
+  min-width: 20rem;
+  margin: 1rem;
+  top: 64px;
+  right: 0;
+  ${glass}
 `;
 
 export default HomePage;
