@@ -27,28 +27,23 @@ function HomePage() {
     <>
       <Layout>
         <Header>
-          <MainSpace split>
-            <Menu
-              theme="dark"
-              mode="horizontal"
-              defaultSelectedKeys={["overview"]}
-            >
-              <Menu.Item
-                icon={<FontAwesomeIcon icon={faGlobe} />}
-                key="overview"
-              >
+          <NavigationBar>
+            <NavigationMenu>
+              <NavigationButton type="primary">
+                <FontAwesomeIcon size="lg" icon={faGlobe} fixedWidth />
                 {t("overview")}
-              </Menu.Item>
-              <Menu.Item
-                icon={<FontAwesomeIcon icon={faBinoculars} />}
-                key="explorer"
-              >
+              </NavigationButton>
+
+              <NavigationButton type="text">
+                <FontAwesomeIcon size="lg" icon={faBinoculars} fixedWidth />
                 {t("explorer")}
-              </Menu.Item>
-              <Menu.Item icon={<FontAwesomeIcon icon={faCogs} />} key="config">
+              </NavigationButton>
+
+              <NavigationButton type="text">
+                <FontAwesomeIcon size="lg" icon={faCogs} fixedWidth />
                 {t("config")}
-              </Menu.Item>
-            </Menu>
+              </NavigationButton>
+            </NavigationMenu>
 
             <Space>
               <Popover
@@ -112,7 +107,7 @@ function HomePage() {
                 </Space>
               </Button>
             </Space>
-          </MainSpace>
+          </NavigationBar>
         </Header>
         <Content>
           <Typography>
@@ -136,9 +131,27 @@ const Header = styled(HeaderTmpl)`
   align-items: center;
 `;
 
-const MainSpace = styled(Space)`
+const NavigationBar = styled.div`
+  height: 100%;
   width: 100%;
+  display: flex;
   justify-content: space-between;
+  align-items: center;
+`;
+
+const NavigationMenu = styled.div`
+  height: 100%;
+  display: flex;
+`;
+
+const NavigationButton = styled(Button)`
+  width: 5rem;
+  height: 100% !important;
+  border-radius: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 `;
 
 export default HomePage;
