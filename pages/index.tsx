@@ -19,7 +19,7 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import earthTexture from "three-globe/example/img/earth-night.jpg";
 import universeTexture from "three-globe/example/img/night-sky.png";
-import cities from "../data/cities.json";
+import nodes from "../data/nodes.json";
 
 const Globe = dynamic(() => import("react-globe.gl"), { ssr: false });
 
@@ -123,12 +123,18 @@ function HomePage() {
         </Header>
         <Content>
           <Globe
-            labelsData={cities.features}
-            labelLat={(d) => d.properties.latitude}
-            labelLng={(d) => d.properties.longitude}
-            labelText={(d) => d.properties.name}
-            labelSize={(d) => Math.sqrt(d.properties.pop_max) * 4e-4}
-            labelDotRadius={(d) => Math.sqrt(d.properties.pop_max) * 4e-4}
+            labelsData={nodes}
+            labelLat={(d) => (d as typeof nodes[0]).latitude}
+            labelLng={(d) => (d as typeof nodes[0]).longitude}
+            labelText={(d) => {
+              const node = d as typeof nodes[0];
+
+              return `${node.privateIP} (${node.location}, ${node.publicIP})`;
+            }}
+            labelSize={(d) => Math.sqrt((d as typeof nodes[0]).size) * 4e-4}
+            labelDotRadius={(d) =>
+              Math.sqrt((d as typeof nodes[0]).size) * 4e-4
+            }
             labelColor={() => "rgba(255, 165, 0, 0.75)"}
             labelResolution={2}
             globeImageUrl={earthTexture as string}
