@@ -9,9 +9,12 @@ import {
   faGlobe,
   faHandshake,
   faLocationArrow,
+  faMicrochip,
+  faMobile,
   faNetworkWired,
   faPlus,
   faTimes,
+  faWifi,
   faWindowMinimize,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -19,12 +22,14 @@ import {
   Button,
   Card,
   Collapse,
+  Divider,
   Dropdown,
   Input,
   List,
   Menu,
   Popover,
   Space,
+  Statistic,
 } from "antd";
 import Layout, { Content, Header as HeaderTmpl } from "antd/lib/layout/layout";
 import dynamic from "next/dynamic";
@@ -54,6 +59,7 @@ function HomePage() {
   const [userCoordinates, setUserCoordinates] = useState<number[]>([0, 0]);
   const [loadingUserCoordinates, setLoadingUserCoordinates] = useState(false);
   const [statsOpen, setStatsOpen] = useState(true);
+  const [clusterId, setClusterId] = useState<string>();
 
   const globeRef = createRef();
 
@@ -70,6 +76,8 @@ function HomePage() {
     ]);
 
     setNodeComputeStats(computeStats);
+
+    setClusterId("127.0.2");
   }, []);
 
   useEffect(() => {
@@ -288,13 +296,56 @@ function HomePage() {
             {statsOpen && (
               <Stats
                 size="small"
-                title={`${t("cluster")} 127.0.2`}
+                title={
+                  <Space>
+                    <FontAwesomeIcon fixedWidth icon={faNetworkWired} />
+                    {t("cluster") + " " + clusterId}
+                  </Space>
+                }
                 extra={
                   <Button type="text" onClick={() => setStatsOpen(false)}>
                     <FontAwesomeIcon icon={faWindowMinimize} />
                   </Button>
                 }
               >
+                <StatsWrapper>
+                  <Statistic
+                    title={t("node", { count: 4 })}
+                    value={4}
+                    prefix={<FontAwesomeIcon fixedWidth icon={faMobile} />}
+                  />
+                  <Statistic
+                    title={t("resource", { count: 16 })}
+                    value={16}
+                    prefix={<FontAwesomeIcon fixedWidth icon={faCube} />}
+                  />
+                </StatsWrapper>
+
+                <StatsSeperator />
+
+                <StatsWrapper $long>
+                  <Statistic
+                    title={
+                      <Space>
+                        <FontAwesomeIcon icon={faMicrochip} />
+                        {t("compute")}
+                      </Space>
+                    }
+                    value={1560}
+                    suffix={t("point", { count: 1560 })}
+                  />
+                  <Statistic
+                    title={
+                      <Space>
+                        <FontAwesomeIcon icon={faWifi} />
+                        {t("network")}
+                      </Space>
+                    }
+                    value={920}
+                    suffix={t("mbps", { count: 920 })}
+                  />
+                </StatsWrapper>
+
                 <Collapse defaultActiveKey={[]} ghost destroyInactivePanel>
                   <Collapse.Panel
                     header={t("computeDistribution")}
@@ -364,7 +415,12 @@ function HomePage() {
             {selectedNode && (
               <Inspector
                 size="small"
-                title={`${t("node")} ${selectedNode.privateIP}`}
+                title={
+                  <Space>
+                    <FontAwesomeIcon fixedWidth icon={faMobile} />
+                    {t("node") + " " + selectedNode.privateIP}
+                  </Space>
+                }
                 extra={
                   <Button
                     type="text"
@@ -490,6 +546,21 @@ const BottomToolbar = styled.div`
   margin-left: 0;
   border: 1px solid #303030;
   ${glass}
+`;
+
+const StatsWrapper = styled.div<{ $long?: boolean }>`
+  display: grid;
+  grid-template-columns: 50% 50%;
+  padding: 12px 16px;
+
+  ${(props) =>
+    props.$long
+      ? ".ant-statistic-content { font-size: 20px !important; }"
+      : "padding-bottom: 6px;"}
+`;
+
+const StatsSeperator = styled(Divider)`
+  margin: 0.25rem 0;
 `;
 
 export default HomePage;
