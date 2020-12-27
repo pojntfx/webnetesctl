@@ -41,6 +41,7 @@ function HomePage() {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [connectionPaths, setConnectionPaths] = useState<any[]>([]);
   const [selectedNode, setSelectedNode] = useState<any>();
+  const [hoverable, setHoverable] = useState(false);
 
   useEffect(() => {
     setConnectionPaths([
@@ -144,38 +145,43 @@ function HomePage() {
           </NavigationBar>
         </Header>
         <Content>
-          <Globe
-            labelsData={nodes}
-            labelLat={(d) => (d as typeof nodes[0]).latitude}
-            labelLng={(d) => (d as typeof nodes[0]).longitude}
-            labelText={(d) => {
-              const node = d as typeof nodes[0];
+          <GlobeWrapper $hoverable={hoverable}>
+            <Globe
+              labelsData={nodes}
+              labelLat={(d) => (d as typeof nodes[0]).latitude}
+              labelLng={(d) => (d as typeof nodes[0]).longitude}
+              labelText={(d) => {
+                const node = d as typeof nodes[0];
 
-              return `${node.privateIP} (${node.location}, ${node.publicIP})`;
-            }}
-            labelSize={(d) => Math.sqrt((d as typeof nodes[0]).size) * 4e-4}
-            labelDotRadius={(d) =>
-              Math.sqrt((d as typeof nodes[0]).size) * 4e-4
-            }
-            labelColor={() => "rgba(255, 165, 0, 0.75)"}
-            onLabelClick={(node: any) =>
-              selectedNode?.privateIP === node.privateIP
-                ? setSelectedNode(undefined)
-                : setSelectedNode(node)
-            }
-            pathsData={connectionPaths}
-            pathPoints="coords"
-            pathPointLat={(c) => c[1]}
-            pathPointLng={(c) => c[0]}
-            pathLabel={(c: any) => c.properties.name}
-            pathColor={(c: any) => c.properties.color}
-            pathDashLength={0.1}
-            pathDashGap={0.008}
-            pathDashAnimateTime={12000}
-            globeImageUrl={earthTexture as string}
-            bumpImageUrl={earthElevation as string}
-            backgroundImageUrl={universeTexture as string}
-          />
+                return `${node.privateIP} (${node.location}, ${node.publicIP})`;
+              }}
+              labelSize={(d) => Math.sqrt((d as typeof nodes[0]).size) * 4e-4}
+              labelDotRadius={(d) =>
+                Math.sqrt((d as typeof nodes[0]).size) * 4e-4
+              }
+              labelColor={() => "rgba(255, 165, 0, 0.75)"}
+              onLabelClick={(node: any) =>
+                selectedNode?.privateIP === node.privateIP
+                  ? setSelectedNode(undefined)
+                  : setSelectedNode(node)
+              }
+              onLabelHover={(label) =>
+                label ? setHoverable(true) : setHoverable(false)
+              }
+              pathsData={connectionPaths}
+              pathPoints="coords"
+              pathPointLat={(c) => c[1]}
+              pathPointLng={(c) => c[0]}
+              pathLabel={(c: any) => c.properties.name}
+              pathColor={(c: any) => c.properties.color}
+              pathDashLength={0.1}
+              pathDashGap={0.008}
+              pathDashAnimateTime={12000}
+              globeImageUrl={earthTexture as string}
+              bumpImageUrl={earthElevation as string}
+              backgroundImageUrl={universeTexture as string}
+            />
+          </GlobeWrapper>
 
           {selectedNode && (
             <Inspector
@@ -194,6 +200,10 @@ function HomePage() {
     </>
   );
 }
+
+const GlobeWrapper = styled.div<{ $hoverable: boolean }>`
+  ${(props) => (props.$hoverable ? "cursor: pointer;" : "")}
+`;
 
 const glass = `background: rgba(20, 20, 20, 0.5);
   backdrop-filter: blur(5px);`;
