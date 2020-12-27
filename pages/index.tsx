@@ -181,12 +181,15 @@ function HomePage() {
               globeImageUrl={earthTexture as string}
               bumpImageUrl={earthElevation as string}
               backgroundImageUrl={universeTexture as string}
+              waitForGlobeReady
             />
           </GlobeWrapper>
 
-          <Stats size="small" title={`${t("clusterStatistics")}`}>
-            <div>Hello, world!</div>
-          </Stats>
+          <Animate transitionName="fade" transitionAppear>
+            <Stats size="small" title={`${t("clusterStatistics")}`}>
+              <div>Hello, world!</div>
+            </Stats>
+          </Animate>
 
           <Animate transitionName="fade" transitionAppear>
             {selectedNode && (
