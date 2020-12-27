@@ -26,6 +26,7 @@ import Layout, { Content, Header as HeaderTmpl } from "antd/lib/layout/layout";
 import dynamic from "next/dynamic";
 import Animate from "rc-animate";
 import { createRef, forwardRef, useEffect, useState } from "react";
+import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import earthTexture from "three-globe/example/img/earth-night.jpg";
@@ -33,7 +34,6 @@ import earthElevation from "three-globe/example/img/earth-topology.png";
 import universeTexture from "three-globe/example/img/night-sky.png";
 import connections from "../data/connections.json";
 import nodes from "../data/nodes.json";
-import { unstable_batchedUpdates } from "react-dom";
 
 function HomePage() {
   const { t } = useTranslation();
@@ -92,6 +92,24 @@ function HomePage() {
       setHandleCameraChange(false);
     }
   }, [globeRef, handleCameraChange, selectedNode]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      document.addEventListener(
+        "keydown",
+        () => setSelectedNode(undefined),
+        false
+      );
+
+      return () => {
+        document.removeEventListener(
+          "keydown",
+          () => setSelectedNode(undefined),
+          false
+        );
+      };
+    }
+  }, []);
 
   const setSelectedNode = (newNode: any) => {
     unstable_batchedUpdates(() => {
