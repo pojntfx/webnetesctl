@@ -227,6 +227,7 @@ function HomePage() {
                   position: "bottom",
                   flipPage: false,
                 }}
+                pieStyle={{ cursor: "pointer" }}
                 onEvent={(_, e) => {
                   if (e.type === "element:click" && e.data?.data?.ip) {
                     setSelectedNode((selectedNode: any) =>
