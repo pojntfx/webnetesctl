@@ -33,6 +33,7 @@ import styled from "styled-components";
 import earthTexture from "three-globe/example/img/earth-night.jpg";
 import earthElevation from "three-globe/example/img/earth-topology.png";
 import universeTexture from "three-globe/example/img/night-sky.png";
+import NodeChart from "../components/node-chart";
 import connections from "../data/connections.json";
 import nodes from "../data/nodes.json";
 
@@ -252,7 +253,7 @@ function HomePage() {
               labelDotRadius={(d: any) =>
                 Math.sqrt((d as typeof nodes[0]).size) * 4e-4
               }
-              labelColor={() => "rgba(255, 165, 0, 0.75)"}
+              labelColor={() => "#faad14CC"}
               onLabelClick={(node: any) =>
                 selectedNode?.privateIP === node.privateIP
                   ? setSelectedNode(undefined)
@@ -284,12 +285,9 @@ function HomePage() {
 
           <Animate transitionName="fade" transitionAppear>
             <Stats size="small" title={`${t("clusterStatistics")}`}>
-              <Pie
-                appendPadding={0}
+              <NodeChart
                 data={nodeComputeStats}
-                angleField="score"
-                colorField="ip"
-                color={[
+                colors={[
                   "#612500",
                   "#ad4e00",
                   "#d46b08",
@@ -297,38 +295,13 @@ function HomePage() {
                   "#ffa940",
                   "#faad14",
                 ]}
-                radius={0.9}
-                label={{
-                  type: "inner",
-                  offset: "-30%",
-                  content: (_ref: any) => Math.floor(_ref.percent * 100) + "%",
-                  style: {
-                    textAlign: "center",
-                  },
-                }}
-                autoFit
-                height={300}
-                interactions={[{ type: "element-active" }]}
-                legend={{
-                  layout: "vertical",
-                  position: "bottom",
-                  flipPage: false,
-                }}
-                animation={false}
-                pieStyle={{ cursor: "pointer" }}
-                onEvent={(_, e) => {
-                  if (e.type === "element:click" && e.data?.data?.ip) {
-                    setSelectedNode((selectedNode: any) =>
-                      selectedNode &&
-                      selectedNode?.privateIP === e.data?.data.ip
-                        ? undefined
-                        : nodes.find(
-                            (candidate) =>
-                              candidate.privateIP === e.data?.data.ip
-                          )
-                    );
-                  }
-                }}
+                onClick={(ip) =>
+                  setSelectedNode((selectedNode: any) =>
+                    selectedNode && selectedNode?.privateIP === ip
+                      ? undefined
+                      : nodes.find((candidate) => candidate.privateIP === ip)
+                  )
+                }
               />
             </Stats>
           </Animate>

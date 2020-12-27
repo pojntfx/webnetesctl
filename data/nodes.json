@@ -5,7 +5,7 @@
     "location": "Baiersbronn",
     "latitude": 48.50198441439295,
     "longitude": 8.379289269218297,
-    "size": 15000000
+    "size": 10000000
   },
   {
     "privateIP": "127.0.2.1",
@@ -13,7 +13,7 @@
     "location": "Shanghai",
     "latitude": 31.2164524526,
     "longitude": 121.436504678,
-    "size": 15000000
+    "size": 10000000
   },
   {
     "privateIP": "127.0.2.2",
@@ -21,7 +21,7 @@
     "location": "Singapore",
     "latitude": 1.29303346649,
     "longitude": 103.855820678,
-    "size": 15000000
+    "size": 10000000
   },
   {
     "privateIP": "127.0.2.3",
@@ -29,6 +29,6 @@
     "location": "Hong Kong",
     "latitude": 22.304980895,
     "longitude": 114.185009317,
-    "size": 15000000
+    "size": 10000000
   }
 ]
