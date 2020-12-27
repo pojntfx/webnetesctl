@@ -149,7 +149,7 @@ function HomePage() {
               Math.sqrt((d as typeof nodes[0]).size) * 4e-4
             }
             labelColor={() => "rgba(255, 165, 0, 0.75)"}
-            labelResolution={2}
+            onLabelClick={(label) => console.log("Clicked", label)}
             pathsData={connectionPaths}
             pathPoints="coords"
             pathPointLat={(c) => c[1]}
