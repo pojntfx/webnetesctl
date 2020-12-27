@@ -11,7 +11,16 @@ import {
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Dropdown, List, Menu, Popover, Space, Typography } from "antd";
+import {
+  Button,
+  Dropdown,
+  Input,
+  List,
+  Menu,
+  Popover,
+  Space,
+  Typography,
+} from "antd";
 import Layout, { Content, Header as HeaderTmpl } from "antd/lib/layout/layout";
 import Paragraph from "antd/lib/typography/Paragraph";
 import Title from "antd/lib/typography/Title";
@@ -44,6 +53,8 @@ function HomePage() {
                 {t("config")}
               </NavigationButton>
             </NavigationMenu>
+
+            <SearchInput placeholder={t("findNodeOrResource")} />
 
             <Space>
               <Popover
@@ -152,6 +163,10 @@ const NavigationButton = styled(Button)`
   justify-content: center;
   align-items: center;
   flex-direction: column;
+`;
+
+const SearchInput = styled(Input.Search)`
+  max-width: 22.5rem;
 `;
 
 export default HomePage;

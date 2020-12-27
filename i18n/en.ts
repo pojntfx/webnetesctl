@@ -8,4 +8,5 @@ export default {
   cluster: "Cluster",
   file: "File",
   notifications: "Notifications",
+  findNodeOrResource: "Find a node or resource",
 };
