@@ -40,6 +40,7 @@ import styled from "styled-components";
 import earthTexture from "three-globe/example/img/earth-night.jpg";
 import earthElevation from "three-globe/example/img/earth-topology.png";
 import universeTexture from "three-globe/example/img/night-sky.png";
+import { useWindowSize } from "use-window-size-hook";
 import Navbar from "../components/navbar";
 import NodeChart from "../components/node-chart";
 import computeStats from "../data/compute-stats.json";
@@ -62,6 +63,8 @@ function HomePage() {
   const [clusterId, setClusterId] = useState<string>();
 
   const globeRef = createRef();
+
+  const { width, height } = useWindowSize();
 
   useEffect(() => {
     setConnectionPaths([
@@ -334,6 +337,8 @@ function HomePage() {
               bumpImageUrl={earthElevation as string}
               backgroundImageUrl={universeTexture as string}
               waitForGlobeReady
+              width={width}
+              height={height}
               ref={globeRef}
             />
           </GlobeWrapper>
