@@ -20,4 +20,5 @@ export default {
   network: "Network",
   mbps: "MBit/s",
   mbps_plural: "MBit/s",
+  findResource: "Find a resource",
 };

@@ -528,6 +528,12 @@ function HomePage() {
                     })}
                   />
                 </StatsWrapper>
+
+                <StatsSeperator />
+
+                <SearchWrapper>
+                  <Input.Search placeholder={t("findResource")} />
+                </SearchWrapper>
               </Inspector>
             )}
           </Animate>
@@ -729,6 +735,10 @@ const StatsWrapper = styled.div<{ $long?: boolean }>`
 
 const StatsSeperator = styled(Divider)`
   margin: 0.25rem 0;
+`;
+
+const SearchWrapper = styled.div`
+  padding: 12px 16px;
 `;
 
 export default HomePage;
