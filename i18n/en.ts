@@ -20,8 +20,9 @@ export default {
   network: "Network",
   mbps: "MBit/s",
   mbps_plural: "MBit/s",
-  findResource: "Find a resource",
+  filterResources: "Filter resources",
   openInExplorer: "Open in Explorer",
   delete: "Delete",
-  noResourcesDeployed: "No Resources Deployed",
+  noResourcesDeployed: "No resources deployed",
+  noMatchingResourcesFound: "No matching resources found",
 };

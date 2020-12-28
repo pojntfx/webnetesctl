@@ -70,6 +70,7 @@ function HomePage() {
   const [loadingUserCoordinates, setLoadingUserCoordinates] = useState(false);
   const [statsOpen, setStatsOpen] = useState(true);
   const [clusterId, setClusterId] = useState<string>();
+  const [resourceNameFilter, setResourceNameFilter] = useState("");
 
   const globeRef = createRef();
 
@@ -547,7 +548,11 @@ function HomePage() {
                 <StatsSeperator />
 
                 <SearchWrapper direction="vertical">
-                  <Input.Search placeholder={t("findResource")} />
+                  <Input.Search
+                    placeholder={t("filterResources")}
+                    onChange={(e) => setResourceNameFilter(e.target.value)}
+                    value={resourceNameFilter}
+                  />
 
                   <List>
                     {(() => {
@@ -563,56 +568,80 @@ function HomePage() {
                           />
                         );
                       } else {
-                        return matchingResources.map((resource, index) => (
-                          <ResourceItem
-                            actions={[
-                              resource.kind === "Workload" && (
-                                <Button type="text" shape="circle">
-                                  <FontAwesomeIcon icon={faTerminal} />
-                                </Button>
-                              ),
-                              <Dropdown
-                                overlay={
-                                  <Menu>
-                                    <Menu.Item key="openInExplorer">
-                                      <Space>
-                                        <FontAwesomeIcon
-                                          fixedWidth
-                                          icon={faBinoculars}
-                                        />
-                                        {t("openInExplorer")}
-                                      </Space>
-                                    </Menu.Item>
+                        const filteredResources =
+                          resourceNameFilter.length === 0
+                            ? matchingResources
+                            : matchingResources.filter(
+                                (resource) =>
+                                  resource.name
+                                    .toLowerCase()
+                                    .includes(
+                                      resourceNameFilter.toLowerCase()
+                                    ) ||
+                                  resource.kind
+                                    .toLowerCase()
+                                    .includes(resourceNameFilter.toLowerCase())
+                              );
 
-                                    <Menu.Item key="delete">
-                                      <Space>
-                                        <FontAwesomeIcon
-                                          fixedWidth
-                                          icon={faTrash}
-                                        />
-                                        {t("delete")}
-                                      </Space>
-                                    </Menu.Item>
-                                  </Menu>
-                                }
-                              >
-                                <Button type="text" shape="circle">
-                                  <FontAwesomeIcon icon={faEllipsisV} />
-                                </Button>
-                              </Dropdown>,
-                            ].filter((component) => component)}
-                            key={index}
-                          >
-                            <List.Item.Meta
-                              title={
-                                <>
-                                  {resource.name}{" "}
-                                  <Text code>{resource.kind}</Text>
-                                </>
-                              }
+                        if (filteredResources.length === 0) {
+                          return (
+                            <Empty
+                              description={t("noMatchingResourcesFound")}
+                              image={Empty.PRESENTED_IMAGE_SIMPLE}
                             />
-                          </ResourceItem>
-                        ));
+                          );
+                        } else {
+                          return filteredResources.map((resource, index) => (
+                            <ResourceItem
+                              actions={[
+                                resource.kind === "Workload" && (
+                                  <Button type="text" shape="circle">
+                                    <FontAwesomeIcon icon={faTerminal} />
+                                  </Button>
+                                ),
+                                <Dropdown
+                                  overlay={
+                                    <Menu>
+                                      <Menu.Item key="openInExplorer">
+                                        <Space>
+                                          <FontAwesomeIcon
+                                            fixedWidth
+                                            icon={faBinoculars}
+                                          />
+                                          {t("openInExplorer")}
+                                        </Space>
+                                      </Menu.Item>
+
+                                      <Menu.Item key="delete">
+                                        <Space>
+                                          <FontAwesomeIcon
+                                            fixedWidth
+                                            icon={faTrash}
+                                          />
+                                          {t("delete")}
+                                        </Space>
+                                      </Menu.Item>
+                                    </Menu>
+                                  }
+                                >
+                                  <Button type="text" shape="circle">
+                                    <FontAwesomeIcon icon={faEllipsisV} />
+                                  </Button>
+                                </Dropdown>,
+                              ].filter((component) => component)}
+                              key={index}
+                            >
+                              <List.Item.Meta
+                                title={
+                                  <>
+                                    {resource.name}{" "}
+                                    <Text code>{resource.kind}</Text>
+                                  </>
+                                }
+                              />
+                            </ResourceItem>
+                          ));
+                        }
                       }
                     })()}
                   </List>
