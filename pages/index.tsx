@@ -3,6 +3,7 @@ import {
   faCaretDown,
   faChartPie,
   faCube,
+  faEllipsisV,
   faFile,
   faGlobe,
   faHandshake,
@@ -13,6 +14,7 @@ import {
   faNetworkWired,
   faPlus,
   faSearch,
+  faTerminal,
   faTimes,
   faWifi,
   faWindowMinimize,
@@ -33,6 +35,7 @@ import {
   Tooltip,
 } from "antd";
 import Layout, { Content, Header as HeaderTmpl } from "antd/lib/layout/layout";
+import Text from "antd/lib/typography/Text";
 import dynamic from "next/dynamic";
 import Animate from "rc-animate";
 import { createRef, forwardRef, useCallback, useEffect, useState } from "react";
@@ -531,8 +534,29 @@ function HomePage() {
 
                 <StatsSeperator />
 
-                <SearchWrapper>
+                <SearchWrapper direction="vertical">
                   <Input.Search placeholder={t("findResource")} />
+
+                  <List>
+                    <ResourceItem
+                      actions={[
+                        <Button type="text" shape="circle">
+                          <FontAwesomeIcon icon={faTerminal} />
+                        </Button>,
+                        <Button type="text" shape="circle">
+                          <FontAwesomeIcon icon={faEllipsisV} />
+                        </Button>,
+                      ]}
+                    >
+                      <List.Item.Meta
+                        title={
+                          <>
+                            <Text code>Workload</Text> Echo Server
+                          </>
+                        }
+                      />
+                    </ResourceItem>
+                  </List>
                 </SearchWrapper>
               </Inspector>
             )}
@@ -737,8 +761,15 @@ const StatsSeperator = styled(Divider)`
   margin: 0.25rem 0;
 `;
 
-const SearchWrapper = styled.div`
+const SearchWrapper = styled(Space)`
   padding: 12px 16px;
+  width: 100%;
+`;
+
+const ResourceItem = styled(List.Item)`
+  .ant-list-item-action {
+    margin-left: 1rem;
+  }
 `;
 
 export default HomePage;
