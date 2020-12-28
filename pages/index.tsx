@@ -1,5 +1,6 @@
 import {
   faBell,
+  faBinoculars,
   faCaretDown,
   faChartPie,
   faCube,
@@ -16,6 +17,7 @@ import {
   faSearch,
   faTerminal,
   faTimes,
+  faTrash,
   faWifi,
   faWindowMinimize,
 } from "@fortawesome/free-solid-svg-icons";
@@ -472,12 +474,20 @@ function HomePage() {
                   </Space>
                 }
                 extra={
-                  <Button
-                    type="text"
-                    onClick={() => setSelectedNode(undefined)}
-                  >
-                    <FontAwesomeIcon icon={faTimes} />
-                  </Button>
+                  <Space>
+                    <Tooltip title={t("openInExplorer")} placement="bottom">
+                      <Button type="text" shape="circle">
+                        <FontAwesomeIcon icon={faBinoculars} />
+                      </Button>
+                    </Tooltip>
+
+                    <Button
+                      type="text"
+                      onClick={() => setSelectedNode(undefined)}
+                    >
+                      <FontAwesomeIcon icon={faTimes} />
+                    </Button>
+                  </Space>
                 }
               >
                 <StatsWrapper $long>
@@ -543,9 +553,31 @@ function HomePage() {
                         <Button type="text" shape="circle">
                           <FontAwesomeIcon icon={faTerminal} />
                         </Button>,
-                        <Button type="text" shape="circle">
-                          <FontAwesomeIcon icon={faEllipsisV} />
-                        </Button>,
+                        <Dropdown
+                          overlay={
+                            <Menu>
+                              <Menu.Item key="openInExplorer">
+                                <Space>
+                                  <FontAwesomeIcon
+                                    fixedWidth
+                                    icon={faBinoculars}
+                                  />
+                                  {t("openInExplorer")}
+                                </Space>
+                              </Menu.Item>
+                              <Menu.Item key="delete">
+                                <Space>
+                                  <FontAwesomeIcon fixedWidth icon={faTrash} />
+                                  {t("delete")}
+                                </Space>
+                              </Menu.Item>
+                            </Menu>
+                          }
+                        >
+                          <Button type="text" shape="circle">
+                            <FontAwesomeIcon icon={faEllipsisV} />
+                          </Button>
+                        </Dropdown>,
                       ]}
                     >
                       <List.Item.Meta

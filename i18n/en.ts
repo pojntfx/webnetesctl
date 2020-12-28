@@ -21,4 +21,6 @@ export default {
   mbps: "MBit/s",
   mbps_plural: "MBit/s",
   findResource: "Find a resource",
+  openInExplorer: "Open in Explorer",
+  delete: "Delete",
 };
