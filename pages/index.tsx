@@ -1,18 +1,16 @@
 import {
   faBell,
-  faBinoculars,
   faCaretDown,
   faChartPie,
-  faCogs,
   faCube,
   faFile,
-  faGlobe,
   faHandshake,
   faLocationArrow,
   faMicrochip,
   faMobile,
   faNetworkWired,
   faPlus,
+  faSearch,
   faTimes,
   faWifi,
   faWindowMinimize,
@@ -30,6 +28,7 @@ import {
   Popover,
   Space,
   Statistic,
+  Tooltip,
 } from "antd";
 import Layout, { Content, Header as HeaderTmpl } from "antd/lib/layout/layout";
 import dynamic from "next/dynamic";
@@ -41,6 +40,7 @@ import styled from "styled-components";
 import earthTexture from "three-globe/example/img/earth-night.jpg";
 import earthElevation from "three-globe/example/img/earth-topology.png";
 import universeTexture from "three-globe/example/img/night-sky.png";
+import Navbar from "../components/navbar";
 import NodeChart from "../components/node-chart";
 import computeStats from "../data/compute-stats.json";
 import connections from "../data/connections.json";
@@ -155,24 +155,75 @@ function HomePage() {
   return (
     <>
       <Layout>
+        <ActionBarMobile>
+          <Tooltip title={t("findNodeOrResource")}>
+            <Button type="text" shape="circle">
+              <FontAwesomeIcon icon={faSearch} />
+            </Button>
+          </Tooltip>
+
+          <Space>
+            <Popover
+              title={t("notifications")}
+              trigger="click"
+              visible={notificationsOpen}
+              onVisibleChange={(open) => setNotificationsOpen(open)}
+              content={
+                <List>
+                  <List.Item>Example notification 1</List.Item>
+                  <List.Item>Example notification 2</List.Item>
+                </List>
+              }
+            >
+              <Button
+                type="text"
+                shape="circle"
+                onClick={() => setNotificationsOpen(true)}
+              >
+                <FontAwesomeIcon icon={faBell} />
+              </Button>
+            </Popover>
+
+            <Dropdown
+              overlay={
+                <Menu>
+                  <Menu.Item key="resource">
+                    <Space>
+                      <FontAwesomeIcon fixedWidth icon={faCube} />
+                      {t("resource")}
+                    </Space>
+                  </Menu.Item>
+                  <Menu.Item key="cluster">
+                    <Space>
+                      <FontAwesomeIcon fixedWidth icon={faNetworkWired} />
+                      {t("cluster")}
+                    </Space>
+                  </Menu.Item>
+                  <Menu.Item key="file">
+                    <Space>
+                      <FontAwesomeIcon fixedWidth icon={faFile} />
+                      {t("file")}
+                    </Space>
+                  </Menu.Item>
+                </Menu>
+              }
+            >
+              <Button type="text" shape="circle">
+                <FontAwesomeIcon icon={faPlus} />
+              </Button>
+            </Dropdown>
+
+            <Tooltip title={t("invite")}>
+              <Button type="primary" shape="circle">
+                <FontAwesomeIcon icon={faHandshake} />
+              </Button>
+            </Tooltip>
+          </Space>
+        </ActionBarMobile>
+
         <Header>
           <NavigationBar>
-            <NavigationMenu>
-              <NavigationButton type="primary">
-                <FontAwesomeIcon size="lg" icon={faGlobe} fixedWidth />
-                {t("overview")}
-              </NavigationButton>
-
-              <NavigationButton type="text">
-                <FontAwesomeIcon size="lg" icon={faBinoculars} fixedWidth />
-                {t("explorer")}
-              </NavigationButton>
-
-              <NavigationButton type="text">
-                <FontAwesomeIcon size="lg" icon={faCogs} fixedWidth />
-                {t("config")}
-              </NavigationButton>
-            </NavigationMenu>
+            <Navbar />
 
             <SearchInput placeholder={t("findNodeOrResource")} />
 
@@ -441,6 +492,9 @@ function HomePage() {
             </BottomToolbar>
           </Animate>
         </Content>
+        <TabSwitcherMobile>
+          <Navbar />
+        </TabSwitcherMobile>
       </Layout>
     </>
   );
@@ -454,13 +508,48 @@ const glass = `background: rgba(20, 20, 20, 0.5);
   backdrop-filter: blur(5px);`;
 
 const Header = styled(HeaderTmpl)`
-  display: flex;
+  display: none;
   align-items: center;
   position: absolute;
   z-index: 9999;
   width: 100%;
   border-bottom: 1px solid #303030;
   ${glass}
+
+  @media screen and (min-width: 812px) {
+    display: flex;
+  }
+`;
+
+const ActionBarMobile = styled(HeaderTmpl)`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: absolute;
+  z-index: 9999;
+  width: 100%;
+  border-bottom: 1px solid #303030;
+  ${glass}
+
+  @media screen and (min-width: 812px) {
+    display: none;
+  }
+`;
+
+const TabSwitcherMobile = styled(HeaderTmpl)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  z-index: 9999;
+  width: 100%;
+  border-top: 1px solid #303030;
+  bottom: 0;
+  ${glass}
+
+  @media screen and (min-width: 812px) {
+    display: none;
+  }
 `;
 
 const NavigationBar = styled.div`
@@ -469,21 +558,6 @@ const NavigationBar = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-`;
-
-const NavigationMenu = styled.div`
-  height: 100%;
-  display: flex;
-`;
-
-const NavigationButton = styled(Button)`
-  width: 5rem;
-  height: 100% !important;
-  border-radius: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
 `;
 
 const SearchInput = styled(Input.Search)`
@@ -527,12 +601,19 @@ const Globe = forwardRef((props: any, ref) => (
 
 const BottomToolbar = styled.div`
   position: absolute !important;
-  margin: 1rem;
-  bottom: 0;
-  left: 50px;
-  margin-left: 0;
+  bottom: calc(64px + 1rem);
   border: 1px solid #303030;
+  transform: translateX(-50%);
+  left: 50%;
   ${glass}
+
+  @media screen and (min-width: 812px) {
+    bottom: 0;
+    transform: translateX(0);
+    left: 50px;
+    margin: 1rem;
+    margin-left: 0;
+  }
 `;
 
 const StatsWrapper = styled.div<{ $long?: boolean }>`
