@@ -7,6 +7,7 @@ const transpile = require("next-transpile-modules")([
 const sass = require("@zeit/next-sass");
 const less = require("@zeit/next-less");
 const images = require("next-images");
+const pwa = require("next-pwa");
 
 module.exports = withPlugins(
   [
@@ -21,6 +22,15 @@ module.exports = withPlugins(
     ],
     less,
     images,
+    [
+      pwa,
+      {
+        pwa: {
+          skipWaiting: false,
+          dest: "public",
+        },
+      },
+    ],
   ],
   {
     webpack: (config, { isServer }) => {

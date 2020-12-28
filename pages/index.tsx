@@ -91,6 +91,27 @@ function HomePage() {
     setNodeComputeStats(computeStats);
 
     setClusterId("127.0.2");
+
+    if (typeof window !== "undefined") {
+      const wb = (window as any).workbox;
+
+      const reload = () => {
+        if (
+          confirm(
+            "A newer version of this web app is available, reload to update?"
+          )
+        ) {
+          wb.addEventListener("controlling", () => window.location.reload());
+
+          wb.messageSW({ type: "SKIP_WAITING" });
+        }
+      };
+
+      wb.addEventListener("waiting", reload);
+      wb.addEventListener("externalwaiting", reload);
+
+      wb.register();
+    }
   }, []);
 
   useEffect(() => {
