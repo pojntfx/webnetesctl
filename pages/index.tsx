@@ -311,7 +311,7 @@ function HomePage() {
               labelDotRadius={(d: any) =>
                 Math.sqrt((d as typeof nodes[0]).size) * 2e-4
               }
-              labelColor={() => "#faad14CC"}
+              labelColor={() => "#faad14"}
               onLabelClick={(node: any) =>
                 selectedNode?.privateIP === node.privateIP
                   ? setSelectedNode(undefined)
@@ -405,12 +405,11 @@ function HomePage() {
                     <NodeChart
                       data={nodeComputeStats}
                       colors={[
-                        "#52c41a",
-                        "#13c2c2",
                         "#1890ff",
-                        "#2f54eb",
-                        "#722ed1",
-                        "#eb2f96",
+                        "#096dd9",
+                        "#0050b3",
+                        "#003a8c",
+                        "#002766",
                       ]}
                       onClick={(ip) =>
                         setSelectedNode((selectedNode: any) =>
@@ -431,12 +430,11 @@ function HomePage() {
                     <NodeChart
                       data={networkingStats}
                       colors={[
-                        "#52c41a",
-                        "#13c2c2",
-                        "#1890ff",
-                        "#2f54eb",
-                        "#722ed1",
-                        "#eb2f96",
+                        "#faad14",
+                        "#d48806",
+                        "#ad6800",
+                        "#874d00",
+                        "#613400",
                       ]}
                       onClick={(ip) =>
                         setSelectedNode((selectedNode: any) =>
