@@ -4,8 +4,10 @@ import {
   faChartPie,
   faCube,
   faFile,
+  faGlobe,
   faHandshake,
   faLocationArrow,
+  faMapMarkerAlt,
   faMicrochip,
   faMobile,
   faNetworkWired,
@@ -344,7 +346,11 @@ function HomePage() {
           </GlobeWrapper>
 
           <Animate transitionName="fadeandslide" transitionAppear>
-            {statsOpen && (
+            {(selectedNode
+              ? width && width <= 821
+                ? false
+                : statsOpen
+              : statsOpen) && (
               <Stats
                 size="small"
                 title={
@@ -471,7 +477,57 @@ function HomePage() {
                   </Button>
                 }
               >
-                <div>Hello, world!</div>
+                <StatsWrapper $long>
+                  <Space>
+                    <FontAwesomeIcon icon={faMapMarkerAlt} size="lg" />
+                    {selectedNode.location}
+                  </Space>
+                  <Space>
+                    <FontAwesomeIcon icon={faGlobe} size="lg" />
+                    {selectedNode.publicIP}
+                  </Space>
+                </StatsWrapper>
+
+                <StatsSeperator />
+
+                <StatsWrapper $long>
+                  <Statistic
+                    title={
+                      <Space>
+                        <FontAwesomeIcon icon={faMicrochip} />
+                        {t("compute")}
+                      </Space>
+                    }
+                    value={
+                      computeStats.find(
+                        (candidate) => candidate.ip === selectedNode?.privateIP
+                      )?.score
+                    }
+                    suffix={t("point", {
+                      count: computeStats.find(
+                        (candidate) => candidate.ip === selectedNode?.privateIP
+                      )?.score,
+                    })}
+                  />
+                  <Statistic
+                    title={
+                      <Space>
+                        <FontAwesomeIcon icon={faWifi} />
+                        {t("network")}
+                      </Space>
+                    }
+                    value={
+                      networkingStats.find(
+                        (candidate) => candidate.ip === selectedNode?.privateIP
+                      )?.score
+                    }
+                    suffix={t("mbps", {
+                      count: networkingStats.find(
+                        (candidate) => candidate.ip === selectedNode?.privateIP
+                      )?.score,
+                    })}
+                  />
+                </StatsWrapper>
               </Inspector>
             )}
           </Animate>
@@ -485,7 +541,11 @@ function HomePage() {
                 icon={<FontAwesomeIcon icon={faLocationArrow} />}
               />
 
-              {!statsOpen && (
+              {!(selectedNode
+                ? width && width <= 821
+                  ? true
+                  : statsOpen
+                : statsOpen) && (
                 <Button
                   type="text"
                   onClick={() => setStatsOpen(true)}
@@ -570,6 +630,7 @@ const SearchInput = styled(Input.Search)`
 const Inspector = styled(Card)`
   position: absolute;
   height: calc(100% - 64px - 64px); // Top & bottom menus
+  overflow-y: auto;
   min-width: 20rem;
   top: 64px;
   border: 0;
@@ -577,6 +638,14 @@ const Inspector = styled(Card)`
   right: 0;
   margin: 0;
   ${glass}
+
+  .ant-card-head {
+    border-bottom: 0;
+  }
+
+  .ant-card-body {
+    padding: 0;
+  }
 
   @media screen and (min-width: 812px) {
     height: calc(100% - 64px - 2rem); // Navbar & self-margins
@@ -601,6 +670,10 @@ const Stats = styled(Card)`
   left: 0;
   right: 0;
   margin: 0;
+
+  .ant-card-head {
+    border-bottom: 0;
+  }
 
   .ant-card-body {
     padding: 0;
