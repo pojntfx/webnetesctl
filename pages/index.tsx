@@ -566,30 +566,55 @@ const SearchInput = styled(Input.Search)`
 
 const Inspector = styled(Card)`
   position: absolute;
-  height: calc(100% - 64px - 2rem); // Navbar & self-margins
+  height: calc(100% - 64px - 64px); // Top & bottom menus
   min-width: 20rem;
-  margin: 1rem;
   top: 64px;
-  right: 50px;
-  margin-right: 0;
+  border: 0;
+  left: 0;
+  right: 0;
+  margin: 0;
   ${glass}
+
+  @media screen and (min-width: 812px) {
+    height: calc(100% - 64px - 2rem); // Navbar & self-margins
+    border: 1px solid #303030;
+    left: auto;
+    right: 50px;
+    margin: 1rem;
+    margin-right: 0;
+  }
 `;
 
 const Stats = styled(Card)`
   position: absolute;
   // The last part is the bottom toolbar
-  max-height: calc(100% - 64px - 2rem - 32px - 1rem);
-  overflow-y: auto;
-  margin: 1rem;
-  top: 64px;
-  left: 50px;
-  margin-left: 0;
+  max-height: calc(100% - 64px - 64px); // Top & bottom menus
   min-width: calc(5rem * 3); // NavigationButton * 3
+  overflow-y: auto;
+  bottom: 64px;
+  border-bottom: 0;
+  border-left: 0;
+  border-right: 0;
+  left: 0;
+  right: 0;
+  margin: 0;
+
   .ant-card-body {
     padding: 0;
   }
 
   ${glass}
+
+  @media screen and (min-width: 812px) {
+    top: 64px;
+    left: 50px;
+    right: auto;
+    bottom: auto;
+    border: 1px solid #303030;
+    max-height: calc(100% - 64px - 2rem - 32px - 1rem);
+    margin: 1rem;
+    margin-left: 0;
+  }
 `;
 
 const GlobeTmpl = dynamic(() => import("../components/globe"), {
@@ -601,17 +626,16 @@ const Globe = forwardRef((props: any, ref) => (
 
 const BottomToolbar = styled.div`
   position: absolute !important;
-  bottom: calc(64px + 1rem);
+  bottom: 64px;
   border: 1px solid #303030;
-  transform: translateX(-50%);
-  left: 50%;
+  margin: 1rem;
+  right: 0;
   ${glass}
 
   @media screen and (min-width: 812px) {
     bottom: 0;
-    transform: translateX(0);
     left: 50px;
-    margin: 1rem;
+    right: auto;
     margin-left: 0;
   }
 `;
