@@ -28,6 +28,7 @@ import {
   Collapse,
   Divider,
   Dropdown,
+  Empty,
   Input,
   List,
   Menu,
@@ -54,6 +55,7 @@ import computeStats from "../data/compute-stats.json";
 import connections from "../data/connections.json";
 import networkingStats from "../data/networking-stats.json";
 import nodes from "../data/nodes.json";
+import resources from "../data/resources.json";
 
 function HomePage() {
   const { t } = useTranslation();
@@ -548,46 +550,71 @@ function HomePage() {
                   <Input.Search placeholder={t("findResource")} />
 
                   <List>
-                    <ResourceItem
-                      actions={[
-                        <Button type="text" shape="circle">
-                          <FontAwesomeIcon icon={faTerminal} />
-                        </Button>,
-                        <Dropdown
-                          overlay={
-                            <Menu>
-                              <Menu.Item key="openInExplorer">
-                                <Space>
-                                  <FontAwesomeIcon
-                                    fixedWidth
-                                    icon={faBinoculars}
-                                  />
-                                  {t("openInExplorer")}
-                                </Space>
-                              </Menu.Item>
-                              <Menu.Item key="delete">
-                                <Space>
-                                  <FontAwesomeIcon fixedWidth icon={faTrash} />
-                                  {t("delete")}
-                                </Space>
-                              </Menu.Item>
-                            </Menu>
-                          }
-                        >
-                          <Button type="text" shape="circle">
-                            <FontAwesomeIcon icon={faEllipsisV} />
-                          </Button>
-                        </Dropdown>,
-                      ]}
-                    >
-                      <List.Item.Meta
-                        title={
-                          <>
-                            <Text code>Workload</Text> Echo Server
-                          </>
-                        }
-                      />
-                    </ResourceItem>
+                    {(() => {
+                      const matchingResources = resources.filter(
+                        (resource) => resource.node === selectedNode?.privateIP
+                      );
+
+                      if (matchingResources.length === 0) {
+                        return (
+                          <Empty
+                            description={t("noResourcesDeployed")}
+                            image={Empty.PRESENTED_IMAGE_SIMPLE}
+                          />
+                        );
+                      } else {
+                        return matchingResources.map((resource, index) => (
+                          <ResourceItem
+                            actions={[
+                              resource.kind === "Workload" && (
+                                <Button type="text" shape="circle">
+                                  <FontAwesomeIcon icon={faTerminal} />
+                                </Button>
+                              ),
+                              <Dropdown
+                                overlay={
+                                  <Menu>
+                                    <Menu.Item key="openInExplorer">
+                                      <Space>
+                                        <FontAwesomeIcon
+                                          fixedWidth
+                                          icon={faBinoculars}
+                                        />
+                                        {t("openInExplorer")}
+                                      </Space>
+                                    </Menu.Item>
+
+                                    <Menu.Item key="delete">
+                                      <Space>
+                                        <FontAwesomeIcon
+                                          fixedWidth
+                                          icon={faTrash}
+                                        />
+                                        {t("delete")}
+                                      </Space>
+                                    </Menu.Item>
+                                  </Menu>
+                                }
+                              >
+                                <Button type="text" shape="circle">
+                                  <FontAwesomeIcon icon={faEllipsisV} />
+                                </Button>
+                              </Dropdown>,
+                            ].filter((component) => component)}
+                            key={index}
+                          >
+                            <List.Item.Meta
+                              title={
+                                <>
+                                  {resource.name}{" "}
+                                  <Text code>{resource.kind}</Text>
+                                </>
+                              }
+                            />
+                          </ResourceItem>
+                        ));
+                      }
+                    })()}
                   </List>
                 </SearchWrapper>
               </Inspector>

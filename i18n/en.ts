@@ -23,4 +23,5 @@ export default {
   findResource: "Find a resource",
   openInExplorer: "Open in Explorer",
   delete: "Delete",
+  noResourcesDeployed: "No Resources Deployed",
 };
