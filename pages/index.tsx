@@ -1,20 +1,14 @@
 import {
-  faBell,
   faBinoculars,
-  faCaretDown,
   faChartPie,
   faCube,
   faEllipsisV,
-  faFile,
   faGlobe,
-  faHandshake,
   faLocationArrow,
   faMapMarkerAlt,
   faMicrochip,
   faMobile,
   faNetworkWired,
-  faPlus,
-  faSearch,
   faTerminal,
   faTimes,
   faTrash,
@@ -32,12 +26,10 @@ import {
   Input,
   List,
   Menu,
-  Popover,
   Space,
   Statistic,
   Tooltip,
 } from "antd";
-import Layout, { Content, Header as HeaderTmpl } from "antd/lib/layout/layout";
 import Text from "antd/lib/typography/Text";
 import dynamic from "next/dynamic";
 import Animate from "rc-animate";
@@ -49,7 +41,6 @@ import earthTexture from "three-globe/example/img/earth-night.jpg";
 import earthElevation from "three-globe/example/img/earth-topology.png";
 import universeTexture from "three-globe/example/img/night-sky.png";
 import { useWindowSize } from "use-window-size-hook";
-import Navbar from "../components/navbar";
 import NodeChart from "../components/node-chart";
 import computeStats from "../data/compute-stats.json";
 import connections from "../data/connections.json";
@@ -63,7 +54,6 @@ function HomePage() {
   const globeRef = createRef();
   const { width, height } = useWindowSize();
 
-  const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [statsOpen, setStatsOpen] = useState(true);
   const [connectionPaths, setConnectionPaths] = useState<any[]>([]);
   const [selectedNode, _setSelectedNode] = useState<any>();
@@ -91,22 +81,24 @@ function HomePage() {
     if (typeof window !== "undefined") {
       const wb = (window as any).workbox;
 
-      const reload = () => {
-        if (
-          confirm(
-            "A newer version of this web app is available, reload to update?"
-          )
-        ) {
-          wb.addEventListener("controlling", () => window.location.reload());
+      if (wb) {
+        const reload = () => {
+          if (
+            confirm(
+              "A newer version of this web app is available, reload to update?"
+            )
+          ) {
+            wb.addEventListener("controlling", () => window.location.reload());
 
-          wb.messageSW({ type: "SKIP_WAITING" });
-        }
-      };
+            wb.messageSW({ type: "SKIP_WAITING" });
+          }
+        };
 
-      wb.addEventListener("waiting", reload);
-      wb.addEventListener("externalwaiting", reload);
+        wb.addEventListener("waiting", reload);
+        wb.addEventListener("externalwaiting", reload);
 
-      wb.register();
+        wb.register();
+      }
     }
   }, []);
 
@@ -183,569 +175,369 @@ function HomePage() {
   };
 
   return (
-    <Layout>
-      <MobileHeader>
-        <Tooltip title={t("findNodeOrResource")}>
-          <Button type="text" shape="circle">
-            <FontAwesomeIcon icon={faSearch} />
-          </Button>
-        </Tooltip>
+    <>
+      <GlobeWrapper $hoverable={globeHoverable}>
+        <Globe
+          labelsData={nodes}
+          labelLat={(d: any) => (d as typeof nodes[0]).latitude}
+          labelLng={(d: any) => (d as typeof nodes[0]).longitude}
+          labelText={(d: any) => {
+            const node = d as typeof nodes[0];
 
-        <Space>
-          <Popover
-            title={t("notifications")}
-            trigger="click"
-            visible={notificationsOpen}
-            onVisibleChange={(open) => setNotificationsOpen(open)}
-            content={
-              <List>
-                <List.Item>Example notification 1</List.Item>
-                <List.Item>Example notification 2</List.Item>
-              </List>
-            }
-          >
-            <Button
-              type="text"
-              shape="circle"
-              onClick={() => setNotificationsOpen(true)}
-            >
-              <FontAwesomeIcon icon={faBell} />
-            </Button>
-          </Popover>
-
-          <Dropdown
-            overlay={
-              <Menu>
-                <Menu.Item key="resource">
-                  <Space>
-                    <FontAwesomeIcon fixedWidth icon={faCube} />
-                    {t("resource")}
-                  </Space>
-                </Menu.Item>
-                <Menu.Item key="cluster">
-                  <Space>
-                    <FontAwesomeIcon fixedWidth icon={faNetworkWired} />
-                    {t("cluster")}
-                  </Space>
-                </Menu.Item>
-                <Menu.Item key="file">
-                  <Space>
-                    <FontAwesomeIcon fixedWidth icon={faFile} />
-                    {t("file")}
-                  </Space>
-                </Menu.Item>
-              </Menu>
-            }
-          >
-            <Button type="text" shape="circle">
-              <FontAwesomeIcon icon={faPlus} />
-            </Button>
-          </Dropdown>
-
-          <Tooltip title={t("invite")}>
-            <Button type="primary" shape="circle">
-              <FontAwesomeIcon icon={faHandshake} />
-            </Button>
-          </Tooltip>
-        </Space>
-      </MobileHeader>
-
-      <DesktopHeader>
-        <Navbar />
-
-        <SearchInput placeholder={t("findNodeOrResource")} />
-
-        <Space>
-          <Popover
-            title={t("notifications")}
-            trigger="click"
-            visible={notificationsOpen}
-            onVisibleChange={(open) => setNotificationsOpen(open)}
-            content={
-              <List>
-                <List.Item>Example notification 1</List.Item>
-                <List.Item>Example notification 2</List.Item>
-              </List>
-            }
-          >
-            <Button
-              type="text"
-              shape="circle"
-              onClick={() => setNotificationsOpen(true)}
-            >
-              <FontAwesomeIcon icon={faBell} />
-            </Button>
-          </Popover>
-
-          <Dropdown
-            overlay={
-              <Menu>
-                <Menu.Item key="resource">
-                  <Space>
-                    <FontAwesomeIcon fixedWidth icon={faCube} />
-                    {t("resource")}
-                  </Space>
-                </Menu.Item>
-                <Menu.Item key="cluster">
-                  <Space>
-                    <FontAwesomeIcon fixedWidth icon={faNetworkWired} />
-                    {t("cluster")}
-                  </Space>
-                </Menu.Item>
-                <Menu.Item key="file">
-                  <Space>
-                    <FontAwesomeIcon fixedWidth icon={faFile} />
-                    {t("file")}
-                  </Space>
-                </Menu.Item>
-              </Menu>
-            }
-          >
-            <Button>
-              <Space>
-                <FontAwesomeIcon icon={faPlus} />
-                {t("create")}
-                <FontAwesomeIcon icon={faCaretDown} />
-              </Space>
-            </Button>
-          </Dropdown>
-
-          <Button type="primary">
-            <Space>
-              <FontAwesomeIcon icon={faHandshake} />
-              {t("invite")}
-            </Space>
-          </Button>
-        </Space>
-      </DesktopHeader>
-      <Content>
-        <GlobeWrapper $hoverable={globeHoverable}>
-          <Globe
-            labelsData={nodes}
-            labelLat={(d: any) => (d as typeof nodes[0]).latitude}
-            labelLng={(d: any) => (d as typeof nodes[0]).longitude}
-            labelText={(d: any) => {
-              const node = d as typeof nodes[0];
-
-              return `${node.privateIP} (${node.location}, ${node.publicIP})`;
-            }}
-            labelSize={(d: any) =>
-              Math.sqrt((d as typeof nodes[0]).size) * 3e-4
-            }
-            labelDotRadius={(d: any) =>
-              Math.sqrt((d as typeof nodes[0]).size) * 2e-4
-            }
-            labelColor={() => "#faad14"}
-            onLabelClick={(node: any) =>
-              selectedNode?.privateIP === node.privateIP
-                ? setSelectedNode(undefined)
-                : setSelectedNode(
-                    nodes.find(
-                      (candidate) => candidate.privateIP === node.privateIP
-                    )
+            return `${node.privateIP} (${node.location}, ${node.publicIP})`;
+          }}
+          labelSize={(d: any) => Math.sqrt((d as typeof nodes[0]).size) * 3e-4}
+          labelDotRadius={(d: any) =>
+            Math.sqrt((d as typeof nodes[0]).size) * 2e-4
+          }
+          labelColor={() => "#faad14"}
+          onLabelClick={(node: any) =>
+            selectedNode?.privateIP === node.privateIP
+              ? setSelectedNode(undefined)
+              : setSelectedNode(
+                  nodes.find(
+                    (candidate) => candidate.privateIP === node.privateIP
                   )
+                )
+          }
+          onLabelHover={(label: any) =>
+            label ? setGlobeHoverable(true) : setGlobeHoverable(false)
+          }
+          pathsData={connectionPaths}
+          pathPoints="coords"
+          pathPointLat={(c: any) => c[1]}
+          pathPointLng={(c: any) => c[0]}
+          pathLabel={(c: any) => c.properties.name}
+          pathColor={(c: any) => c.properties.color}
+          pathDashLength={0.1}
+          pathDashGap={0.008}
+          pathDashAnimateTime={12000}
+          globeImageUrl={earthTexture as string}
+          bumpImageUrl={earthElevation as string}
+          backgroundImageUrl={universeTexture as string}
+          waitForGlobeReady
+          width={width}
+          height={height}
+          ref={globeRef}
+        />
+      </GlobeWrapper>
+
+      <Animate transitionName="fadeandslide" transitionAppear>
+        {(selectedNode
+          ? width && width <= 821
+            ? false
+            : statsOpen
+          : statsOpen) && (
+          <Stats
+            size="small"
+            title={
+              <Space>
+                <FontAwesomeIcon fixedWidth icon={faNetworkWired} />
+                {t("cluster") + " " + clusterId}
+              </Space>
             }
-            onLabelHover={(label: any) =>
-              label ? setGlobeHoverable(true) : setGlobeHoverable(false)
+            extra={
+              <Button type="text" onClick={() => setStatsOpen(false)}>
+                <FontAwesomeIcon icon={faWindowMinimize} />
+              </Button>
             }
-            pathsData={connectionPaths}
-            pathPoints="coords"
-            pathPointLat={(c: any) => c[1]}
-            pathPointLng={(c: any) => c[0]}
-            pathLabel={(c: any) => c.properties.name}
-            pathColor={(c: any) => c.properties.color}
-            pathDashLength={0.1}
-            pathDashGap={0.008}
-            pathDashAnimateTime={12000}
-            globeImageUrl={earthTexture as string}
-            bumpImageUrl={earthElevation as string}
-            backgroundImageUrl={universeTexture as string}
-            waitForGlobeReady
-            width={width}
-            height={height}
-            ref={globeRef}
-          />
-        </GlobeWrapper>
+          >
+            <StatsWrapper>
+              <Statistic
+                title={t("node", { count: 4 })}
+                value={4}
+                prefix={<FontAwesomeIcon fixedWidth icon={faMobile} />}
+              />
+              <Statistic
+                title={t("resource", { count: 16 })}
+                value={16}
+                prefix={<FontAwesomeIcon fixedWidth icon={faCube} />}
+              />
+            </StatsWrapper>
 
-        <Animate transitionName="fadeandslide" transitionAppear>
-          {(selectedNode
-            ? width && width <= 821
-              ? false
-              : statsOpen
-            : statsOpen) && (
-            <Stats
-              size="small"
-              title={
-                <Space>
-                  <FontAwesomeIcon fixedWidth icon={faNetworkWired} />
-                  {t("cluster") + " " + clusterId}
-                </Space>
-              }
-              extra={
-                <Button type="text" onClick={() => setStatsOpen(false)}>
-                  <FontAwesomeIcon icon={faWindowMinimize} />
-                </Button>
-              }
-            >
-              <StatsWrapper>
-                <Statistic
-                  title={t("node", { count: 4 })}
-                  value={4}
-                  prefix={<FontAwesomeIcon fixedWidth icon={faMobile} />}
-                />
-                <Statistic
-                  title={t("resource", { count: 16 })}
-                  value={16}
-                  prefix={<FontAwesomeIcon fixedWidth icon={faCube} />}
-                />
-              </StatsWrapper>
+            <StatsDivider />
 
-              <StatsDivider />
+            <StatsWrapper $long>
+              <Statistic
+                title={
+                  <Space>
+                    <FontAwesomeIcon icon={faMicrochip} />
+                    {t("compute")}
+                  </Space>
+                }
+                value={1560}
+                suffix={t("point", { count: 1560 })}
+              />
+              <Statistic
+                title={
+                  <Space>
+                    <FontAwesomeIcon icon={faWifi} />
+                    {t("network")}
+                  </Space>
+                }
+                value={920}
+                suffix={t("mbps", { count: 920 })}
+              />
+            </StatsWrapper>
 
-              <StatsWrapper $long>
-                <Statistic
-                  title={
-                    <Space>
-                      <FontAwesomeIcon icon={faMicrochip} />
-                      {t("compute")}
-                    </Space>
+            <Collapse defaultActiveKey={[]} ghost destroyInactivePanel>
+              <Collapse.Panel
+                header={t("computeDistribution")}
+                key="computeDistribution"
+              >
+                <NodeChart
+                  data={computeStats}
+                  colors={[
+                    "#1890ff",
+                    "#096dd9",
+                    "#0050b3",
+                    "#003a8c",
+                    "#002766",
+                  ]}
+                  onClick={(ip) =>
+                    setSelectedNode((selectedNode: any) =>
+                      selectedNode && selectedNode?.privateIP === ip
+                        ? undefined
+                        : nodes.find((candidate) => candidate.privateIP === ip)
+                    )
                   }
-                  value={1560}
-                  suffix={t("point", { count: 1560 })}
                 />
-                <Statistic
-                  title={
-                    <Space>
-                      <FontAwesomeIcon icon={faWifi} />
-                      {t("network")}
-                    </Space>
+              </Collapse.Panel>
+
+              <Collapse.Panel
+                header={t("networkingDistribution")}
+                key="networkingDistribution"
+              >
+                <NodeChart
+                  data={networkingStats}
+                  colors={[
+                    "#faad14",
+                    "#d48806",
+                    "#ad6800",
+                    "#874d00",
+                    "#613400",
+                  ]}
+                  onClick={(ip) =>
+                    setSelectedNode((selectedNode: any) =>
+                      selectedNode && selectedNode?.privateIP === ip
+                        ? undefined
+                        : nodes.find((candidate) => candidate.privateIP === ip)
+                    )
                   }
-                  value={920}
-                  suffix={t("mbps", { count: 920 })}
                 />
-              </StatsWrapper>
+              </Collapse.Panel>
+            </Collapse>
+          </Stats>
+        )}
+      </Animate>
 
-              <Collapse defaultActiveKey={[]} ghost destroyInactivePanel>
-                <Collapse.Panel
-                  header={t("computeDistribution")}
-                  key="computeDistribution"
-                >
-                  <NodeChart
-                    data={computeStats}
-                    colors={[
-                      "#1890ff",
-                      "#096dd9",
-                      "#0050b3",
-                      "#003a8c",
-                      "#002766",
-                    ]}
-                    onClick={(ip) =>
-                      setSelectedNode((selectedNode: any) =>
-                        selectedNode && selectedNode?.privateIP === ip
-                          ? undefined
-                          : nodes.find(
-                              (candidate) => candidate.privateIP === ip
-                            )
-                      )
-                    }
-                  />
-                </Collapse.Panel>
-
-                <Collapse.Panel
-                  header={t("networkingDistribution")}
-                  key="networkingDistribution"
-                >
-                  <NodeChart
-                    data={networkingStats}
-                    colors={[
-                      "#faad14",
-                      "#d48806",
-                      "#ad6800",
-                      "#874d00",
-                      "#613400",
-                    ]}
-                    onClick={(ip) =>
-                      setSelectedNode((selectedNode: any) =>
-                        selectedNode && selectedNode?.privateIP === ip
-                          ? undefined
-                          : nodes.find(
-                              (candidate) => candidate.privateIP === ip
-                            )
-                      )
-                    }
-                  />
-                </Collapse.Panel>
-              </Collapse>
-            </Stats>
-          )}
-        </Animate>
-
-        <Animate transitionName="fadeandzoom" transitionAppear>
-          {selectedNode && (
-            <Inspector
-              size="small"
-              title={
-                <Space>
-                  <FontAwesomeIcon fixedWidth icon={faMobile} />
-                  {t("node") + " " + selectedNode.privateIP}
-                </Space>
-              }
-              extra={
-                <Space>
-                  <Tooltip title={t("openInExplorer")} placement="bottom">
-                    <Button type="text" shape="circle">
-                      <FontAwesomeIcon icon={faBinoculars} />
-                    </Button>
-                  </Tooltip>
-
-                  <Button
-                    type="text"
-                    onClick={() => setSelectedNode(undefined)}
-                  >
-                    <FontAwesomeIcon icon={faTimes} />
+      <Animate transitionName="fadeandzoom" transitionAppear>
+        {selectedNode && (
+          <Inspector
+            size="small"
+            title={
+              <Space>
+                <FontAwesomeIcon fixedWidth icon={faMobile} />
+                {t("node") + " " + selectedNode.privateIP}
+              </Space>
+            }
+            extra={
+              <Space>
+                <Tooltip title={t("openInExplorer")} placement="bottom">
+                  <Button type="text" shape="circle">
+                    <FontAwesomeIcon icon={faBinoculars} />
                   </Button>
-                </Space>
-              }
-            >
-              <StatsWrapper $long>
-                <Space>
-                  <FontAwesomeIcon icon={faMapMarkerAlt} size="lg" />
-                  {selectedNode.location}
-                </Space>
-                <Space>
-                  <FontAwesomeIcon icon={faGlobe} size="lg" />
-                  {selectedNode.publicIP}
-                </Space>
-              </StatsWrapper>
+                </Tooltip>
 
-              <StatsDivider />
+                <Button type="text" onClick={() => setSelectedNode(undefined)}>
+                  <FontAwesomeIcon icon={faTimes} />
+                </Button>
+              </Space>
+            }
+          >
+            <StatsWrapper $long>
+              <Space>
+                <FontAwesomeIcon icon={faMapMarkerAlt} size="lg" />
+                {selectedNode.location}
+              </Space>
+              <Space>
+                <FontAwesomeIcon icon={faGlobe} size="lg" />
+                {selectedNode.publicIP}
+              </Space>
+            </StatsWrapper>
 
-              <StatsWrapper $long>
-                <Statistic
-                  title={
-                    <Space>
-                      <FontAwesomeIcon icon={faMicrochip} />
-                      {t("compute")}
-                    </Space>
-                  }
-                  value={
-                    computeStats.find(
-                      (candidate) => candidate.ip === selectedNode?.privateIP
-                    )?.score
-                  }
-                  suffix={t("point", {
-                    count: computeStats.find(
-                      (candidate) => candidate.ip === selectedNode?.privateIP
-                    )?.score,
-                  })}
-                />
-                <Statistic
-                  title={
-                    <Space>
-                      <FontAwesomeIcon icon={faWifi} />
-                      {t("network")}
-                    </Space>
-                  }
-                  value={
-                    networkingStats.find(
-                      (candidate) => candidate.ip === selectedNode?.privateIP
-                    )?.score
-                  }
-                  suffix={t("mbps", {
-                    count: networkingStats.find(
-                      (candidate) => candidate.ip === selectedNode?.privateIP
-                    )?.score,
-                  })}
-                />
-              </StatsWrapper>
+            <StatsDivider />
 
-              <StatsDivider />
+            <StatsWrapper $long>
+              <Statistic
+                title={
+                  <Space>
+                    <FontAwesomeIcon icon={faMicrochip} />
+                    {t("compute")}
+                  </Space>
+                }
+                value={
+                  computeStats.find(
+                    (candidate) => candidate.ip === selectedNode?.privateIP
+                  )?.score
+                }
+                suffix={t("point", {
+                  count: computeStats.find(
+                    (candidate) => candidate.ip === selectedNode?.privateIP
+                  )?.score,
+                })}
+              />
+              <Statistic
+                title={
+                  <Space>
+                    <FontAwesomeIcon icon={faWifi} />
+                    {t("network")}
+                  </Space>
+                }
+                value={
+                  networkingStats.find(
+                    (candidate) => candidate.ip === selectedNode?.privateIP
+                  )?.score
+                }
+                suffix={t("mbps", {
+                  count: networkingStats.find(
+                    (candidate) => candidate.ip === selectedNode?.privateIP
+                  )?.score,
+                })}
+              />
+            </StatsWrapper>
 
-              <ResourceList direction="vertical">
-                <Input.Search
-                  placeholder={t("filterResources")}
-                  onChange={(e) => setResourceNameFilter(e.target.value)}
-                  value={resourceNameFilter}
-                />
+            <StatsDivider />
 
-                <List>
-                  {(() => {
-                    const matchingResources = resources.filter(
-                      (resource) => resource.node === selectedNode?.privateIP
+            <ResourceList direction="vertical">
+              <Input.Search
+                placeholder={t("filterResources")}
+                onChange={(e) => setResourceNameFilter(e.target.value)}
+                value={resourceNameFilter}
+              />
+
+              <List>
+                {(() => {
+                  const matchingResources = resources.filter(
+                    (resource) => resource.node === selectedNode?.privateIP
+                  );
+
+                  if (matchingResources.length === 0) {
+                    return (
+                      <Empty
+                        description={t("noResourcesDeployed")}
+                        image={Empty.PRESENTED_IMAGE_SIMPLE}
+                      />
                     );
+                  } else {
+                    const filteredResources =
+                      resourceNameFilter.length === 0
+                        ? matchingResources
+                        : matchingResources.filter(
+                            (resource) =>
+                              resource.name
+                                .toLowerCase()
+                                .includes(resourceNameFilter.toLowerCase()) ||
+                              resource.kind
+                                .toLowerCase()
+                                .includes(resourceNameFilter.toLowerCase())
+                          );
 
-                    if (matchingResources.length === 0) {
+                    if (filteredResources.length === 0) {
                       return (
                         <Empty
-                          description={t("noResourcesDeployed")}
+                          description={t("noMatchingResourcesFound")}
                           image={Empty.PRESENTED_IMAGE_SIMPLE}
                         />
                       );
                     } else {
-                      const filteredResources =
-                        resourceNameFilter.length === 0
-                          ? matchingResources
-                          : matchingResources.filter(
-                              (resource) =>
-                                resource.name
-                                  .toLowerCase()
-                                  .includes(resourceNameFilter.toLowerCase()) ||
-                                resource.kind
-                                  .toLowerCase()
-                                  .includes(resourceNameFilter.toLowerCase())
-                            );
+                      return filteredResources.map((resource, index) => (
+                        <ResourceItem
+                          actions={[
+                            resource.kind === "Workload" && (
+                              <Button type="text" shape="circle">
+                                <FontAwesomeIcon icon={faTerminal} />
+                              </Button>
+                            ),
+                            <Dropdown
+                              overlay={
+                                <Menu>
+                                  <Menu.Item key="openInExplorer">
+                                    <Space>
+                                      <FontAwesomeIcon
+                                        fixedWidth
+                                        icon={faBinoculars}
+                                      />
+                                      {t("openInExplorer")}
+                                    </Space>
+                                  </Menu.Item>
 
-                      if (filteredResources.length === 0) {
-                        return (
-                          <Empty
-                            description={t("noMatchingResourcesFound")}
-                            image={Empty.PRESENTED_IMAGE_SIMPLE}
-                          />
-                        );
-                      } else {
-                        return filteredResources.map((resource, index) => (
-                          <ResourceItem
-                            actions={[
-                              resource.kind === "Workload" && (
-                                <Button type="text" shape="circle">
-                                  <FontAwesomeIcon icon={faTerminal} />
-                                </Button>
-                              ),
-                              <Dropdown
-                                overlay={
-                                  <Menu>
-                                    <Menu.Item key="openInExplorer">
-                                      <Space>
-                                        <FontAwesomeIcon
-                                          fixedWidth
-                                          icon={faBinoculars}
-                                        />
-                                        {t("openInExplorer")}
-                                      </Space>
-                                    </Menu.Item>
-
-                                    <Menu.Item key="delete">
-                                      <Space>
-                                        <FontAwesomeIcon
-                                          fixedWidth
-                                          icon={faTrash}
-                                        />
-                                        {t("delete")}
-                                      </Space>
-                                    </Menu.Item>
-                                  </Menu>
-                                }
-                              >
-                                <Button type="text" shape="circle">
-                                  <FontAwesomeIcon icon={faEllipsisV} />
-                                </Button>
-                              </Dropdown>,
-                            ].filter((component) => component)}
-                            key={index}
-                          >
-                            <List.Item.Meta
-                              title={
-                                <>
-                                  {resource.name}{" "}
-                                  <Text code>{resource.kind}</Text>
-                                </>
+                                  <Menu.Item key="delete">
+                                    <Space>
+                                      <FontAwesomeIcon
+                                        fixedWidth
+                                        icon={faTrash}
+                                      />
+                                      {t("delete")}
+                                    </Space>
+                                  </Menu.Item>
+                                </Menu>
                               }
-                            />
-                          </ResourceItem>
-                        ));
-                      }
+                            >
+                              <Button type="text" shape="circle">
+                                <FontAwesomeIcon icon={faEllipsisV} />
+                              </Button>
+                            </Dropdown>,
+                          ].filter((component) => component)}
+                          key={index}
+                        >
+                          <List.Item.Meta
+                            title={
+                              <>
+                                {resource.name}{" "}
+                                <Text code>{resource.kind}</Text>
+                              </>
+                            }
+                          />
+                        </ResourceItem>
+                      ));
                     }
-                  })()}
-                </List>
-              </ResourceList>
-            </Inspector>
-          )}
-        </Animate>
+                  }
+                })()}
+              </List>
+            </ResourceList>
+          </Inspector>
+        )}
+      </Animate>
 
-        <Animate transitionName="fadeandzoom" transitionAppear>
-          <GlobeActions>
+      <Animate transitionName="fadeandzoom" transitionAppear>
+        <GlobeActions>
+          <Button
+            type="text"
+            onClick={getUserCoordinates}
+            loading={loadingUserCoordinates}
+            icon={<FontAwesomeIcon icon={faLocationArrow} />}
+          />
+
+          {!(selectedNode
+            ? width && width <= 821
+              ? true
+              : statsOpen
+            : statsOpen) && (
             <Button
               type="text"
-              onClick={getUserCoordinates}
-              loading={loadingUserCoordinates}
-              icon={<FontAwesomeIcon icon={faLocationArrow} />}
+              onClick={() => setStatsOpen(true)}
+              icon={<FontAwesomeIcon icon={faChartPie} />}
             />
-
-            {!(selectedNode
-              ? width && width <= 821
-                ? true
-                : statsOpen
-              : statsOpen) && (
-              <Button
-                type="text"
-                onClick={() => setStatsOpen(true)}
-                icon={<FontAwesomeIcon icon={faChartPie} />}
-              />
-            )}
-          </GlobeActions>
-        </Animate>
-      </Content>
-      <TabsMobile>
-        <Navbar />
-      </TabsMobile>
-    </Layout>
+          )}
+        </GlobeActions>
+      </Animate>
+    </>
   );
 }
 
 const GlobeWrapper = styled.div<{ $hoverable: boolean }>`
   ${(props) => (props.$hoverable ? "cursor: pointer;" : "")}
-`;
-
-const DesktopHeader = styled(HeaderTmpl)`
-  display: none;
-  align-items: center;
-  justify-content: space-between;
-  position: absolute;
-  z-index: 9999;
-  width: 100%;
-  border-bottom: 1px solid #303030;
-  ${glass}
-
-  @media screen and (min-width: 812px) {
-    display: flex;
-  }
-`;
-
-const MobileHeader = styled(HeaderTmpl)`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: absolute;
-  z-index: 9999;
-  width: 100%;
-  border-bottom: 1px solid #303030;
-  ${glass}
-
-  @media screen and (min-width: 812px) {
-    display: none;
-  }
-`;
-
-const TabsMobile = styled(HeaderTmpl)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  z-index: 9999;
-  width: 100%;
-  border-top: 1px solid #303030;
-  bottom: 0;
-  ${glass}
-
-  @media screen and (min-width: 812px) {
-    display: none;
-  }
-`;
-
-const SearchInput = styled(Input.Search)`
-  max-width: 22.5rem;
-  margin-left: 8px;
-  margin-right: 8px;
 `;
 
 const Inspector = styled(Card)`
