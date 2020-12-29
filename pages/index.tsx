@@ -31,6 +31,7 @@ import {
 } from "antd";
 import Text from "antd/lib/typography/Text";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import Animate from "rc-animate";
 import {
@@ -400,11 +401,13 @@ function HomePage() {
             }
             extra={
               <Space>
-                <Tooltip title={t("openInExplorer")} placement="bottom">
-                  <Button type="text" shape="circle">
-                    <FontAwesomeIcon icon={faBinoculars} />
-                  </Button>
-                </Tooltip>
+                <Link href={`/explorer?privateIP=${selectedNode.privateIP}`}>
+                  <Tooltip title={t("openInExplorer")} placement="bottom">
+                    <Button type="text" shape="circle">
+                      <FontAwesomeIcon icon={faBinoculars} />
+                    </Button>
+                  </Tooltip>
+                </Link>
 
                 <Button
                   type="text"

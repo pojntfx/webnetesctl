@@ -189,7 +189,7 @@ function Explorer() {
                   return undefined;
                 }
               })() as string[],
-              expandIcon: ({ expanded, onExpand, record }) =>
+              expandIcon: ({ expanded, record }) =>
                 expanded ? (
                   <Space>
                     <Button
@@ -206,7 +206,11 @@ function Explorer() {
                     <Button
                       type="text"
                       shape="circle"
-                      onClick={() => setSelectedRow((record as any).privateIP)}
+                      onClick={() =>
+                        setSelectedRow(
+                          (record as typeof dataSource[0]).privateIP
+                        )
+                      }
                     >
                       <FontAwesomeIcon fixedWidth icon={faPlus} />
                     </Button>
