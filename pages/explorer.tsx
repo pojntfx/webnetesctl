@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Input, Space } from "antd";
 import Title from "antd/lib/typography/Title";
 import Animate from "rc-animate";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { Wrapper } from "../components/layout-wrapper";
@@ -20,6 +21,8 @@ import glass from "../styles/glass";
 
 function Explorer() {
   const { t } = useTranslation();
+
+  const [nodeFilter, setNodeFilter] = useState("");
 
   const columns = [
     {
@@ -82,35 +85,52 @@ function Explorer() {
     },
   ];
 
+  const dataSource = nodes.map((node) => {
+    const computeScore = computeStats.find(
+      (candidate) => candidate.ip === node.privateIP
+    )?.score;
+    const networkingScore = networkingStats.find(
+      (candidate) => candidate.ip === node.privateIP
+    )?.score;
+
+    return {
+      ...node,
+      computeScore: `${computeScore} ${t("point", {
+        count: computeScore,
+      })}`,
+      networkingScore: `${networkingScore} ${t("mbps", {
+        count: networkingScore,
+      })}`,
+      key: node.privateIP,
+    };
+  });
+
   return (
     <Animate transitionName="fadeandzoom" transitionAppear>
       <Wrapper>
         <Title level={2}>{t("node", { count: 2 })}</Title>
 
-        <WideSpace direction="vertical">
-          <Input.Search placeholder={t("filterNodes")} />
+        <WideSpace direction="vertical" size="middle">
+          <Input.Search
+            placeholder={t("filterNodes")}
+            onChange={(e) => setNodeFilter(e.target.value)}
+            value={nodeFilter}
+          />
 
           <Table
-            dataSource={nodes.map((node) => {
-              const computeScore = computeStats.find(
-                (candidate) => candidate.ip === node.privateIP
-              )?.score;
-              const networkingScore = networkingStats.find(
-                (candidate) => candidate.ip === node.privateIP
-              )?.score;
-
-              return {
-                ...node,
-                computeScore: `${computeScore} ${t("point", {
-                  count: computeScore,
-                })}`,
-                networkingScore: `${networkingScore} ${t("mbps", {
-                  count: networkingScore,
-                })}`,
-                key: node.privateIP,
-              };
-            })}
-            columns={columns}
+            dataSource={dataSource.filter((node) =>
+              nodeFilter.length === 0
+                ? node
+                : Object.values(node).reduce<boolean>(
+                    (all, curr) =>
+                      all ||
+                      ("" + curr)
+                        .toLowerCase()
+                        .includes(nodeFilter.toLowerCase()),
+                    false
+                  )
+            )}
+            columns={columns as any}
           />
         </WideSpace>
       </Wrapper>
