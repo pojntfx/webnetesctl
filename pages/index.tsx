@@ -32,6 +32,7 @@ import {
 } from "antd";
 import Text from "antd/lib/typography/Text";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/router";
 import Animate from "rc-animate";
 import { createRef, forwardRef, useCallback, useEffect, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
@@ -53,6 +54,7 @@ function HomePage() {
   const { t } = useTranslation();
   const globeRef = createRef();
   const { width, height } = useWindowSize();
+  const { query } = useRouter();
 
   const [statsOpen, setStatsOpen] = useState(true);
   const [connectionPaths, setConnectionPaths] = useState<any[]>([]);
@@ -127,6 +129,20 @@ function HomePage() {
       setHandleCameraChange(false);
     }
   }, [globeRef, handleCameraChange, selectedNode, userCoordinates]);
+
+  useEffect(() => {
+    if (globeRef.current) {
+      const privateIP = query.privateIP;
+
+      if (privateIP) {
+        const foundNode: any = nodes.find(
+          (candidate) => candidate.privateIP === privateIP
+        );
+
+        if (foundNode) setSelectedNode(foundNode);
+      }
+    }
+  }, [globeRef, query.privateIP]);
 
   const getUserCoordinates = useCallback(() => {
     setLoadingUserCoordinates(true);
