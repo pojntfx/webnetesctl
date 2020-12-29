@@ -54,7 +54,7 @@ function HomePage() {
   const { t } = useTranslation();
   const globeRef = createRef();
   const { width, height } = useWindowSize();
-  const { query } = useRouter();
+  const router = useRouter();
 
   const [statsOpen, setStatsOpen] = useState(true);
   const [connectionPaths, setConnectionPaths] = useState<any[]>([]);
@@ -132,17 +132,25 @@ function HomePage() {
 
   useEffect(() => {
     if (globeRef.current) {
-      const privateIP = query.privateIP;
+      const privateIP = router.query.privateIP;
 
       if (privateIP) {
         const foundNode: any = nodes.find(
           (candidate) => candidate.privateIP === privateIP
         );
 
-        if (foundNode) setSelectedNode(foundNode);
+        unstable_batchedUpdates(() => {
+          setHandleCameraChange(true);
+          _setSelectedNode(foundNode);
+        });
+      } else {
+        unstable_batchedUpdates(() => {
+          setHandleCameraChange(true);
+          _setSelectedNode(undefined);
+        });
       }
     }
-  }, [globeRef, query.privateIP]);
+  }, [globeRef, router.query.privateIP]);
 
   const getUserCoordinates = useCallback(() => {
     setLoadingUserCoordinates(true);
@@ -184,10 +192,11 @@ function HomePage() {
   }, []);
 
   const setSelectedNode = (newNode: any) => {
-    unstable_batchedUpdates(() => {
-      setHandleCameraChange(true);
-      _setSelectedNode(newNode);
-    });
+    if (newNode) {
+      router.push(`/?privateIP=${newNode.privateIP}`);
+    } else {
+      router.push("/");
+    }
   };
 
   return (
