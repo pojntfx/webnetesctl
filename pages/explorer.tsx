@@ -6,8 +6,9 @@ import {
   faWifi,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Input, Space } from "antd";
+import { Button, Input, Space, Tooltip } from "antd";
 import Title from "antd/lib/typography/Title";
+import Link from "next/link";
 import Animate from "rc-animate";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -102,6 +103,20 @@ function Explorer() {
       sorter: (a: typeof dataSource[0], b: typeof dataSource[0]) =>
         parseInt(a.networkingScore.split(" ")[0]) -
         parseInt(b.networkingScore.split(" ")[0]),
+    },
+    {
+      title: "",
+      dataIndex: "privateIP",
+      key: "operation",
+      render: (privateIP: typeof dataSource[0]["privateIP"]) => (
+        <Link href={`/?privateIP=${privateIP}`}>
+          <Tooltip title={t("openInOverview")}>
+            <Button type="text" shape="circle">
+              <FontAwesomeIcon icon={faGlobe} />
+            </Button>
+          </Tooltip>
+        </Link>
+      ),
     },
   ];
 

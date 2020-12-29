@@ -23,6 +23,7 @@ export default {
   filterResources: "Filter resources",
   filterNodes: "Filter nodes",
   openInExplorer: "Open in Explorer",
+  openInOverview: "Open in Overview",
   delete: "Delete",
   noResourcesDeployed: "No resources deployed",
   noMatchingResourcesFound: "No matching resources found",
