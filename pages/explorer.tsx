@@ -1,8 +1,11 @@
+import { Input, Space } from "antd";
 import Title from "antd/lib/typography/Title";
+import Animate from "rc-animate";
 import { useTranslation } from "react-i18next";
+import styled from "styled-components";
 import { Wrapper } from "../components/layout-wrapper";
 import Table from "../components/table";
-import Animate from "rc-animate";
+import glass from "../styles/glass";
 
 function Explorer() {
   const { t } = useTranslation();
@@ -44,10 +47,24 @@ function Explorer() {
     <Animate transitionName="fadeandzoom" transitionAppear>
       <Wrapper>
         <Title level={2}>{t("node", { count: 2 })}</Title>
-        <Table dataSource={dataSource} columns={columns} />
+
+        <WideSpace direction="vertical">
+          <Input.Search placeholder={t("filterNodes")} />
+
+          <Table dataSource={dataSource} columns={columns} />
+        </WideSpace>
       </Wrapper>
     </Animate>
   );
 }
+
+const WideSpace = styled(Space)`
+  width: 100%;
+
+  .ant-input-group-wrapper,
+  .ant-pagination > * {
+    ${glass}
+  }
+`;
 
 export default Explorer;

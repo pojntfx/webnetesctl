@@ -18,7 +18,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { initReactI18next, useTranslation } from "react-i18next";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
-import universeTexture from "three-globe/example/img/night-sky.png";
+import universeTexture from "../img/night-sky.png";
 import { Layout } from "../components/layout-wrapper";
 import Navbar, {
   DesktopHeader,
