@@ -12,8 +12,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Input, Space, Tooltip } from "antd";
 import Title from "antd/lib/typography/Title";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import Animate from "rc-animate";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { Wrapper } from "../components/layout-wrapper";
@@ -25,8 +26,32 @@ import glass from "../styles/glass";
 
 function Explorer() {
   const { t } = useTranslation();
+  const router = useRouter();
 
   const [nodeFilter, setNodeFilter] = useState("");
+  const [selectedRow, _setSelectedRow] = useState<string>();
+
+  useEffect(() => {
+    const privateIP = router.query.privateIP;
+
+    if (privateIP) {
+      const foundNode: any = nodes.find(
+        (candidate) => candidate.privateIP === privateIP
+      );
+
+      _setSelectedRow(foundNode?.privateIP);
+    } else {
+      _setSelectedRow(undefined);
+    }
+  }, [router.query.privateIP]);
+
+  const setSelectedRow = (privateIP?: string) => {
+    if (privateIP) {
+      router.push(`/explorer?privateIP=${privateIP}`);
+    } else {
+      router.push("/explorer");
+    }
+  };
 
   const dataSource = nodes.map((node) => {
     const computeScore = computeStats.find(
@@ -155,18 +180,34 @@ function Explorer() {
             }}
             expandable={{
               expandedRowRender: () => <div>Hello, world!</div>,
-              expandedRowKeys: ["127.0.2.0"],
+              expandedRowKeys: (() => {
+                const keys = [selectedRow].filter((s) => s);
+
+                if (keys.length > 0) {
+                  return keys;
+                } else {
+                  return undefined;
+                }
+              })() as string[],
               expandIcon: ({ expanded, onExpand, record }) =>
                 expanded ? (
                   <Space>
-                    <Button type="text" shape="circle">
+                    <Button
+                      type="text"
+                      shape="circle"
+                      onClick={() => setSelectedRow(undefined)}
+                    >
                       <FontAwesomeIcon fixedWidth icon={faMinus} />
                     </Button>
                     <FontAwesomeIcon fixedWidth icon={faCube} /> 16
                   </Space>
                 ) : (
                   <Space>
-                    <Button type="text" shape="circle">
+                    <Button
+                      type="text"
+                      shape="circle"
+                      onClick={() => setSelectedRow((record as any).privateIP)}
+                    >
                       <FontAwesomeIcon fixedWidth icon={faPlus} />
                     </Button>
                     <FontAwesomeIcon fixedWidth icon={faCube} /> 16
