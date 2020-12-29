@@ -4,7 +4,7 @@ import Head from "next/head";
 import { initReactI18next } from "react-i18next";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
 import en from "../i18n/en";
-import "../index.less";
+import "../styles/index.less";
 
 i18n.use(initReactI18next).init({
   resources: {
