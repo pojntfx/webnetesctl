@@ -30,6 +30,9 @@ function Explorer() {
       ),
       dataIndex: "privateIP",
       key: "privateIP",
+      sorter: (a: typeof nodes[0], b: typeof nodes[0]) =>
+        parseInt(a.privateIP.split(".")[3]) -
+        parseInt(b.privateIP.split(".")[3]),
     },
     {
       title: (
@@ -39,6 +42,8 @@ function Explorer() {
       ),
       dataIndex: "location",
       key: "location",
+      sorter: (a: typeof nodes[0], b: typeof nodes[0]) =>
+        a.location.localeCompare(b.location),
     },
     {
       title: (
@@ -48,6 +53,8 @@ function Explorer() {
       ),
       dataIndex: "publicIP",
       key: "publicIP",
+      sorter: (a: typeof nodes[0], b: typeof nodes[0]) =>
+        parseInt(a.publicIP.split(".")[0]) - parseInt(b.publicIP.split(".")[0]),
     },
     {
       title: (
@@ -57,6 +64,9 @@ function Explorer() {
       ),
       dataIndex: "computeScore",
       key: "computeScore",
+      sorter: (a: typeof nodes[0], b: typeof nodes[0]) =>
+        parseInt((a as any).computeScore.split(" ")[0]) -
+        parseInt((b as any).computeScore.split(" ")[0]),
     },
     {
       title: (
@@ -66,6 +76,9 @@ function Explorer() {
       ),
       dataIndex: "networkingScore",
       key: "networkingScore",
+      sorter: (a: typeof nodes[0], b: typeof nodes[0]) =>
+        parseInt((a as any).networkingScore.split(" ")[0]) -
+        parseInt((b as any).networkingScore.split(" ")[0]),
     },
   ];
 
