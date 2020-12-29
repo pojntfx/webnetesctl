@@ -131,6 +131,7 @@ function Explorer() {
                   )
             )}
             columns={columns as any}
+            scroll={{ x: "max-content" }}
           />
         </WideSpace>
       </Wrapper>
