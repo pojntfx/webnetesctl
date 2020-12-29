@@ -218,6 +218,19 @@ function Explorer() {
                   </Space>
                 ),
             }}
+            onRow={(record) => {
+              return {
+                onClick: () => {
+                  if (
+                    selectedRow === (record as typeof dataSource[0]).privateIP
+                  ) {
+                    setSelectedRow(undefined);
+                  } else {
+                    setSelectedRow((record as typeof dataSource[0]).privateIP);
+                  }
+                },
+              };
+            }}
           />
         </WideSpace>
       </Wrapper>

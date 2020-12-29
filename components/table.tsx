@@ -12,4 +12,12 @@ export default styled(Table)`
   .ant-table-cell {
     ${glass}
   }
+
+  .ant-table-expanded-row {
+    background: #2f2f2f;
+  }
+
+  .ant-table-row:hover {
+    cursor: pointer;
+  }
 `;
