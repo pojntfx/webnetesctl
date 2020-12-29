@@ -1,6 +1,5 @@
 import {
   faBinoculars,
-  faChartPie,
   faCube,
   faEllipsisV,
   faGlobe,
@@ -64,6 +63,7 @@ function HomePage() {
   const router = useRouter();
 
   const [statsOpen, setStatsOpen] = useState(true);
+  const [inspectorOpen, setInspectorOpen] = useState(true);
   const [connectionPaths, setConnectionPaths] = useState<any[]>([]);
   const [selectedNode, _setSelectedNode] = useState<any>();
   const [globeHoverable, setGlobeHoverable] = useState(false);
@@ -210,9 +210,13 @@ function HomePage() {
   }, []);
 
   const setSelectedNode = (newNode: any) => {
-    if (newNode) {
+    if (newNode?.privateIP) {
+      setInspectorOpen(true);
+
       router.push(`/?privateIP=${newNode.privateIP}`);
     } else {
+      setInspectorOpen(false);
+
       router.push("/");
     }
   };
@@ -236,7 +240,9 @@ function HomePage() {
           labelColor={() => "#faad14"}
           onLabelClick={(node: any) =>
             selectedNode?.privateIP === node.privateIP
-              ? setSelectedNode(undefined)
+              ? !inspectorOpen
+                ? setInspectorOpen(true)
+                : setSelectedNode(undefined)
               : setSelectedNode(
                   nodes.find(
                     (candidate) => candidate.privateIP === node.privateIP
@@ -266,11 +272,7 @@ function HomePage() {
       </GlobeWrapper>
 
       <Animate transitionName="fadeandslide" transitionAppear>
-        {(selectedNode
-          ? width && width <= 821
-            ? false
-            : statsOpen
-          : statsOpen) && (
+        {statsOpen && (
           <Stats
             size="small"
             title={
@@ -280,7 +282,11 @@ function HomePage() {
               </Space>
             }
             extra={
-              <Button type="text" onClick={() => setStatsOpen(false)}>
+              <Button
+                type="text"
+                shape="circle"
+                onClick={() => setStatsOpen(false)}
+              >
                 <FontAwesomeIcon icon={faWindowMinimize} />
               </Button>
             }
@@ -374,8 +380,8 @@ function HomePage() {
         )}
       </Animate>
 
-      <Animate transitionName="fadeandzoom" transitionAppear>
-        {selectedNode && (
+      <Animate transitionName="fadeandslide" transitionAppear>
+        {selectedNode && inspectorOpen && (
           <Inspector
             size="small"
             title={
@@ -392,7 +398,19 @@ function HomePage() {
                   </Button>
                 </Tooltip>
 
-                <Button type="text" onClick={() => setSelectedNode(undefined)}>
+                <Button
+                  type="text"
+                  shape="circle"
+                  onClick={() => setInspectorOpen(false)}
+                >
+                  <FontAwesomeIcon icon={faWindowMinimize} />
+                </Button>
+
+                <Button
+                  type="text"
+                  shape="circle"
+                  onClick={() => setSelectedNode(undefined)}
+                >
                   <FontAwesomeIcon icon={faTimes} />
                 </Button>
               </Space>
@@ -562,15 +580,19 @@ function HomePage() {
             icon={<FontAwesomeIcon icon={faLocationArrow} />}
           />
 
-          {!(selectedNode
-            ? width && width <= 821
-              ? true
-              : statsOpen
-            : statsOpen) && (
+          {!statsOpen && (
             <Button
               type="text"
               onClick={() => setStatsOpen(true)}
-              icon={<FontAwesomeIcon icon={faChartPie} />}
+              icon={<FontAwesomeIcon icon={faNetworkWired} />}
+            />
+          )}
+
+          {!inspectorOpen && selectedNode && (
+            <Button
+              type="text"
+              onClick={() => setInspectorOpen(true)}
+              icon={<FontAwesomeIcon icon={faMobile} />}
             />
           )}
         </GlobeActions>
