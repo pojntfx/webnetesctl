@@ -34,7 +34,14 @@ import Text from "antd/lib/typography/Text";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import Animate from "rc-animate";
-import { createRef, forwardRef, useCallback, useEffect, useState } from "react";
+import {
+  createRef,
+  forwardRef,
+  memo,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
@@ -105,6 +112,10 @@ function HomePage() {
   }, []);
 
   useEffect(() => {
+    if (!globeRef.current) {
+      setTimeout(() => setHandleCameraChange(true), 1000); // Retry if globe hasn't rendered yet
+    }
+
     if (globeRef.current && handleCameraChange) {
       if (selectedNode) {
         (globeRef.current as any).pointOfView(
@@ -128,7 +139,13 @@ function HomePage() {
 
       setHandleCameraChange(false);
     }
-  }, [globeRef, handleCameraChange, selectedNode, userCoordinates]);
+  }, [
+    globeRef.current,
+    handleCameraChange,
+    selectedNode,
+    userCoordinates,
+    globeRef.current,
+  ]);
 
   useEffect(() => {
     if (globeRef.current) {
@@ -160,6 +177,7 @@ function HomePage() {
         (position) => {
           unstable_batchedUpdates(() => {
             setHandleCameraChange(true);
+            setSelectedNode(undefined);
             setUserCoordinates([
               position.coords.latitude,
               position.coords.longitude,
@@ -202,7 +220,7 @@ function HomePage() {
   return (
     <>
       <GlobeWrapper $hoverable={globeHoverable}>
-        <Globe
+        <MemoGlobe
           labelsData={nodes}
           labelLat={(d: any) => (d as typeof nodes[0]).latitude}
           labelLng={(d: any) => (d as typeof nodes[0]).longitude}
@@ -637,6 +655,7 @@ const GlobeTmpl = dynamic(() => import("../components/globe"), {
 const Globe = forwardRef((props: any, ref) => (
   <GlobeTmpl {...props} forwardRef={ref} />
 ));
+const MemoGlobe = memo(Globe);
 
 const GlobeActions = styled.div`
   position: absolute !important;
