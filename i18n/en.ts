@@ -21,6 +21,7 @@ export default {
   mbps: "MBit/s",
   mbps_plural: "MBit/s",
   filterResources: "Filter resources",
+  filterNodes: "Filter nodes",
   openInExplorer: "Open in Explorer",
   delete: "Delete",
   noResourcesDeployed: "No resources deployed",

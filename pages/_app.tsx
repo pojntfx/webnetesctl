@@ -10,15 +10,16 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Dropdown, List, Menu, Popover, Space, Tooltip } from "antd";
-import LayoutTmpl, { Content } from "antd/lib/layout/layout";
+import { Content } from "antd/lib/layout/layout";
 import i18n from "i18next";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { initReactI18next, useTranslation } from "react-i18next";
-import styled, { createGlobalStyle, ThemeProvider } from "styled-components";
+import { createGlobalStyle, ThemeProvider } from "styled-components";
 import universeTexture from "three-globe/example/img/night-sky.png";
+import { Layout } from "../components/layout-wrapper";
 import Navbar, {
   DesktopHeader,
   MobileHeader,
@@ -211,9 +212,5 @@ function MyApp({ Component, pageProps }: AppProps) {
     </>
   );
 }
-
-const Layout = styled(LayoutTmpl)`
-  background: transparent;
-`;
 
 export default MyApp;

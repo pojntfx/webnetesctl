@@ -1,9 +1,8 @@
-import { Table as TableTmpl } from "antd";
 import Title from "antd/lib/typography/Title";
 import { useTranslation } from "react-i18next";
-import styled from "styled-components";
 import { Wrapper } from "../components/layout-wrapper";
-import glass from "../styles/glass";
+import Table from "../components/table";
+import Animate from "rc-animate";
 
 function Explorer() {
   const { t } = useTranslation();
@@ -42,24 +41,13 @@ function Explorer() {
   ];
 
   return (
-    <Wrapper>
-      <Title level={2}>{t("node", { count: 2 })}</Title>
-
-      <Table dataSource={dataSource} columns={columns} />
-    </Wrapper>
+    <Animate transitionName="fadeandzoom" transitionAppear>
+      <Wrapper>
+        <Title level={2}>{t("node", { count: 2 })}</Title>
+        <Table dataSource={dataSource} columns={columns} />
+      </Wrapper>
+    </Animate>
   );
 }
-
-const Table = styled(TableTmpl)`
-  .ant-table {
-    border: 1px solid #303030;
-    border-bottom: 0;
-  }
-
-  .ant-table,
-  .ant-table-cell {
-    ${glass}
-  }
-`;
 
 export default Explorer;
