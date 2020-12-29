@@ -693,6 +693,10 @@ const GlobeActions = styled.div`
     right: auto;
     margin-left: 0;
   }
+
+  > *:first-child:not(:last-child) {
+    border-right: 1px solid #303030;
+  }
 `;
 
 const StatsWrapper = styled.div<{ $long?: boolean }>`
