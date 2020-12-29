@@ -344,10 +344,14 @@ function HomePage() {
                     "#002766",
                   ]}
                   onClick={(ip) =>
-                    setSelectedNode((selectedNode: any) =>
-                      selectedNode && selectedNode?.privateIP === ip
-                        ? undefined
-                        : nodes.find((candidate) => candidate.privateIP === ip)
+                    _setSelectedNode((selectedNode: any) =>
+                      setSelectedNode(
+                        selectedNode && selectedNode?.privateIP === ip
+                          ? undefined
+                          : nodes.find(
+                              (candidate) => candidate.privateIP === ip
+                            )
+                      )
                     )
                   }
                 />
@@ -367,10 +371,14 @@ function HomePage() {
                     "#613400",
                   ]}
                   onClick={(ip) =>
-                    setSelectedNode((selectedNode: any) =>
-                      selectedNode && selectedNode?.privateIP === ip
-                        ? undefined
-                        : nodes.find((candidate) => candidate.privateIP === ip)
+                    _setSelectedNode((selectedNode: any) =>
+                      setSelectedNode(
+                        selectedNode && selectedNode?.privateIP === ip
+                          ? undefined
+                          : nodes.find(
+                              (candidate) => candidate.privateIP === ip
+                            )
+                      )
                     )
                   }
                 />
