@@ -24,67 +24,6 @@ function Explorer() {
 
   const [nodeFilter, setNodeFilter] = useState("");
 
-  const columns = [
-    {
-      title: (
-        <>
-          <FontAwesomeIcon fixedWidth icon={faMobile} /> {t("privateIp")}
-        </>
-      ),
-      dataIndex: "privateIP",
-      key: "privateIP",
-      sorter: (a: typeof nodes[0], b: typeof nodes[0]) =>
-        parseInt(a.privateIP.split(".")[3]) -
-        parseInt(b.privateIP.split(".")[3]),
-    },
-    {
-      title: (
-        <>
-          <FontAwesomeIcon fixedWidth icon={faMapMarkerAlt} /> {t("location")}
-        </>
-      ),
-      dataIndex: "location",
-      key: "location",
-      sorter: (a: typeof nodes[0], b: typeof nodes[0]) =>
-        a.location.localeCompare(b.location),
-    },
-    {
-      title: (
-        <>
-          <FontAwesomeIcon fixedWidth icon={faGlobe} /> {t("publicIp")}
-        </>
-      ),
-      dataIndex: "publicIP",
-      key: "publicIP",
-      sorter: (a: typeof nodes[0], b: typeof nodes[0]) =>
-        parseInt(a.publicIP.split(".")[0]) - parseInt(b.publicIP.split(".")[0]),
-    },
-    {
-      title: (
-        <>
-          <FontAwesomeIcon fixedWidth icon={faMicrochip} /> {t("compute")}
-        </>
-      ),
-      dataIndex: "computeScore",
-      key: "computeScore",
-      sorter: (a: typeof nodes[0], b: typeof nodes[0]) =>
-        parseInt((a as any).computeScore.split(" ")[0]) -
-        parseInt((b as any).computeScore.split(" ")[0]),
-    },
-    {
-      title: (
-        <>
-          <FontAwesomeIcon fixedWidth icon={faWifi} /> {t("network")}
-        </>
-      ),
-      dataIndex: "networkingScore",
-      key: "networkingScore",
-      sorter: (a: typeof nodes[0], b: typeof nodes[0]) =>
-        parseInt((a as any).networkingScore.split(" ")[0]) -
-        parseInt((b as any).networkingScore.split(" ")[0]),
-    },
-  ];
-
   const dataSource = nodes.map((node) => {
     const computeScore = computeStats.find(
       (candidate) => candidate.ip === node.privateIP
@@ -104,6 +43,67 @@ function Explorer() {
       key: node.privateIP,
     };
   });
+
+  const columns = [
+    {
+      title: (
+        <>
+          <FontAwesomeIcon fixedWidth icon={faMobile} /> {t("privateIp")}
+        </>
+      ),
+      dataIndex: "privateIP",
+      key: "privateIP",
+      sorter: (a: typeof dataSource[0], b: typeof dataSource[0]) =>
+        parseInt(a.privateIP.split(".")[3]) -
+        parseInt(b.privateIP.split(".")[3]),
+    },
+    {
+      title: (
+        <>
+          <FontAwesomeIcon fixedWidth icon={faMapMarkerAlt} /> {t("location")}
+        </>
+      ),
+      dataIndex: "location",
+      key: "location",
+      sorter: (a: typeof dataSource[0], b: typeof dataSource[0]) =>
+        a.location.localeCompare(b.location),
+    },
+    {
+      title: (
+        <>
+          <FontAwesomeIcon fixedWidth icon={faGlobe} /> {t("publicIp")}
+        </>
+      ),
+      dataIndex: "publicIP",
+      key: "publicIP",
+      sorter: (a: typeof dataSource[0], b: typeof dataSource[0]) =>
+        parseInt(a.publicIP.split(".")[0]) - parseInt(b.publicIP.split(".")[0]),
+    },
+    {
+      title: (
+        <>
+          <FontAwesomeIcon fixedWidth icon={faMicrochip} /> {t("compute")}
+        </>
+      ),
+      dataIndex: "computeScore",
+      key: "computeScore",
+      sorter: (a: typeof dataSource[0], b: typeof dataSource[0]) =>
+        parseInt(a.computeScore.split(" ")[0]) -
+        parseInt(b.computeScore.split(" ")[0]),
+    },
+    {
+      title: (
+        <>
+          <FontAwesomeIcon fixedWidth icon={faWifi} /> {t("network")}
+        </>
+      ),
+      dataIndex: "networkingScore",
+      key: "networkingScore",
+      sorter: (a: typeof dataSource[0], b: typeof dataSource[0]) =>
+        parseInt(a.networkingScore.split(" ")[0]) -
+        parseInt(b.networkingScore.split(" ")[0]),
+    },
+  ];
 
   return (
     <Animate transitionName="fadeandzoom" transitionAppear>
