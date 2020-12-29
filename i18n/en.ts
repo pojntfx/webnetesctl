@@ -27,6 +27,7 @@ export default {
   delete: "Delete",
   noResourcesDeployed: "No resources deployed",
   noMatchingResourcesFound: "No matching resources found",
+  noMatchingNodesFound: "No matching nodes found",
   privateIp: "Private IP",
   location: "Location",
   publicIp: "Public IP",

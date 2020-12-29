@@ -1,8 +1,11 @@
 import {
+  faCube,
   faGlobe,
   faMapMarkerAlt,
   faMicrochip,
+  faMinus,
   faMobile,
+  faPlus,
   faWifi,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -147,6 +150,29 @@ function Explorer() {
             )}
             columns={columns as any}
             scroll={{ x: "max-content" }}
+            locale={{
+              emptyText: t("noMatchingNodesFound"),
+            }}
+            expandable={{
+              expandedRowRender: () => <div>Hello, world!</div>,
+              expandedRowKeys: ["127.0.2.0"],
+              expandIcon: ({ expanded, onExpand, record }) =>
+                expanded ? (
+                  <Space>
+                    <Button type="text" shape="circle">
+                      <FontAwesomeIcon fixedWidth icon={faMinus} />
+                    </Button>
+                    <FontAwesomeIcon fixedWidth icon={faCube} /> 16
+                  </Space>
+                ) : (
+                  <Space>
+                    <Button type="text" shape="circle">
+                      <FontAwesomeIcon fixedWidth icon={faPlus} />
+                    </Button>
+                    <FontAwesomeIcon fixedWidth icon={faCube} /> 16
+                  </Space>
+                ),
+            }}
           />
         </WideSpace>
       </Wrapper>
