@@ -21,6 +21,7 @@ import Table from "../components/table";
 import computeStats from "../data/compute-stats.json";
 import networkingStats from "../data/networking-stats.json";
 import nodes from "../data/nodes.json";
+import resources from "../data/resources.json";
 import glass from "../styles/glass";
 
 function Explorer() {
@@ -184,7 +185,17 @@ function Explorer() {
               emptyText: t("noMatchingNodesFound"),
             }}
             expandable={{
-              expandedRowRender: () => <div>Hello, world!</div>,
+              expandedRowRender: (record) => (
+                <>
+                  {JSON.stringify(
+                    resources.filter(
+                      (resource) =>
+                        resource.node ===
+                        (record as typeof dataSource[0]).privateIP
+                    )
+                  )}
+                </>
+              ),
               expandedRowKeys: (() => {
                 const keys = [selectedRow].filter((s) => s);
 
@@ -194,40 +205,36 @@ function Explorer() {
                   return undefined;
                 }
               })() as string[],
-              expandIcon: ({ expanded, record }) =>
-                expanded ? (
-                  <Space>
-                    <Button
-                      type="text"
-                      shape="circle"
-                      onClick={(e) => {
-                        e.stopPropagation();
+              expandIcon: ({ expanded, record }) => (
+                <Space>
+                  <Button
+                    type="text"
+                    shape="circle"
+                    onClick={(e) => {
+                      e.stopPropagation();
 
-                        setSelectedRow(undefined);
-                      }}
-                    >
-                      <FontAwesomeIcon fixedWidth icon={faMinus} />
-                    </Button>
-                    <FontAwesomeIcon fixedWidth icon={faCube} /> 16
-                  </Space>
-                ) : (
-                  <Space>
-                    <Button
-                      type="text"
-                      shape="circle"
-                      onClick={(e) => {
-                        e.stopPropagation();
-
-                        setSelectedRow(
-                          (record as typeof dataSource[0]).privateIP
-                        );
-                      }}
-                    >
-                      <FontAwesomeIcon fixedWidth icon={faPlus} />
-                    </Button>
-                    <FontAwesomeIcon fixedWidth icon={faCube} /> 16
-                  </Space>
-                ),
+                      expanded
+                        ? setSelectedRow(undefined)
+                        : setSelectedRow(
+                            (record as typeof dataSource[0]).privateIP
+                          );
+                    }}
+                  >
+                    <FontAwesomeIcon
+                      fixedWidth
+                      icon={expanded ? faMinus : faPlus}
+                    />
+                  </Button>
+                  <FontAwesomeIcon fixedWidth icon={faCube} />{" "}
+                  {
+                    resources.filter(
+                      (resource) =>
+                        resource.node ===
+                        (record as typeof dataSource[0]).privateIP
+                    ).length
+                  }
+                </Space>
+              ),
             }}
             onRow={(record) => {
               return {
