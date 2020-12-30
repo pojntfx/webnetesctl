@@ -18,7 +18,6 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { initReactI18next, useTranslation } from "react-i18next";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
-import universeTexture from "../img/night-sky.png";
 import { Layout } from "../components/layout-wrapper";
 import Navbar, {
   DesktopHeader,
@@ -27,6 +26,7 @@ import Navbar, {
   TabsMobile,
 } from "../components/navbar";
 import en from "../i18n/en";
+import universeTexture from "../img/night-sky.png";
 import "../styles/index.less";
 
 i18n.use(initReactI18next).init({
@@ -71,7 +71,10 @@ function MyApp({ Component, pageProps }: AppProps) {
       <ThemeProvider theme={theme}>
         <Layout>
           <MobileHeader>
-            <Tooltip title={t("findNodeOrResource")}>
+            <Tooltip
+              title={t("findNodeOrResource")}
+              getPopupContainer={() => document.getElementById("__next")!}
+            >
               <Button type="text" shape="circle">
                 <FontAwesomeIcon icon={faSearch} />
               </Button>
@@ -89,6 +92,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                     <List.Item>Example notification 2</List.Item>
                   </List>
                 }
+                getPopupContainer={() => document.getElementById("__next")!}
               >
                 <Button
                   type="text"
@@ -128,7 +132,10 @@ function MyApp({ Component, pageProps }: AppProps) {
                 </Button>
               </Dropdown>
 
-              <Tooltip title={t("invite")}>
+              <Tooltip
+                title={t("invite")}
+                getPopupContainer={() => document.getElementById("__next")!}
+              >
                 <Button type="primary" shape="circle">
                   <FontAwesomeIcon icon={faHandshake} />
                 </Button>
@@ -153,6 +160,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                     <List.Item>Example notification 2</List.Item>
                   </List>
                 }
+                getPopupContainer={() => document.getElementById("__next")!}
               >
                 <Button
                   type="text"

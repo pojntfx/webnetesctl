@@ -152,7 +152,10 @@ function Explorer() {
       dataIndex: "privateIP",
       key: "operation",
       render: (privateIP: typeof dataSource[0]["privateIP"]) => (
-        <Tooltip title={t("openInOverview")}>
+        <Tooltip
+          title={t("openInOverview")}
+          getPopupContainer={() => document.getElementById("__next")!}
+        >
           <Button
             type="text"
             shape="circle"

@@ -404,7 +404,11 @@ function HomePage() {
             extra={
               <Space>
                 <Link href={`/explorer?privateIP=${selectedNode.privateIP}`}>
-                  <Tooltip title={t("openInExplorer")} placement="bottom">
+                  <Tooltip
+                    title={t("openInExplorer")}
+                    placement="bottom"
+                    getPopupContainer={() => document.getElementById("__next")!}
+                  >
                     <Button type="text" shape="circle">
                       <FontAwesomeIcon icon={faBinoculars} />
                     </Button>
