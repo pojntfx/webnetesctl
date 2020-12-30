@@ -325,6 +325,8 @@ function Explorer() {
             }}
           />
         </WideSpace>
+
+        <Title level={2}>{t("resource", { count: 2 })}</Title>
       </Wrapper>
     </Animate>
   );

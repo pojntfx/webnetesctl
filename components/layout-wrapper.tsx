@@ -2,15 +2,17 @@ import styled from "styled-components";
 import LayoutTmpl from "antd/lib/layout/layout";
 
 export const Wrapper = styled.div`
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-  margin: 12px 16px;
-  margin-top: 64px;
+  padding-top: calc(1rem + 64px);
+  padding-bottom: calc(1rem + 64px);
+  padding-left: 1rem;
+  padding-right: 1rem;
+  height: 100%;
+  overflow-y: auto;
 
   @media screen and (min-width: 812px) {
-    margin-left: 50px;
-    margin-right: 50px;
-    margin-bottom: 64px;
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-bottom: 1rem;
   }
 `;
 

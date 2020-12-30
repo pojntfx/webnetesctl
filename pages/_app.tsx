@@ -43,6 +43,11 @@ const GlobalStyle = createGlobalStyle`
 body {
   background: url(${universeTexture}) no-repeat center center fixed; 
   background-size: cover;
+  overflow: hidden;
+
+  > *, > * > section, .ant-layout-content {
+    height: 100%;
+  }
 }
 `;
 
