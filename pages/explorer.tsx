@@ -1,15 +1,29 @@
 import {
+  faAngleDoubleDown,
   faCube,
+  faEllipsisV,
   faGlobe,
   faMapMarkerAlt,
   faMicrochip,
   faMinus,
   faMobile,
   faPlus,
+  faTerminal,
+  faTrash,
   faWifi,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Input, Space, Tooltip } from "antd";
+import {
+  Button,
+  Dropdown,
+  Empty,
+  Input,
+  List,
+  Menu,
+  Space,
+  Tooltip,
+} from "antd";
+import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
 import { useRouter } from "next/router";
 import Animate from "rc-animate";
@@ -23,6 +37,7 @@ import networkingStats from "../data/networking-stats.json";
 import nodes from "../data/nodes.json";
 import resources from "../data/resources.json";
 import glass from "../styles/glass";
+import { ResourceItem } from "./index";
 
 function Explorer() {
   const { t } = useTranslation();
@@ -185,17 +200,78 @@ function Explorer() {
               emptyText: t("noMatchingNodesFound"),
             }}
             expandable={{
-              expandedRowRender: (record) => (
-                <>
-                  {JSON.stringify(
-                    resources.filter(
-                      (resource) =>
-                        resource.node ===
-                        (record as typeof dataSource[0]).privateIP
-                    )
-                  )}
-                </>
-              ),
+              expandedRowRender: (record) => {
+                const matchingResources = resources.filter(
+                  (resource) =>
+                    resource.node === (record as typeof dataSource[0]).privateIP
+                );
+
+                if (matchingResources.length === 0) {
+                  return (
+                    <List>
+                      <Empty
+                        description={t("noResourcesDeployed")}
+                        image={Empty.PRESENTED_IMAGE_SIMPLE}
+                      />
+                    </List>
+                  );
+                } else {
+                  return (
+                    <List>
+                      {matchingResources.map((resource, index) => (
+                        <ResourceItem
+                          actions={[
+                            resource.kind === "Workload" && (
+                              <Button type="text" shape="circle">
+                                <FontAwesomeIcon icon={faTerminal} />
+                              </Button>
+                            ),
+                            <Dropdown
+                              overlay={
+                                <Menu>
+                                  <Menu.Item key="openInExplorer">
+                                    <Space>
+                                      <FontAwesomeIcon
+                                        fixedWidth
+                                        icon={faAngleDoubleDown}
+                                      />
+                                      {t("openInResources")}
+                                    </Space>
+                                  </Menu.Item>
+
+                                  <Menu.Item key="delete">
+                                    <Space>
+                                      <FontAwesomeIcon
+                                        fixedWidth
+                                        icon={faTrash}
+                                      />
+                                      {t("delete")}
+                                    </Space>
+                                  </Menu.Item>
+                                </Menu>
+                              }
+                            >
+                              <Button type="text" shape="circle">
+                                <FontAwesomeIcon icon={faEllipsisV} />
+                              </Button>
+                            </Dropdown>,
+                          ].filter((component) => component)}
+                          key={index}
+                        >
+                          <List.Item.Meta
+                            title={
+                              <>
+                                {resource.name}{" "}
+                                <Text code>{resource.kind}</Text>
+                              </>
+                            }
+                          />
+                        </ResourceItem>
+                      ))}
+                    </List>
+                  );
+                }
+              },
               expandedRowKeys: (() => {
                 const keys = [selectedRow].filter((s) => s);
 

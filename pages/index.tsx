@@ -730,7 +730,7 @@ const ResourceList = styled(Space)`
   width: 100%;
 `;
 
-const ResourceItem = styled(List.Item)`
+export const ResourceItem = styled(List.Item)`
   .ant-list-item-action {
     margin-left: 1rem;
   }

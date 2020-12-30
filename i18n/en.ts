@@ -31,4 +31,5 @@ export default {
   privateIp: "Private IP",
   location: "Location",
   publicIp: "Public IP",
+  openInResources: "Open in Resources",
 };
