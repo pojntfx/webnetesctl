@@ -404,11 +404,7 @@ function HomePage() {
             extra={
               <Space>
                 <Link href={`/explorer?privateIP=${selectedNode.privateIP}`}>
-                  <Tooltip
-                    title={t("openInExplorer")}
-                    placement="bottom"
-                    getPopupContainer={() => document.getElementById("__next")!}
-                  >
+                  <Tooltip title={t("openInExplorer")} placement="bottom">
                     <Button type="text" shape="circle">
                       <FontAwesomeIcon icon={faBinoculars} />
                     </Button>
@@ -533,9 +529,11 @@ function HomePage() {
                         <ResourceItem
                           actions={[
                             resource.kind === "Workload" && (
-                              <Button type="text" shape="circle">
-                                <FontAwesomeIcon icon={faTerminal} />
-                              </Button>
+                              <Tooltip title={t("openInTerminal")}>
+                                <Button type="text" shape="circle">
+                                  <FontAwesomeIcon icon={faTerminal} />
+                                </Button>
+                              </Tooltip>
                             ),
                             <Dropdown
                               overlay={
@@ -560,9 +558,6 @@ function HomePage() {
                                     </Space>
                                   </Menu.Item>
                                 </Menu>
-                              }
-                              getPopupContainer={() =>
-                                document.getElementById("__next")!
                               }
                             >
                               <Button type="text" shape="circle">

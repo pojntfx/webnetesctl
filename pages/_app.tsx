@@ -6,7 +6,7 @@ import {
   faHandshake,
   faNetworkWired,
   faPlus,
-  faSearch,
+  faSearch
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Dropdown, List, Menu, Popover, Space, Tooltip } from "antd";
@@ -23,7 +23,7 @@ import Navbar, {
   DesktopHeader,
   MobileHeader,
   SearchInput,
-  TabsMobile,
+  TabsMobile
 } from "../components/navbar";
 import en from "../i18n/en";
 import universeTexture from "../img/night-sky.png";
@@ -45,7 +45,7 @@ body {
   background-size: cover;
   overflow: hidden;
 
-  > *, > * > section, .ant-layout-content {
+  > #__next, > * > section, .ant-layout-content {
     height: 100%;
   }
 }
@@ -76,10 +76,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <ThemeProvider theme={theme}>
         <Layout>
           <MobileHeader>
-            <Tooltip
-              title={t("findNodeOrResource")}
-              getPopupContainer={() => document.getElementById("__next")!}
-            >
+            <Tooltip title={t("findNodeOrResource")}>
               <Button type="text" shape="circle">
                 <FontAwesomeIcon icon={faSearch} />
               </Button>
@@ -97,7 +94,6 @@ function MyApp({ Component, pageProps }: AppProps) {
                     <List.Item>Example notification 2</List.Item>
                   </List>
                 }
-                getPopupContainer={() => document.getElementById("__next")!}
               >
                 <Button
                   type="text"
@@ -131,17 +127,13 @@ function MyApp({ Component, pageProps }: AppProps) {
                     </Menu.Item>
                   </Menu>
                 }
-                getPopupContainer={() => document.getElementById("__next")!}
               >
                 <Button type="text" shape="circle">
                   <FontAwesomeIcon icon={faPlus} />
                 </Button>
               </Dropdown>
 
-              <Tooltip
-                title={t("invite")}
-                getPopupContainer={() => document.getElementById("__next")!}
-              >
+              <Tooltip title={t("invite")}>
                 <Button type="primary" shape="circle">
                   <FontAwesomeIcon icon={faHandshake} />
                 </Button>
@@ -166,7 +158,6 @@ function MyApp({ Component, pageProps }: AppProps) {
                     <List.Item>Example notification 2</List.Item>
                   </List>
                 }
-                getPopupContainer={() => document.getElementById("__next")!}
               >
                 <Button
                   type="text"
@@ -200,7 +191,6 @@ function MyApp({ Component, pageProps }: AppProps) {
                     </Menu.Item>
                   </Menu>
                 }
-                getPopupContainer={() => document.getElementById("__next")!}
               >
                 <Button>
                   <Space>

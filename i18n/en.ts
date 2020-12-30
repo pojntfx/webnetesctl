@@ -32,4 +32,8 @@ export default {
   location: "Location",
   publicIp: "Public IP",
   openInResources: "Open in Resources",
+  openInNodes: "Open in Nodes",
+  name: "Name",
+  kind: "Kind",
+  openInTerminal: "Open in Terminal",
 };

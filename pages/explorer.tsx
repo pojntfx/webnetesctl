@@ -1,16 +1,19 @@
 import {
   faAngleDoubleDown,
+  faAngleDoubleUp,
   faCube,
   faEllipsisV,
+  faFont,
   faGlobe,
   faMapMarkerAlt,
   faMicrochip,
   faMinus,
   faMobile,
   faPlus,
+  faShapes,
   faTerminal,
   faTrash,
-  faWifi,
+  faWifi
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -21,7 +24,7 @@ import {
   List,
   Menu,
   Space,
-  Tooltip,
+  Tooltip
 } from "antd";
 import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
@@ -68,7 +71,7 @@ function Explorer() {
     }
   };
 
-  const dataSource = nodes.map((node) => {
+  const nodesDataSource = nodes.map((node) => {
     const computeScore = computeStats.find(
       (candidate) => candidate.ip === node.privateIP
     )?.score;
@@ -88,7 +91,12 @@ function Explorer() {
     };
   });
 
-  const columns = [
+  const resourcesDataSource = resources.map((resource, index) => ({
+    ...resource,
+    key: index,
+  }));
+
+  const nodeColumns = [
     {
       title: (
         <>
@@ -97,7 +105,7 @@ function Explorer() {
       ),
       dataIndex: "privateIP",
       key: "privateIP",
-      sorter: (a: typeof dataSource[0], b: typeof dataSource[0]) =>
+      sorter: (a: typeof nodesDataSource[0], b: typeof nodesDataSource[0]) =>
         parseInt(a.privateIP.split(".")[3]) -
         parseInt(b.privateIP.split(".")[3]),
     },
@@ -109,7 +117,7 @@ function Explorer() {
       ),
       dataIndex: "location",
       key: "location",
-      sorter: (a: typeof dataSource[0], b: typeof dataSource[0]) =>
+      sorter: (a: typeof nodesDataSource[0], b: typeof nodesDataSource[0]) =>
         a.location.localeCompare(b.location),
     },
     {
@@ -120,7 +128,7 @@ function Explorer() {
       ),
       dataIndex: "publicIP",
       key: "publicIP",
-      sorter: (a: typeof dataSource[0], b: typeof dataSource[0]) =>
+      sorter: (a: typeof nodesDataSource[0], b: typeof nodesDataSource[0]) =>
         parseInt(a.publicIP.split(".")[0]) - parseInt(b.publicIP.split(".")[0]),
     },
     {
@@ -131,7 +139,7 @@ function Explorer() {
       ),
       dataIndex: "computeScore",
       key: "computeScore",
-      sorter: (a: typeof dataSource[0], b: typeof dataSource[0]) =>
+      sorter: (a: typeof nodesDataSource[0], b: typeof nodesDataSource[0]) =>
         parseInt(a.computeScore.split(" ")[0]) -
         parseInt(b.computeScore.split(" ")[0]),
     },
@@ -143,7 +151,7 @@ function Explorer() {
       ),
       dataIndex: "networkingScore",
       key: "networkingScore",
-      sorter: (a: typeof dataSource[0], b: typeof dataSource[0]) =>
+      sorter: (a: typeof nodesDataSource[0], b: typeof nodesDataSource[0]) =>
         parseInt(a.networkingScore.split(" ")[0]) -
         parseInt(b.networkingScore.split(" ")[0]),
     },
@@ -151,11 +159,8 @@ function Explorer() {
       title: "",
       dataIndex: "privateIP",
       key: "operation",
-      render: (privateIP: typeof dataSource[0]["privateIP"]) => (
-        <Tooltip
-          title={t("openInOverview")}
-          getPopupContainer={() => document.getElementById("__next")!}
-        >
+      render: (privateIP: typeof nodesDataSource[0]["privateIP"]) => (
+        <Tooltip title={t("openInOverview")}>
           <Button
             type="text"
             shape="circle"
@@ -172,10 +177,109 @@ function Explorer() {
     },
   ];
 
+  const resourceColumns = [
+    {
+      title: (
+        <>
+          <FontAwesomeIcon fixedWidth icon={faShapes} /> {t("kind")}
+        </>
+      ),
+      dataIndex: "kind",
+      key: "kind",
+      sorter: (
+        a: typeof resourcesDataSource[0],
+        b: typeof resourcesDataSource[0]
+      ) => a.name.localeCompare(b.name),
+    },
+    {
+      title: (
+        <>
+          <FontAwesomeIcon fixedWidth icon={faFont} /> {t("name")}
+        </>
+      ),
+      dataIndex: "name",
+      key: "name",
+      sorter: (
+        a: typeof resourcesDataSource[0],
+        b: typeof resourcesDataSource[0]
+      ) => a.name.localeCompare(b.name),
+    },
+    {
+      title: (
+        <>
+          <FontAwesomeIcon fixedWidth icon={faMobile} /> {t("node")}
+        </>
+      ),
+      dataIndex: "node",
+      key: "node",
+      sorter: (
+        a: typeof resourcesDataSource[0],
+        b: typeof resourcesDataSource[0]
+      ) => parseInt(a.node.split(".")[0]) - parseInt(b.node.split(".")[0]),
+      render: (node: typeof resourcesDataSource[0]["node"]) => (
+        <>
+          {node}{" "}
+          <Tooltip title={t("openInNodes")}>
+            <Button
+              type="text"
+              shape="circle"
+              onClick={(e) => {
+                e.stopPropagation();
+
+                setSelectedRow(node);
+              }}
+            >
+              <FontAwesomeIcon fixedWidth icon={faAngleDoubleUp} />
+            </Button>
+          </Tooltip>
+        </>
+      ),
+    },
+    {
+      title: "",
+      dataIndex: "node",
+      key: "operation",
+      render: (_: any, resource: typeof resourcesDataSource[0]) => (
+        <>
+          {resource.kind === "Workload" && (
+            <>
+              <Tooltip title={t("openInTerminal")}>
+                <Action type="text" shape="circle">
+                  <FontAwesomeIcon icon={faTerminal} />
+                </Action>
+              </Tooltip>
+
+              <ActionSplit />
+            </>
+          )}
+
+          <Dropdown
+            overlay={
+              <Menu>
+                <Menu.Item key="delete">
+                  <Space>
+                    <FontAwesomeIcon fixedWidth icon={faTrash} />
+                    {t("delete")}
+                  </Space>
+                </Menu.Item>
+              </Menu>
+            }
+          >
+            <Action type="text" shape="circle">
+              <FontAwesomeIcon icon={faEllipsisV} />
+            </Action>
+          </Dropdown>
+        </>
+      ),
+    },
+  ];
+
   return (
     <Animate transitionName="fadeandzoom" transitionAppear>
       <Wrapper>
-        <Title level={2}>{t("node", { count: 2 })}</Title>
+        <Title level={2}>
+          <FontAwesomeIcon icon={faMobile} /> {t("node", { count: 2 })}
+        </Title>
 
         <WideSpace direction="vertical" size="middle">
           <Input.Search
@@ -185,7 +289,7 @@ function Explorer() {
           />
 
           <Table
-            dataSource={dataSource.filter((node) =>
+            dataSource={nodesDataSource.filter((node) =>
               nodeFilter.length === 0
                 ? node
                 : Object.values(node).reduce<boolean>(
@@ -197,7 +301,7 @@ function Explorer() {
                     false
                   )
             )}
-            columns={columns as any}
+            columns={nodeColumns as any}
             scroll={{ x: "max-content" }}
             locale={{
               emptyText: t("noMatchingNodesFound"),
@@ -206,7 +310,8 @@ function Explorer() {
               expandedRowRender: (record) => {
                 const matchingResources = resources.filter(
                   (resource) =>
-                    resource.node === (record as typeof dataSource[0]).privateIP
+                    resource.node ===
+                    (record as typeof nodesDataSource[0]).privateIP
                 );
 
                 if (matchingResources.length === 0) {
@@ -223,23 +328,20 @@ function Explorer() {
                         <ResourceItem
                           actions={[
                             resource.kind === "Workload" && (
-                              <Button type="text" shape="circle">
-                                <FontAwesomeIcon icon={faTerminal} />
-                              </Button>
+                              <Tooltip title={t("openInTerminal")}>
+                                <Button type="text" shape="circle">
+                                  <FontAwesomeIcon icon={faTerminal} />
+                                </Button>
+                              </Tooltip>
                             ),
+                            <Tooltip title={t("openInResources")}>
+                              <Button type="text" shape="circle">
+                                <FontAwesomeIcon icon={faAngleDoubleDown} />
+                              </Button>
+                            </Tooltip>,
                             <Dropdown
                               overlay={
                                 <Menu>
-                                  <Menu.Item key="openInExplorer">
-                                    <Space>
-                                      <FontAwesomeIcon
-                                        fixedWidth
-                                        icon={faAngleDoubleDown}
-                                      />
-                                      {t("openInResources")}
-                                    </Space>
-                                  </Menu.Item>
-
                                   <Menu.Item key="delete">
                                     <Space>
                                       <FontAwesomeIcon
@@ -250,9 +352,6 @@ function Explorer() {
                                     </Space>
                                   </Menu.Item>
                                 </Menu>
-                              }
-                              getPopupContainer={() =>
-                                document.getElementById("__next")!
                               }
                             >
                               <Button type="text" shape="circle">
@@ -296,7 +395,7 @@ function Explorer() {
                       expanded
                         ? setSelectedRow(undefined)
                         : setSelectedRow(
-                            (record as typeof dataSource[0]).privateIP
+                            (record as typeof nodesDataSource[0]).privateIP
                           );
                     }}
                   >
@@ -310,7 +409,7 @@ function Explorer() {
                     resources.filter(
                       (resource) =>
                         resource.node ===
-                        (record as typeof dataSource[0]).privateIP
+                        (record as typeof nodesDataSource[0]).privateIP
                     ).length
                   }
                 </Space>
@@ -320,11 +419,14 @@ function Explorer() {
               return {
                 onClick: () => {
                   if (
-                    selectedRow === (record as typeof dataSource[0]).privateIP
+                    selectedRow ===
+                    (record as typeof nodesDataSource[0]).privateIP
                   ) {
                     setSelectedRow(undefined);
                   } else {
-                    setSelectedRow((record as typeof dataSource[0]).privateIP);
+                    setSelectedRow(
+                      (record as typeof nodesDataSource[0]).privateIP
+                    );
                   }
                 },
               };
@@ -332,7 +434,18 @@ function Explorer() {
           />
         </WideSpace>
 
-        <Title level={2}>{t("resource", { count: 2 })}</Title>
+        <Title level={2}>
+          <FontAwesomeIcon icon={faCube} /> {t("resource", { count: 2 })}
+        </Title>
+
+        <ResourceTable
+          dataSource={resourcesDataSource}
+          columns={resourceColumns as any}
+          scroll={{ x: "max-content" }}
+          locale={{
+            emptyText: t("noMatchingResourcesFound"),
+          }}
+        />
       </Wrapper>
     </Animate>
   );
@@ -352,6 +465,28 @@ const ResourceList = styled(List)``;
 const ResourceItem = styled(ResourceItemTmpl)`
   margin-left: 0;
   margin-right: 0;
+`;
+
+const ResourceTable = styled(Table)`
+  .ant-table-tbody .ant-table-cell:last-child {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+`;
+
+const ActionSplit = styled.em`
+  width: 1px;
+  height: 14px;
+  background-color: #303030;
+`;
+
+const Action = styled(Button)`
+  margin-left: 8px;
+
+  :not(:last-child) {
+    margin-right: 8px;
+  }
 `;
 
 export default Explorer;
