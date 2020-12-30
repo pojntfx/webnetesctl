@@ -40,14 +40,17 @@ import networkingStats from "../data/networking-stats.json";
 import nodes from "../data/nodes.json";
 import resources from "../data/resources.json";
 import glass from "../styles/glass";
+import { filterKeys } from "../utils/filter-keys";
 import { ResourceItem as ResourceItemTmpl } from "./index";
 
 function Explorer() {
   const { t } = useTranslation();
   const router = useRouter();
 
-  const [nodeFilter, setNodeFilter] = useState("");
-  const [selectedRow, _setSelectedRow] = useState<string>();
+  const [nodesFilter, setNodesFilter] = useState("");
+  const [resourcesFilter, setResourcesFilter] = useState("");
+
+  const [selectedNodeRow, _setSelectedNodeRow] = useState<string>();
 
   useEffect(() => {
     const privateIP = router.query.privateIP;
@@ -57,13 +60,13 @@ function Explorer() {
         (candidate) => candidate.privateIP === privateIP
       );
 
-      _setSelectedRow(foundNode?.privateIP);
+      _setSelectedNodeRow(foundNode?.privateIP);
     } else {
-      _setSelectedRow(undefined);
+      _setSelectedNodeRow(undefined);
     }
   }, [router.query.privateIP]);
 
-  const setSelectedRow = (privateIP?: string) => {
+  const setSelectedNodeRow = (privateIP?: string) => {
     if (privateIP) {
       router.push(`/explorer?privateIP=${privateIP}`);
     } else {
@@ -229,7 +232,7 @@ function Explorer() {
               onClick={(e) => {
                 e.stopPropagation();
 
-                setSelectedRow(node);
+                setSelectedNodeRow(node);
               }}
             >
               <FontAwesomeIcon fixedWidth icon={faAngleDoubleUp} />
@@ -287,23 +290,12 @@ function Explorer() {
         <WideSpace direction="vertical" size="middle">
           <Input.Search
             placeholder={t("filterNodes")}
-            onChange={(e) => setNodeFilter(e.target.value)}
-            value={nodeFilter}
+            onChange={(e) => setNodesFilter(e.target.value)}
+            value={nodesFilter}
           />
 
           <Table
-            dataSource={nodesDataSource.filter((node) =>
-              nodeFilter.length === 0
-                ? node
-                : Object.values(node).reduce<boolean>(
-                    (all, curr) =>
-                      all ||
-                      ("" + curr)
-                        .toLowerCase()
-                        .includes(nodeFilter.toLowerCase()),
-                    false
-                  )
-            )}
+            dataSource={filterKeys(nodesDataSource, nodesFilter)}
             columns={nodeColumns as any}
             scroll={{ x: "max-content" }}
             locale={{
@@ -379,7 +371,7 @@ function Explorer() {
                 }
               },
               expandedRowKeys: (() => {
-                const keys = [selectedRow].filter((s) => s);
+                const keys = [selectedNodeRow].filter((s) => s);
 
                 if (keys.length > 0) {
                   return keys;
@@ -396,8 +388,8 @@ function Explorer() {
                       e.stopPropagation();
 
                       expanded
-                        ? setSelectedRow(undefined)
-                        : setSelectedRow(
+                        ? setSelectedNodeRow(undefined)
+                        : setSelectedNodeRow(
                             (record as typeof nodesDataSource[0]).privateIP
                           );
                     }}
@@ -422,12 +414,12 @@ function Explorer() {
               return {
                 onClick: () => {
                   if (
-                    selectedRow ===
+                    selectedNodeRow ===
                     (record as typeof nodesDataSource[0]).privateIP
                   ) {
-                    setSelectedRow(undefined);
+                    setSelectedNodeRow(undefined);
                   } else {
-                    setSelectedRow(
+                    setSelectedNodeRow(
                       (record as typeof nodesDataSource[0]).privateIP
                     );
                   }
@@ -441,14 +433,22 @@ function Explorer() {
           <FontAwesomeIcon icon={faCube} /> {t("resource", { count: 2 })}
         </Title>
 
-        <ResourceTable
-          dataSource={resourcesDataSource}
-          columns={resourceColumns as any}
-          scroll={{ x: "max-content" }}
-          locale={{
-            emptyText: t("noMatchingResourcesFound"),
-          }}
-        />
+        <WideSpace direction="vertical" size="middle">
+          <Input.Search
+            placeholder={t("filterResources")}
+            onChange={(e) => setResourcesFilter(e.target.value)}
+            value={resourcesFilter}
+          />
+
+          <ResourceTable
+            dataSource={filterKeys(resourcesDataSource, resourcesFilter)}
+            columns={resourceColumns as any}
+            scroll={{ x: "max-content" }}
+            locale={{
+              emptyText: t("noMatchingResourcesFound"),
+            }}
+          />
+        </WideSpace>
       </Wrapper>
     </Animate>
   );
