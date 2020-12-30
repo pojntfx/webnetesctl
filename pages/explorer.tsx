@@ -51,6 +51,7 @@ function Explorer() {
   const [resourcesFilter, setResourcesFilter] = useState("");
 
   const [selectedNodeRow, _setSelectedNodeRow] = useState<string>();
+  const [selectedResourceRow, _setSelectedResourceRow] = useState<string[]>();
 
   useEffect(() => {
     const privateIP = router.query.privateIP;
@@ -66,9 +67,46 @@ function Explorer() {
     }
   }, [router.query.privateIP]);
 
+  useEffect(() => {
+    const resource = router.query.resource as string;
+
+    if (resource) {
+      const [kind, name, node] = resource.split(":");
+
+      const foundResource: any = resources.find(
+        (candidate) =>
+          candidate.kind === kind &&
+          candidate.name === name &&
+          candidate.node === node
+      );
+
+      if (foundResource) {
+        _setSelectedResourceRow([
+          foundResource.kind,
+          foundResource.name,
+          foundResource.node,
+        ]);
+      } else {
+        _setSelectedResourceRow(undefined);
+      }
+    } else {
+      _setSelectedResourceRow(undefined);
+    }
+  }, [router.query.resource]);
+
   const setSelectedNodeRow = (privateIP?: string) => {
     if (privateIP) {
       router.push(`/explorer?privateIP=${privateIP}`);
+    } else {
+      router.push("/explorer");
+    }
+  };
+
+  const setSelectedResourceRow = (resource?: string[]) => {
+    if (resource && resource[0] && resource[1] && resource[2]) {
+      router.push(
+        `/explorer?resource=${resource[0]}:${resource[1]}:${resource[2]}`
+      );
     } else {
       router.push("/explorer");
     }
@@ -410,18 +448,15 @@ function Explorer() {
                 </Space>
               ),
             }}
-            onRow={(record) => {
+            onRow={(rawRecord) => {
+              const record = rawRecord as typeof nodesDataSource[0];
+
               return {
                 onClick: () => {
-                  if (
-                    selectedNodeRow ===
-                    (record as typeof nodesDataSource[0]).privateIP
-                  ) {
+                  if (selectedNodeRow === record.privateIP) {
                     setSelectedNodeRow(undefined);
                   } else {
-                    setSelectedNodeRow(
-                      (record as typeof nodesDataSource[0]).privateIP
-                    );
+                    setSelectedNodeRow(record.privateIP);
                   }
                 },
               };
@@ -446,6 +481,28 @@ function Explorer() {
             scroll={{ x: "max-content" }}
             locale={{
               emptyText: t("noMatchingResourcesFound"),
+            }}
+            onRow={(rawRecord) => {
+              return {
+                onClick: () => {
+                  const record = rawRecord as typeof resourcesDataSource[0];
+
+                  if (
+                    selectedResourceRow &&
+                    selectedResourceRow[0] === record.kind &&
+                    selectedResourceRow[1] === record.name &&
+                    selectedResourceRow[2] === record.node
+                  ) {
+                    setSelectedResourceRow(undefined);
+                  } else {
+                    setSelectedResourceRow([
+                      record.kind,
+                      record.name,
+                      record.node,
+                    ]);
+                  }
+                },
+              };
             }}
           />
         </WideSpace>
