@@ -11,7 +11,6 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Input, Space, Tooltip } from "antd";
 import Title from "antd/lib/typography/Title";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import Animate from "rc-animate";
 import { useEffect, useState } from "react";
@@ -137,13 +136,19 @@ function Explorer() {
       dataIndex: "privateIP",
       key: "operation",
       render: (privateIP: typeof dataSource[0]["privateIP"]) => (
-        <Link href={`/?privateIP=${privateIP}`}>
-          <Tooltip title={t("openInOverview")}>
-            <Button type="text" shape="circle">
-              <FontAwesomeIcon icon={faGlobe} />
-            </Button>
-          </Tooltip>
-        </Link>
+        <Tooltip title={t("openInOverview")}>
+          <Button
+            type="text"
+            shape="circle"
+            onClick={(e) => {
+              e.stopPropagation();
+
+              router.push(`/?privateIP=${privateIP}`);
+            }}
+          >
+            <FontAwesomeIcon icon={faGlobe} />
+          </Button>
+        </Tooltip>
       ),
     },
   ];
@@ -195,7 +200,11 @@ function Explorer() {
                     <Button
                       type="text"
                       shape="circle"
-                      onClick={() => setSelectedRow(undefined)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+
+                        setSelectedRow(undefined);
+                      }}
                     >
                       <FontAwesomeIcon fixedWidth icon={faMinus} />
                     </Button>
@@ -206,11 +215,13 @@ function Explorer() {
                     <Button
                       type="text"
                       shape="circle"
-                      onClick={() =>
+                      onClick={(e) => {
+                        e.stopPropagation();
+
                         setSelectedRow(
                           (record as typeof dataSource[0]).privateIP
-                        )
-                      }
+                        );
+                      }}
                     >
                       <FontAwesomeIcon fixedWidth icon={faPlus} />
                     </Button>
