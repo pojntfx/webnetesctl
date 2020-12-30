@@ -49,6 +49,11 @@ body {
     height: 100%;
   }
 }
+
+/* Popovers & dropdowns should always be on top */
+.ant-popover, .ant-dropdown {
+  z-index: 9999;
+}
 `;
 
 const theme = {};
@@ -126,6 +131,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                     </Menu.Item>
                   </Menu>
                 }
+                getPopupContainer={() => document.getElementById("__next")!}
               >
                 <Button type="text" shape="circle">
                   <FontAwesomeIcon icon={faPlus} />
@@ -194,6 +200,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                     </Menu.Item>
                   </Menu>
                 }
+                getPopupContainer={() => document.getElementById("__next")!}
               >
                 <Button>
                   <Space>

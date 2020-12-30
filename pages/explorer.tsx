@@ -251,6 +251,9 @@ function Explorer() {
                                   </Menu.Item>
                                 </Menu>
                               }
+                              getPopupContainer={() =>
+                                document.getElementById("__next")!
+                              }
                             >
                               <Button type="text" shape="circle">
                                 <FontAwesomeIcon icon={faEllipsisV} />
