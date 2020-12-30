@@ -37,7 +37,7 @@ import networkingStats from "../data/networking-stats.json";
 import nodes from "../data/nodes.json";
 import resources from "../data/resources.json";
 import glass from "../styles/glass";
-import { ResourceItem } from "./index";
+import { ResourceItem as ResourceItemTmpl } from "./index";
 
 function Explorer() {
   const { t } = useTranslation();
@@ -208,16 +208,14 @@ function Explorer() {
 
                 if (matchingResources.length === 0) {
                   return (
-                    <List>
-                      <Empty
-                        description={t("noResourcesDeployed")}
-                        image={Empty.PRESENTED_IMAGE_SIMPLE}
-                      />
-                    </List>
+                    <Empty
+                      description={t("noResourcesDeployed")}
+                      image={Empty.PRESENTED_IMAGE_SIMPLE}
+                    />
                   );
                 } else {
                   return (
-                    <List>
+                    <ResourceList>
                       {matchingResources.map((resource, index) => (
                         <ResourceItem
                           actions={[
@@ -268,7 +266,7 @@ function Explorer() {
                           />
                         </ResourceItem>
                       ))}
-                    </List>
+                    </ResourceList>
                   );
                 }
               },
@@ -339,6 +337,13 @@ const WideSpace = styled(Space)`
   .ant-pagination > * {
     ${glass}
   }
+`;
+
+const ResourceList = styled(List)``;
+
+const ResourceItem = styled(ResourceItemTmpl)`
+  margin-left: 0;
+  margin-right: 0;
 `;
 
 export default Explorer;

@@ -15,6 +15,11 @@ export default styled(Table)`
 
   .ant-table-expanded-row {
     background: #2f2f2f;
+
+    > td {
+      padding-left: 0;
+      padding-right: 0;
+    }
   }
 
   .ant-table-row:hover {
