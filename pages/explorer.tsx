@@ -13,7 +13,7 @@ import {
   faShapes,
   faTerminal,
   faTrash,
-  faWifi
+  faWifi,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -24,7 +24,7 @@ import {
   List,
   Menu,
   Space,
-  Tooltip
+  Tooltip,
 } from "antd";
 import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
@@ -181,19 +181,6 @@ function Explorer() {
     {
       title: (
         <>
-          <FontAwesomeIcon fixedWidth icon={faShapes} /> {t("kind")}
-        </>
-      ),
-      dataIndex: "kind",
-      key: "kind",
-      sorter: (
-        a: typeof resourcesDataSource[0],
-        b: typeof resourcesDataSource[0]
-      ) => a.name.localeCompare(b.name),
-    },
-    {
-      title: (
-        <>
           <FontAwesomeIcon fixedWidth icon={faFont} /> {t("name")}
         </>
       ),
@@ -203,6 +190,22 @@ function Explorer() {
         a: typeof resourcesDataSource[0],
         b: typeof resourcesDataSource[0]
       ) => a.name.localeCompare(b.name),
+    },
+    {
+      title: (
+        <>
+          <FontAwesomeIcon fixedWidth icon={faShapes} /> {t("kind")}
+        </>
+      ),
+      dataIndex: "kind",
+      key: "kind",
+      sorter: (
+        a: typeof resourcesDataSource[0],
+        b: typeof resourcesDataSource[0]
+      ) => a.name.localeCompare(b.name),
+      render: (kind: typeof resourcesDataSource[0]["kind"]) => (
+        <Text code>{kind}</Text>
+      ),
     },
     {
       title: (
