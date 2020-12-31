@@ -6,11 +6,12 @@ import {
   faHandshake,
   faNetworkWired,
   faPlus,
-  faSearch
+  faSearch,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Dropdown, List, Menu, Popover, Space, Tooltip } from "antd";
 import { Content } from "antd/lib/layout/layout";
+import Modal from "antd/lib/modal/Modal";
 import i18n from "i18next";
 import type { AppProps } from "next/app";
 import Head from "next/head";
@@ -23,7 +24,7 @@ import Navbar, {
   DesktopHeader,
   MobileHeader,
   SearchInput,
-  TabsMobile
+  TabsMobile,
 } from "../components/navbar";
 import en from "../i18n/en";
 import universeTexture from "../img/night-sky.png";
@@ -63,6 +64,35 @@ function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
 
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [createResourceDialogOpen, setCreateResourceDialogOpen] = useState(
+    false
+  );
+
+  const createMenus = (
+    <Menu>
+      <Menu.Item
+        key="resource"
+        onClick={() => setCreateResourceDialogOpen(true)}
+      >
+        <Space>
+          <FontAwesomeIcon fixedWidth icon={faCube} />
+          {t("resource")}
+        </Space>
+      </Menu.Item>
+      <Menu.Item key="cluster">
+        <Space>
+          <FontAwesomeIcon fixedWidth icon={faNetworkWired} />
+          {t("cluster")}
+        </Space>
+      </Menu.Item>
+      <Menu.Item key="file">
+        <Space>
+          <FontAwesomeIcon fixedWidth icon={faFile} />
+          {t("file")}
+        </Space>
+      </Menu.Item>
+    </Menu>
+  );
 
   return (
     <>
@@ -75,6 +105,31 @@ function MyApp({ Component, pageProps }: AppProps) {
       <GlobalStyle />
       <ThemeProvider theme={theme}>
         <Layout>
+          <Modal
+            title={
+              <Space>
+                <FontAwesomeIcon fixedWidth icon={faCube} />
+                <span>
+                  {t("create")} {t("resource")}
+                </span>
+              </Space>
+            }
+            centered
+            visible={createResourceDialogOpen}
+            onOk={() => setCreateResourceDialogOpen(false)}
+            onCancel={() => setCreateResourceDialogOpen(false)}
+            okText={
+              <Space>
+                <FontAwesomeIcon fixedWidth icon={faPlus} />
+                <span>
+                  {t("create")} {t("resource")}
+                </span>
+              </Space>
+            }
+          >
+            Hey!
+          </Modal>
+
           <MobileHeader>
             <Tooltip title={t("findNodeOrResource")}>
               <Button type="text" shape="circle">
@@ -104,30 +159,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                 </Button>
               </Popover>
 
-              <Dropdown
-                overlay={
-                  <Menu>
-                    <Menu.Item key="resource">
-                      <Space>
-                        <FontAwesomeIcon fixedWidth icon={faCube} />
-                        {t("resource")}
-                      </Space>
-                    </Menu.Item>
-                    <Menu.Item key="cluster">
-                      <Space>
-                        <FontAwesomeIcon fixedWidth icon={faNetworkWired} />
-                        {t("cluster")}
-                      </Space>
-                    </Menu.Item>
-                    <Menu.Item key="file">
-                      <Space>
-                        <FontAwesomeIcon fixedWidth icon={faFile} />
-                        {t("file")}
-                      </Space>
-                    </Menu.Item>
-                  </Menu>
-                }
-              >
+              <Dropdown overlay={createMenus}>
                 <Button type="text" shape="circle">
                   <FontAwesomeIcon icon={faPlus} />
                 </Button>
@@ -168,30 +200,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                 </Button>
               </Popover>
 
-              <Dropdown
-                overlay={
-                  <Menu>
-                    <Menu.Item key="resource">
-                      <Space>
-                        <FontAwesomeIcon fixedWidth icon={faCube} />
-                        {t("resource")}
-                      </Space>
-                    </Menu.Item>
-                    <Menu.Item key="cluster">
-                      <Space>
-                        <FontAwesomeIcon fixedWidth icon={faNetworkWired} />
-                        {t("cluster")}
-                      </Space>
-                    </Menu.Item>
-                    <Menu.Item key="file">
-                      <Space>
-                        <FontAwesomeIcon fixedWidth icon={faFile} />
-                        {t("file")}
-                      </Space>
-                    </Menu.Item>
-                  </Menu>
-                }
-              >
+              <Dropdown overlay={createMenus}>
                 <Button>
                   <Space>
                     <FontAwesomeIcon icon={faPlus} />

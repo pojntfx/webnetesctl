@@ -64,7 +64,7 @@ export const DesktopHeader = styled(HeaderTmpl)`
   align-items: center;
   justify-content: space-between;
   position: absolute;
-  z-index: 9999;
+  z-index: 999;
   width: 100%;
   border-bottom: 1px solid #303030;
   ${glass}
@@ -79,7 +79,7 @@ export const MobileHeader = styled(HeaderTmpl)`
   align-items: center;
   justify-content: space-between;
   position: absolute;
-  z-index: 9999;
+  z-index: 999;
   width: 100%;
   border-bottom: 1px solid #303030;
   ${glass}
@@ -94,7 +94,7 @@ export const TabsMobile = styled(HeaderTmpl)`
   align-items: center;
   justify-content: center;
   position: absolute;
-  z-index: 9999;
+  z-index: 999;
   width: 100%;
   border-top: 1px solid #303030;
   bottom: 0;
