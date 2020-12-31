@@ -36,4 +36,5 @@ export default {
   name: "Name",
   kind: "Kind",
   openInTerminal: "Open in Terminal",
+  connected: "Connected",
 };
