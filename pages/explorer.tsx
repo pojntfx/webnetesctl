@@ -31,7 +31,7 @@ import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
 import { useRouter } from "next/router";
 import Animate from "rc-animate";
-import { useEffect, useState } from "react";
+import { createRef, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { Wrapper } from "../components/layout-wrapper";
@@ -54,6 +54,9 @@ function Explorer() {
 
   const [selectedNodeRow, _setSelectedNodeRow] = useState<string>();
   const [selectedResourceRow, _setSelectedResourceRow] = useState<string[]>();
+
+  const refInView = createRef<HTMLElement>();
+  const [handleRef, setHandleRef] = useState(true);
 
   useEffect(() => {
     const privateIP = router.query.privateIP;
@@ -96,8 +99,22 @@ function Explorer() {
     }
   }, [router.query.resource]);
 
+  useEffect(() => {
+    if (handleRef && refInView.current) {
+      refInView.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "center",
+      });
+
+      setHandleRef(false);
+    }
+  }, [refInView, handleRef]);
+
   const setSelectedNodeRow = (privateIP?: string) => {
     if (privateIP) {
+      setHandleRef(true);
+
       router.push(`/explorer?privateIP=${privateIP}`);
     } else {
       router.push("/explorer");
@@ -114,6 +131,8 @@ function Explorer() {
       | undefined
   ) => {
     if (resource?.name && resource?.kind && resource?.node) {
+      setHandleRef(true);
+
       router.push(
         `/explorer?resource=${stringifyResourceKey(
           resource?.name,
@@ -363,70 +382,74 @@ function Explorer() {
 
                 if (matchingResources.length === 0) {
                   return (
-                    <Empty
-                      description={t("noResourcesDeployed")}
-                      image={Empty.PRESENTED_IMAGE_SIMPLE}
-                    />
+                    <div ref={refInView as any}>
+                      <Empty
+                        description={t("noResourcesDeployed")}
+                        image={Empty.PRESENTED_IMAGE_SIMPLE}
+                      />
+                    </div>
                   );
                 } else {
                   return (
-                    <ResourceList>
-                      {matchingResources.map((resource, index) => (
-                        <ResourceItem
-                          actions={[
-                            resource.kind === "Workload" && (
-                              <Tooltip title={t("openInTerminal")}>
-                                <Button type="text" shape="circle">
-                                  <FontAwesomeIcon icon={faTerminal} />
-                                </Button>
-                              </Tooltip>
-                            ),
-                            <Tooltip title={t("openInResources")}>
-                              <Button
-                                type="text"
-                                shape="circle"
-                                onClick={(e) => {
-                                  e.stopPropagation();
+                    <div ref={refInView as any}>
+                      <ResourceList>
+                        {matchingResources.map((resource, index) => (
+                          <ResourceItem
+                            actions={[
+                              resource.kind === "Workload" && (
+                                <Tooltip title={t("openInTerminal")}>
+                                  <Button type="text" shape="circle">
+                                    <FontAwesomeIcon icon={faTerminal} />
+                                  </Button>
+                                </Tooltip>
+                              ),
+                              <Tooltip title={t("openInResources")}>
+                                <Button
+                                  type="text"
+                                  shape="circle"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
 
-                                  setSelectedResourceRow(resource);
-                                }}
+                                    setSelectedResourceRow(resource);
+                                  }}
+                                >
+                                  <FontAwesomeIcon icon={faAngleDoubleDown} />
+                                </Button>
+                              </Tooltip>,
+                              <Dropdown
+                                overlay={
+                                  <Menu>
+                                    <Menu.Item key="delete">
+                                      <Space>
+                                        <FontAwesomeIcon
+                                          fixedWidth
+                                          icon={faTrash}
+                                        />
+                                        {t("delete")}
+                                      </Space>
+                                    </Menu.Item>
+                                  </Menu>
+                                }
                               >
-                                <FontAwesomeIcon icon={faAngleDoubleDown} />
-                              </Button>
-                            </Tooltip>,
-                            <Dropdown
-                              overlay={
-                                <Menu>
-                                  <Menu.Item key="delete">
-                                    <Space>
-                                      <FontAwesomeIcon
-                                        fixedWidth
-                                        icon={faTrash}
-                                      />
-                                      {t("delete")}
-                                    </Space>
-                                  </Menu.Item>
-                                </Menu>
+                                <Button type="text" shape="circle">
+                                  <FontAwesomeIcon icon={faEllipsisV} />
+                                </Button>
+                              </Dropdown>,
+                            ].filter((component) => component)}
+                            key={index}
+                          >
+                            <List.Item.Meta
+                              title={
+                                <>
+                                  {resource.name}{" "}
+                                  <Text code>{resource.kind}</Text>
+                                </>
                               }
-                            >
-                              <Button type="text" shape="circle">
-                                <FontAwesomeIcon icon={faEllipsisV} />
-                              </Button>
-                            </Dropdown>,
-                          ].filter((component) => component)}
-                          key={index}
-                        >
-                          <List.Item.Meta
-                            title={
-                              <>
-                                {resource.name}{" "}
-                                <Text code>{resource.kind}</Text>
-                              </>
-                            }
-                          />
-                        </ResourceItem>
-                      ))}
-                    </ResourceList>
+                            />
+                          </ResourceItem>
+                        ))}
+                      </ResourceList>
+                    </div>
                   );
                 }
               },
@@ -523,8 +546,12 @@ function Explorer() {
               };
             }}
             expandable={{
-              expandedRowRender: (record) => {
-                return <div>{JSON.stringify(record)}</div>;
+              expandedRowRender: (rawRecord) => {
+                const record = rawRecord as typeof resourcesDataSource[0];
+
+                return (
+                  <div ref={refInView as any}>{JSON.stringify(record)}</div>
+                );
               },
               expandedRowKeys: (() => {
                 if (selectedResourceRow) {
