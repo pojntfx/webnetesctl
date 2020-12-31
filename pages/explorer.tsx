@@ -19,6 +19,7 @@ import {
   faWifi,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Editor, { monaco } from "@monaco-editor/react";
 import {
   Button,
   Dropdown,
@@ -31,6 +32,7 @@ import {
 } from "antd";
 import Text from "antd/lib/typography/Text";
 import TitleTmpl from "antd/lib/typography/Title";
+import solarizedMonaco from "monaco-themes/themes/Solarized-dark.json";
 import { useRouter } from "next/router";
 import Animate from "rc-animate";
 import { createRef, useEffect, useState } from "react";
@@ -124,6 +126,21 @@ function Explorer() {
       setHandleRef(false);
     }
   }, [refInView, handleRef]);
+
+  useEffect(() => {
+    typeof window !== "undefined" &&
+      monaco
+        .init()
+        .then((monaco) =>
+          monaco.editor.defineTheme("solarized", solarizedMonaco as any)
+        )
+        .catch((error) =>
+          console.error(
+            "An error occurred during initialization of Monaco: ",
+            error
+          )
+        );
+  }, []);
 
   const setSelectedNodeRow = (privateIP?: string) => {
     if (privateIP) {
@@ -603,6 +620,17 @@ function Explorer() {
 
                     return (
                       <ResourceDisplay ref={refInView as any}>
+                        <Editor
+                          height="100%"
+                          language="json"
+                          value={JSON.stringify(record, undefined, 4)}
+                          theme="solarized"
+                          options={{
+                            cursorSmoothCaretAnimation: true,
+                            readOnly: true,
+                          }}
+                        />
+
                         <JSONTree
                           theme={solarized}
                           invertTheme={false}
@@ -712,8 +740,14 @@ const TitleSpace = styled(WideSpace)<any>`
 `;
 
 const ResourceDisplay = styled.div`
+  display: grid;
+  grid-template-columns: 50% 50%;
   margin-top: -16px;
   margin-bottom: -16px;
+
+  > *:first-child {
+    border-right: 1px solid #303030 !important;
+  }
 
   > ul {
     margin: 0 !important;
