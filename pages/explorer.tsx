@@ -628,6 +628,10 @@ function Explorer() {
                           options={{
                             cursorSmoothCaretAnimation: true,
                             readOnly: true,
+                            padding: {
+                              top: 16,
+                              bottom: 16,
+                            },
                           }}
                         />
 
@@ -753,6 +757,8 @@ const ResourceDisplay = styled.div`
     margin: 0 !important;
     min-height: 32px;
     padding: 1rem !important;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
   }
 `;
 
