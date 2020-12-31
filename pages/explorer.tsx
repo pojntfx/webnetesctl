@@ -395,6 +395,11 @@ function Explorer() {
                       <ResourceList>
                         {matchingResources.map((resource, index) => (
                           <ResourceItem
+                            onClick={(e) => {
+                              e.stopPropagation();
+
+                              setSelectedResourceRow(resource);
+                            }}
                             actions={[
                               resource.kind === "Workload" && (
                                 <Tooltip title={t("openInTerminal")}>
