@@ -4,12 +4,14 @@ import {
   faGlobe,
   faLocationArrow,
   faMapMarkerAlt,
-  faThumbtack
+  faSave,
+  faThumbtack,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { feature } from "@ideditor/country-coder";
 import { Button, Divider as DividerTmpl, Space } from "antd";
 import Text from "antd/lib/typography/Text";
+import Title from "antd/lib/typography/Title";
 import * as Nominatim from "nominatim-browser";
 import getPublicIp from "public-ip";
 import Animate from "rc-animate";
@@ -22,6 +24,7 @@ import ResourceEditorTmpl from "../components/resource-editor";
 import node from "../data/node";
 import packageJSON from "../package.json";
 import glass from "../styles/glass";
+import { TitleSpace } from "./explorer";
 
 function Config() {
   const { t } = useTranslation();
@@ -171,6 +174,17 @@ function Config() {
           </Details>
         </StatusCard>
 
+        <TitleSpace align="center">
+          <Title level={2}>{t("nodeConfig")}</Title>
+
+          <Button>
+            <Space>
+              <FontAwesomeIcon icon={faSave} />
+              {t("applyAndReload")}
+            </Space>
+          </Button>
+        </TitleSpace>
+
         <ResourceEditor data={node} />
       </Wrapper>
     </Animate>
@@ -254,7 +268,9 @@ const VersionInformation = styled.div`
 `;
 
 const ResourceEditor = styled(ResourceEditorTmpl)`
-  height: calc(100vh - 64px - 64px);
+  height: calc(
+    100vh - 64px - 64px - 2rem - 1rem
+  ); /* Top navbar, bottom navbar, top & bottom margins, title margin */
 `;
 
 export default Config;

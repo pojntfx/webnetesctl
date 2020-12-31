@@ -40,4 +40,6 @@ export default {
   coordinates: "Coordinates",
   youAre: "You are",
   metadata: "Metadata",
+  nodeConfig: "Node Config",
+  applyAndReload: "Apply & Reload",
 };

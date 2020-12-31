@@ -697,7 +697,7 @@ const Title = styled(TitleTmpl)`
   margin-bottom: 0 !important;
 `;
 
-const TitleSpace = styled(WideSpace)<any>`
+export const TitleSpace = styled(WideSpace)<any>`
   justify-content: space-between;
   margin-bottom: 1rem;
   cursor: pointer;
