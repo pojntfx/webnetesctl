@@ -19,7 +19,6 @@ import {
   faWifi,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Editor, { monaco } from "@monaco-editor/react";
 import {
   Button,
   Dropdown,
@@ -32,21 +31,20 @@ import {
 } from "antd";
 import Text from "antd/lib/typography/Text";
 import TitleTmpl from "antd/lib/typography/Title";
-import solarizedMonaco from "monaco-themes/themes/Solarized-dark.json";
+import yaml from "js-yaml";
 import { useRouter } from "next/router";
 import Animate from "rc-animate";
 import { createRef, useEffect, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
-import JSONTree from "react-json-tree";
 import styled from "styled-components";
 import { Wrapper } from "../components/layout-wrapper";
+import ResourceEditorTmpl from "../components/resource-editor";
 import Table from "../components/table";
 import computeStats from "../data/compute-stats.json";
 import networkingStats from "../data/networking-stats.json";
 import nodes from "../data/nodes.json";
 import resources from "../data/resources.json";
-import solarized from "../data/solarized.json";
 import glass from "../styles/glass";
 import { filterKeys } from "../utils/filter-keys";
 import { parseResourceKey, stringifyResourceKey } from "../utils/resource-key";
@@ -126,21 +124,6 @@ function Explorer() {
       setHandleRef(false);
     }
   }, [refInView, handleRef]);
-
-  useEffect(() => {
-    typeof window !== "undefined" &&
-      monaco
-        .init()
-        .then((monaco) =>
-          monaco.editor.defineTheme("solarized", solarizedMonaco as any)
-        )
-        .catch((error) =>
-          console.error(
-            "An error occurred during initialization of Monaco: ",
-            error
-          )
-        );
-  }, []);
 
   const setSelectedNodeRow = (privateIP?: string) => {
     if (privateIP) {
@@ -618,30 +601,7 @@ function Explorer() {
                   expandedRowRender: (rawRecord) => {
                     const record = rawRecord as typeof resourcesDataSource[0];
 
-                    return (
-                      <ResourceDisplay ref={refInView as any}>
-                        <Editor
-                          height="100%"
-                          language="json"
-                          value={JSON.stringify(record, undefined, 4)}
-                          theme="solarized"
-                          options={{
-                            cursorSmoothCaretAnimation: true,
-                            readOnly: true,
-                            padding: {
-                              top: 16,
-                              bottom: 16,
-                            },
-                          }}
-                        />
-
-                        <JSONTree
-                          theme={solarized}
-                          invertTheme={false}
-                          data={record}
-                        />
-                      </ResourceDisplay>
-                    );
+                    return <ResourceEditor one data={yaml.safeDump(record)} />;
                   },
                   expandedRowKeys: (() => {
                     if (selectedResourceRow) {
@@ -743,23 +703,9 @@ const TitleSpace = styled(WideSpace)<any>`
   cursor: pointer;
 `;
 
-const ResourceDisplay = styled.div`
-  display: grid;
-  grid-template-columns: 50% 50%;
+const ResourceEditor = styled(ResourceEditorTmpl)`
   margin-top: -16px;
   margin-bottom: -16px;
-
-  > *:first-child {
-    border-right: 1px solid #303030 !important;
-  }
-
-  > ul {
-    margin: 0 !important;
-    min-height: 32px;
-    padding: 1rem !important;
-    padding-top: 6px !important;
-    padding-bottom: 6px !important;
-  }
 `;
 
 export default Explorer;
