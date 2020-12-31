@@ -43,4 +43,5 @@ export default {
   nodeConfig: "Node Config",
   applyAndReload: "Apply & Reload",
   definition: "Definition",
+  youCanFindSomeExamplesInThe: "You can find some examples in the",
 };

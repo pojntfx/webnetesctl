@@ -208,7 +208,7 @@ const Overview = styled.div`
   }
 `;
 
-const ExternalLink = styled.a`
+export const ExternalLink = styled.a`
   color: unset;
 `;
 

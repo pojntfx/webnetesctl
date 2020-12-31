@@ -3,6 +3,7 @@ import {
   faChevronRight,
   faCode,
   faCube,
+  faExternalLinkAlt,
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,6 +15,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { TitleSpace } from "../pages/explorer";
+import { ExternalLink } from "../pages/config";
 import ResourceEditorTmpl from "./resource-editor";
 
 export interface ICreateResourceModalProps {
@@ -73,10 +75,23 @@ const CreateResourceModal: React.FC<ICreateResourceModalProps> = ({
 
       <Animate transitionName="fadeandslide" transitionAppear>
         {definitionOpen && (
-          <ResourceEditor
-            data={definition}
-            onEdit={(value) => setDefinition(value)}
-          />
+          <div>
+            <ResourceEditor
+              data={definition}
+              onEdit={(value) => setDefinition(value)}
+            />
+
+            <ExternalExampleLink>
+              {t("youCanFindSomeExamplesInThe")}{" "}
+              <ExternalLink
+                href="https://github.com/pojntfx/webnetes/tree/main/examples"
+                target="_blank"
+              >
+                GitHub Repository <FontAwesomeIcon icon={faExternalLinkAlt} />
+              </ExternalLink>
+              .
+            </ExternalExampleLink>
+          </div>
         )}
       </Animate>
     </Modal>
@@ -91,6 +106,10 @@ const ResourceEditor = styled(ResourceEditorTmpl)`
 
 const Modal = styled(ModalTmpl)`
   min-width: 80vw;
+`;
+
+const ExternalExampleLink = styled.div`
+  padding-top: 1rem;
 `;
 
 export default CreateResourceModal;
