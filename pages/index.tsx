@@ -56,6 +56,7 @@ import networkingStats from "../data/networking-stats.json";
 import nodes from "../data/nodes.json";
 import resources from "../data/resources.json";
 import glass from "../styles/glass";
+import { stringifyResourceKey } from "../utils/resource-key";
 
 function HomePage() {
   const { t } = useTranslation();
@@ -527,6 +528,17 @@ function HomePage() {
                     } else {
                       return filteredResources.map((resource, index) => (
                         <ResourceItem
+                          onClick={(e) => {
+                            e.stopPropagation();
+
+                            router.push(
+                              `/explorer?resource=${stringifyResourceKey(
+                                resource.name,
+                                resource.kind,
+                                resource.node
+                              )}`
+                            );
+                          }}
                           actions={[
                             resource.kind === "Workload" && (
                               <Tooltip title={t("openInTerminal")}>
@@ -538,7 +550,20 @@ function HomePage() {
                             <Dropdown
                               overlay={
                                 <Menu>
-                                  <Menu.Item key="openInExplorer">
+                                  <Menu.Item
+                                    key="openInExplorer"
+                                    onClick={(e) => {
+                                      e.domEvent.stopPropagation();
+
+                                      router.push(
+                                        `/explorer?resource=${stringifyResourceKey(
+                                          resource.name,
+                                          resource.kind,
+                                          resource.node
+                                        )}`
+                                      );
+                                    }}
+                                  >
                                     <Space>
                                       <FontAwesomeIcon
                                         fixedWidth
