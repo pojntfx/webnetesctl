@@ -16,7 +16,7 @@ import {
   faShapes,
   faTerminal,
   faTrash,
-  faWifi
+  faWifi,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -27,7 +27,7 @@ import {
   List,
   Menu,
   Space,
-  Tooltip
+  Tooltip,
 } from "antd";
 import Text from "antd/lib/typography/Text";
 import TitleTmpl from "antd/lib/typography/Title";
@@ -36,6 +36,7 @@ import Animate from "rc-animate";
 import { createRef, useEffect, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
+import JSONTree from "react-json-tree";
 import styled from "styled-components";
 import { Wrapper } from "../components/layout-wrapper";
 import Table from "../components/table";
@@ -43,6 +44,7 @@ import computeStats from "../data/compute-stats.json";
 import networkingStats from "../data/networking-stats.json";
 import nodes from "../data/nodes.json";
 import resources from "../data/resources.json";
+import solarized from "../data/solarized.json";
 import glass from "../styles/glass";
 import { filterKeys } from "../utils/filter-keys";
 import { parseResourceKey, stringifyResourceKey } from "../utils/resource-key";
@@ -600,7 +602,13 @@ function Explorer() {
                     const record = rawRecord as typeof resourcesDataSource[0];
 
                     return (
-                      <div ref={refInView as any}>{JSON.stringify(record)}</div>
+                      <ResourceDisplay ref={refInView as any}>
+                        <JSONTree
+                          theme={solarized}
+                          invertTheme={false}
+                          data={record}
+                        />
+                      </ResourceDisplay>
                     );
                   },
                   expandedRowKeys: (() => {
@@ -701,6 +709,17 @@ const TitleSpace = styled(WideSpace)<any>`
   justify-content: space-between;
   margin-bottom: 1rem;
   cursor: pointer;
+`;
+
+const ResourceDisplay = styled.div`
+  margin-top: -16px;
+  margin-bottom: -16px;
+
+  > ul {
+    margin: 0 !important;
+    min-height: 32px;
+    padding: 1rem !important;
+  }
 `;
 
 export default Explorer;
