@@ -1,6 +1,7 @@
 import {
   faAngleDoubleDown,
   faAngleDoubleUp,
+  faCode,
   faCube,
   faEllipsisV,
   faFont,
@@ -41,6 +42,7 @@ import nodes from "../data/nodes.json";
 import resources from "../data/resources.json";
 import glass from "../styles/glass";
 import { filterKeys } from "../utils/filter-keys";
+import { parseResourceKey, stringifyResourceKey } from "../utils/resource-key";
 import { ResourceItem as ResourceItemTmpl } from "./index";
 
 function Explorer() {
@@ -71,19 +73,19 @@ function Explorer() {
     const resource = router.query.resource as string;
 
     if (resource) {
-      const [kind, name, node] = resource.split(":");
+      const { kind, name, node } = parseResourceKey(resource);
 
       const foundResource: any = resources.find(
         (candidate) =>
-          candidate.kind === kind &&
           candidate.name === name &&
+          candidate.kind === kind &&
           candidate.node === node
       );
 
       if (foundResource) {
         _setSelectedResourceRow([
-          foundResource.kind,
           foundResource.name,
+          foundResource.kind,
           foundResource.node,
         ]);
       } else {
@@ -102,10 +104,22 @@ function Explorer() {
     }
   };
 
-  const setSelectedResourceRow = (resource?: string[]) => {
-    if (resource && resource[0] && resource[1] && resource[2]) {
+  const setSelectedResourceRow = (
+    resource:
+      | {
+          name: string;
+          kind: string;
+          node: string;
+        }
+      | undefined
+  ) => {
+    if (resource?.name && resource?.kind && resource?.node) {
       router.push(
-        `/explorer?resource=${resource[0]}:${resource[1]}:${resource[2]}`
+        `/explorer?resource=${stringifyResourceKey(
+          resource?.name,
+          resource?.kind,
+          resource?.node
+        )}`
       );
     } else {
       router.push("/explorer");
@@ -132,9 +146,9 @@ function Explorer() {
     };
   });
 
-  const resourcesDataSource = resources.map((resource, index) => ({
+  const resourcesDataSource = resources.map((resource) => ({
     ...resource,
-    key: index,
+    key: stringifyResourceKey(resource.name, resource.kind, resource.node),
   }));
 
   const nodeColumns = [
@@ -489,20 +503,63 @@ function Explorer() {
 
                   if (
                     selectedResourceRow &&
-                    selectedResourceRow[0] === record.kind &&
-                    selectedResourceRow[1] === record.name &&
+                    selectedResourceRow[0] === record.name &&
+                    selectedResourceRow[1] === record.kind &&
                     selectedResourceRow[2] === record.node
                   ) {
                     setSelectedResourceRow(undefined);
                   } else {
-                    setSelectedResourceRow([
-                      record.kind,
-                      record.name,
-                      record.node,
-                    ]);
+                    setSelectedResourceRow(record);
                   }
                 },
               };
+            }}
+            expandable={{
+              expandedRowRender: (record) => {
+                return <div>{JSON.stringify(record)}</div>;
+              },
+              expandedRowKeys: (() => {
+                if (selectedResourceRow) {
+                  const keys = [
+                    stringifyResourceKey(
+                      selectedResourceRow[0],
+                      selectedResourceRow[1],
+                      selectedResourceRow[2]
+                    ),
+                  ].filter((s) => s);
+
+                  if (keys.length > 0) {
+                    return keys;
+                  } else {
+                    return undefined;
+                  }
+                } else {
+                  return undefined;
+                }
+              })() as string[],
+              expandIcon: ({ expanded, record: rawRecord }) => (
+                <Space>
+                  <Button
+                    type="text"
+                    shape="circle"
+                    onClick={(e) => {
+                      e.stopPropagation();
+
+                      const record = rawRecord as typeof resourcesDataSource[0];
+
+                      expanded
+                        ? setSelectedResourceRow(undefined)
+                        : setSelectedResourceRow(record);
+                    }}
+                  >
+                    <FontAwesomeIcon
+                      fixedWidth
+                      icon={expanded ? faMinus : faPlus}
+                    />
+                  </Button>
+                  <FontAwesomeIcon fixedWidth icon={faCode} />{" "}
+                </Space>
+              ),
             }}
           />
         </WideSpace>
@@ -528,7 +585,7 @@ const ResourceItem = styled(ResourceItemTmpl)`
 `;
 
 const ResourceTable = styled(Table)`
-  .ant-table-tbody .ant-table-cell:last-child {
+  .ant-table-tbody > .ant-table-row > .ant-table-cell:last-child {
     display: flex;
     justify-content: flex-end;
     align-items: center;
