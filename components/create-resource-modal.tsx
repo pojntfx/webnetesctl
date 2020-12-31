@@ -14,8 +14,8 @@ import Animate from "rc-animate";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
+import { ExternalExampleLink, ExternalLink } from "../pages/config";
 import { TitleSpace } from "../pages/explorer";
-import { ExternalLink } from "../pages/config";
 import ResourceEditorTmpl from "./resource-editor";
 
 export interface ICreateResourceModalProps {
@@ -106,10 +106,6 @@ const ResourceEditor = styled(ResourceEditorTmpl)`
 
 const Modal = styled(ModalTmpl)`
   min-width: 80vw;
-`;
-
-const ExternalExampleLink = styled.div`
-  padding-top: 1rem;
 `;
 
 export default CreateResourceModal;

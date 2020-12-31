@@ -44,4 +44,5 @@ export default {
   applyAndReload: "Apply & Reload",
   definition: "Definition",
   youCanFindSomeExamplesInThe: "You can find some examples in the",
+  youCanFindAnExampleInThe: "You can find an example in the",
 };

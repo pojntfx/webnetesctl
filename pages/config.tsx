@@ -187,6 +187,17 @@ function Config() {
         </TitleSpace>
 
         <ResourceEditor data={node} onEdit={(value) => setNode(value)} />
+
+        <ExternalExampleLink>
+          {t("youCanFindAnExampleInThe")}{" "}
+          <ExternalLink
+            href="https://github.com/pojntfx/webnetes/blob/main/app/webnetes_node/node.yaml"
+            target="_blank"
+          >
+            GitHub Repository <FontAwesomeIcon icon={faExternalLinkAlt} />
+          </ExternalLink>
+          .
+        </ExternalExampleLink>
       </Wrapper>
     </Animate>
   );
@@ -210,6 +221,10 @@ const Overview = styled.div`
 
 export const ExternalLink = styled.a`
   color: unset;
+`;
+
+export const ExternalExampleLink = styled.div`
+  padding-top: 1rem;
 `;
 
 const Details = styled.div`
@@ -270,13 +285,13 @@ const VersionInformation = styled.div`
 
 const ResourceEditor = styled(ResourceEditorTmpl)`
   min-height: calc(
-    100vh - 64px - 64px - 64px - 2rem
-  ); /* Top navbar, bottom navbar, top & bottom margins */
+    100vh - 64px - 64px - 64px - 2rem - 1rem - 1.5715em
+  ); /* Top navbar, bottom navbar, top & bottom margins, example link */
 
   @media screen and (min-width: 812px) {
     height: calc(
-      100vh - 64px - 64px - 2rem
-    ); /* Top navbar, top & bottom margins */
+      100vh - 64px - 64px - 2rem - 1rem - 1.5715em
+    ); /* Top navbar, top & bottom margins, example link */
   }
 `;
 
