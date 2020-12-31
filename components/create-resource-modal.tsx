@@ -106,6 +106,16 @@ const ResourceEditor = styled(ResourceEditorTmpl)`
 
 const Modal = styled(ModalTmpl)`
   min-width: 80vw;
+
+  .ant-modal-content {
+    border: 0;
+    box-shadow: none;
+  }
+
+  .ant-modal-header,
+  .ant-modal-content {
+    background: transparent;
+  }
 `;
 
 export default CreateResourceModal;

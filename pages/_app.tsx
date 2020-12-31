@@ -29,6 +29,7 @@ import Navbar, {
 import en from "../i18n/en";
 import universeTexture from "../img/night-sky.png";
 import "../styles/index.less";
+import frostedGlass from "../styles/frosted-glass";
 
 i18n.use(initReactI18next).init({
   resources: {
@@ -49,6 +50,10 @@ body {
   > #__next, > * > section, .ant-layout-content {
     height: 100%;
   }
+}
+
+.ant-modal-mask {
+  ${frostedGlass}
 }
 
 /* Popovers & dropdowns should always be on top */
