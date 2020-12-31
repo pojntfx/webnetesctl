@@ -59,10 +59,21 @@ const ResourceEditor: React.FC<IResourceEditorProps> = ({
 
 const ResourceDisplay = styled.div`
   display: grid;
-  grid-template-columns: 50% 50%;
+  grid-template-columns: 100%;
+  grid-template-rows: 50% 50%;
+
+  @media screen and (min-width: 812px) {
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 100%;
+  }
 
   > *:first-child {
-    border-right: 1px solid #303030 !important;
+    border-bottom: 1px solid #303030 !important;
+
+    @media screen and (min-width: 812px) {
+      border-bottom: 0;
+      border-right: 1px solid #303030 !important;
+    }
   }
 
   > ul {

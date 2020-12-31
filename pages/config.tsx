@@ -5,7 +5,7 @@ import {
   faLocationArrow,
   faMapMarkerAlt,
   faSave,
-  faThumbtack,
+  faThumbtack
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { feature } from "@ideditor/country-coder";
@@ -268,9 +268,15 @@ const VersionInformation = styled.div`
 `;
 
 const ResourceEditor = styled(ResourceEditorTmpl)`
-  height: calc(
-    100vh - 64px - 64px - 2rem
+  min-height: calc(
+    100vh - 64px - 64px - 64px - 2rem
   ); /* Top navbar, bottom navbar, top & bottom margins */
+
+  @media screen and (min-width: 812px) {
+    height: calc(
+      100vh - 64px - 64px - 2rem
+    ); /* Top navbar, top & bottom margins */
+  }
 `;
 
 const TitleSpace = styled(TitleSpaceTmpl)`
