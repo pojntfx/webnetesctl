@@ -1,5 +1,6 @@
 import {
   faCheckCircle,
+  faLocationArrow,
   faMapMarkerAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,18 +12,65 @@ import { Wrapper } from "../components/layout-wrapper";
 import packageJSON from "../package.json";
 import glass from "../styles/glass";
 import getPublicIp from "public-ip";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { Button } from "antd";
+import { unstable_batchedUpdates } from "react-dom";
+import { feature } from "@ideditor/country-coder";
 
 function Config() {
   const { t } = useTranslation();
 
   const [publicIP, setPublicIP] = useState("");
+  const [loadingUserCoordinates, setLoadingUserCoordinates] = useState(false);
+  const [userCoordinates, setUserCoordinates] = useState<number[]>([
+    2.2770202,
+    48.8589507,
+  ]);
+  const [featureLocation, setFeatureLocation] = useState("");
+  const [featureFlag, setFeatureFlag] = useState("");
 
   useEffect(() => {
     getPublicIp
       .v6()
       .then((ip) => setPublicIP(ip))
       .catch((e) => console.log("could not get public IPv6", e));
+  }, []);
+
+  useEffect(() => {
+    const feat = feature(userCoordinates as any);
+
+    if (feat) {
+      unstable_batchedUpdates(() => {
+        setFeatureLocation(feat.properties.nameEn!);
+        setFeatureFlag(feat.properties.emojiFlag!);
+      });
+    }
+  }, [userCoordinates]);
+
+  const getUserCoordinates = useCallback(() => {
+    setLoadingUserCoordinates(true);
+
+    typeof window !== "undefined" &&
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          unstable_batchedUpdates(() => {
+            setUserCoordinates([
+              position.coords.longitude,
+              position.coords.latitude,
+            ]);
+            setLoadingUserCoordinates(false);
+          });
+        },
+        (e) => {
+          console.error(
+            "could not get user location, falling back to [0,0]",
+            e
+          );
+
+          setUserCoordinates([0, 0]);
+          setLoadingUserCoordinates(false);
+        }
+      );
   }, []);
 
   return (
@@ -38,11 +86,17 @@ function Config() {
             <div>You are:</div>
             <IPAddress>127.0.0.10</IPAddress>
             <div>
-              <FontAwesomeIcon icon={faMapMarkerAlt} /> Baiersbronn
+              <Button
+                type="text"
+                onClick={getUserCoordinates}
+                loading={loadingUserCoordinates}
+                icon={<FontAwesomeIcon icon={faLocationArrow} />}
+              />
+              <FontAwesomeIcon icon={faMapMarkerAlt} /> Baiersbronn,{" "}
+              {featureFlag} {featureLocation}
             </div>
-            <div>
-              ({publicIP})
-            </div>
+            <div>({JSON.stringify(userCoordinates)})</div>
+            <div>({publicIP})</div>
           </ClusterData>
 
           <VersionInformation>
