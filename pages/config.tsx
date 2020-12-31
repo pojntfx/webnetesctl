@@ -4,7 +4,7 @@ import {
   faGlobe,
   faLocationArrow,
   faMapMarkerAlt,
-  faThumbtack,
+  faThumbtack
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { feature } from "@ideditor/country-coder";
@@ -18,6 +18,8 @@ import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { Wrapper } from "../components/layout-wrapper";
+import ResourceEditorTmpl from "../components/resource-editor";
+import node from "../data/node";
 import packageJSON from "../package.json";
 import glass from "../styles/glass";
 
@@ -168,6 +170,8 @@ function Config() {
             </dl>
           </Details>
         </StatusCard>
+
+        <ResourceEditor data={node} />
       </Wrapper>
     </Animate>
   );
@@ -216,7 +220,7 @@ const StatusCard = styled.div`
   margin-left: auto;
   margin-right: auto;
   margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2.5rem;
   max-width: 812px;
   ${glass}
 `;
@@ -247,6 +251,10 @@ const VersionInformation = styled.div`
   code {
     margin: 0;
   }
+`;
+
+const ResourceEditor = styled(ResourceEditorTmpl)`
+  height: calc(100vh - 64px - 64px);
 `;
 
 export default Config;
