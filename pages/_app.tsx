@@ -11,7 +11,6 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Dropdown, List, Menu, Popover, Space, Tooltip } from "antd";
 import { Content } from "antd/lib/layout/layout";
-import Modal from "antd/lib/modal/Modal";
 import i18n from "i18next";
 import type { AppProps } from "next/app";
 import Head from "next/head";
@@ -19,6 +18,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { initReactI18next, useTranslation } from "react-i18next";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
+import CreateResourceModal from "../components/create-resource-modal";
 import { Layout } from "../components/layout-wrapper";
 import Navbar, {
   DesktopHeader,
@@ -105,30 +105,11 @@ function MyApp({ Component, pageProps }: AppProps) {
       <GlobalStyle />
       <ThemeProvider theme={theme}>
         <Layout>
-          <Modal
-            title={
-              <Space>
-                <FontAwesomeIcon fixedWidth icon={faCube} />
-                <span>
-                  {t("create")} {t("resource")}
-                </span>
-              </Space>
-            }
-            centered
-            visible={createResourceDialogOpen}
-            onOk={() => setCreateResourceDialogOpen(false)}
+          <CreateResourceModal
+            open={createResourceDialogOpen}
+            onCreate={() => setCreateResourceDialogOpen(false)}
             onCancel={() => setCreateResourceDialogOpen(false)}
-            okText={
-              <Space>
-                <FontAwesomeIcon fixedWidth icon={faPlus} />
-                <span>
-                  {t("create")} {t("resource")}
-                </span>
-              </Space>
-            }
-          >
-            Hey!
-          </Modal>
+          />
 
           <MobileHeader>
             <Tooltip title={t("findNodeOrResource")}>
