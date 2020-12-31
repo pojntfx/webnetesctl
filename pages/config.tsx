@@ -1,15 +1,29 @@
-import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheckCircle,
+  faMapMarkerAlt,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Text from "antd/lib/typography/Text";
 import Animate from "rc-animate";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { Wrapper } from "../components/layout-wrapper";
-import glass from "../styles/glass";
 import packageJSON from "../package.json";
+import glass from "../styles/glass";
+import getPublicIp from "public-ip";
+import { useEffect, useState } from "react";
 
 function Config() {
   const { t } = useTranslation();
+
+  const [publicIP, setPublicIP] = useState("");
+
+  useEffect(() => {
+    getPublicIp
+      .v6()
+      .then((ip) => setPublicIP(ip))
+      .catch((e) => console.log("could not get public IPv6", e));
+  }, []);
 
   return (
     <Animate transitionName="fadeandzoom" transitionAppear>
@@ -21,7 +35,14 @@ function Config() {
           </ConnectedStatus>
 
           <ClusterData>
+            <div>You are:</div>
             <IPAddress>127.0.0.10</IPAddress>
+            <div>
+              <FontAwesomeIcon icon={faMapMarkerAlt} /> Baiersbronn
+            </div>
+            <div>
+              ({publicIP})
+            </div>
           </ClusterData>
 
           <VersionInformation>
