@@ -37,4 +37,7 @@ export default {
   kind: "Kind",
   openInTerminal: "Open in Terminal",
   connected: "Connected",
+  coordinates: "Coordinates",
+  youAre: "You are",
+  metadata: "Metadata",
 };

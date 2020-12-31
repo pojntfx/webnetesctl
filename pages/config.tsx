@@ -1,22 +1,24 @@
 import {
   faCheckCircle,
+  faGlobe,
   faLocationArrow,
   faMapMarkerAlt,
+  faThumbtack,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { feature } from "@ideditor/country-coder";
+import { Button, Divider as DividerTmpl, Space } from "antd";
 import Text from "antd/lib/typography/Text";
+import * as Nominatim from "nominatim-browser";
+import getPublicIp from "public-ip";
 import Animate from "rc-animate";
+import { useCallback, useEffect, useState } from "react";
+import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { Wrapper } from "../components/layout-wrapper";
 import packageJSON from "../package.json";
 import glass from "../styles/glass";
-import getPublicIp from "public-ip";
-import { useCallback, useEffect, useState } from "react";
-import { Button } from "antd";
-import { unstable_batchedUpdates } from "react-dom";
-import { feature } from "@ideditor/country-coder";
-import * as Nominatim from "nominatim-browser";
 
 function Config() {
   const { t } = useTranslation();
@@ -88,49 +90,75 @@ function Config() {
     <Animate transitionName="fadeandzoom" transitionAppear>
       <Wrapper>
         <StatusCard>
-          <ConnectedStatus>
-            <FontAwesomeIcon icon={faCheckCircle} size="lg" fixedWidth />{" "}
-            {t("connected")}!
-          </ConnectedStatus>
+          <Overview>
+            <ConnectedStatus>
+              <FontAwesomeIcon icon={faCheckCircle} size="lg" fixedWidth />{" "}
+              {t("connected")}!
+            </ConnectedStatus>
 
-          <ClusterData>
-            <div>You are:</div>
-            <IPAddress>127.0.0.10</IPAddress>
-            <div>
-              <Button
-                type="text"
-                onClick={getUserCoordinates}
-                loading={loadingUserCoordinates}
-                icon={<FontAwesomeIcon icon={faLocationArrow} />}
-              />
-              <FontAwesomeIcon icon={faMapMarkerAlt} />
-              {featureLocation} {featureFlag}
-            </div>
-            <div>({JSON.stringify(userCoordinates)})</div>
-            <div>({publicIP})</div>
-          </ClusterData>
+            <ClusterData direction="vertical" align="center">
+              <div>{t("youAre")}:</div>
 
-          <VersionInformation>
+              <Space align="center">
+                <Button
+                  type="text"
+                  shape="circle"
+                  onClick={getUserCoordinates}
+                  loading={loadingUserCoordinates}
+                  icon={<FontAwesomeIcon icon={faLocationArrow} />}
+                />
+
+                <IPAddress>127.0.0.10</IPAddress>
+              </Space>
+            </ClusterData>
+
+            <VersionInformation>
+              <dl>
+                <dt>webnetesctl</dt>
+                <dd>
+                  <Text code>{packageJSON.version}</Text>
+                </dd>
+                <dt>webnetes</dt>
+                <dd>
+                  <Text code>
+                    {packageJSON.dependencies["@pojntfx/webnetes"]}
+                  </Text>
+                </dd>
+              </dl>
+            </VersionInformation>
+          </Overview>
+
+          <Divider>{t("metadata")}</Divider>
+
+          <Details>
             <dl>
-              <dt>webnetesctl</dt>
+              <dt>
+                <FontAwesomeIcon icon={faGlobe} /> {t("publicIp")}
+              </dt>
+              <dd>{publicIP}</dd>
+
+              <dt>
+                <FontAwesomeIcon icon={faMapMarkerAlt} /> {t("location")}
+              </dt>
               <dd>
-                <Text code>{packageJSON.version}</Text>
+                {featureLocation} {featureFlag}
               </dd>
-              <dt>webnetes</dt>
+
+              <dt>
+                <FontAwesomeIcon icon={faThumbtack} /> {t("coordinates")}
+              </dt>
               <dd>
-                <Text code>
-                  {packageJSON.dependencies["@pojntfx/webnetes"]}
-                </Text>
+                {userCoordinates[0]}, {userCoordinates[1]}
               </dd>
             </dl>
-          </VersionInformation>
+          </Details>
         </StatusCard>
       </Wrapper>
     </Animate>
   );
 }
 
-const StatusCard = styled.div`
+const Overview = styled.div`
   display: grid;
   grid-template-columns: 25% 50% 25%;
   align-items: center;
@@ -138,9 +166,33 @@ const StatusCard = styled.div`
   padding: 1rem;
   padding-top: 2rem;
   padding-bottom: 2rem;
+`;
+
+const Details = styled.div`
+  padding: 1rem;
+
+  dl,
+  dd:last-child {
+    margin-bottom: 0;
+  }
+
+  code {
+    margin: 0;
+  }
+`;
+
+const Divider = styled(DividerTmpl)`
+  margin-top: -0.5rem !important;
+  margin-bottom: -0.5rem !important;
+`;
+
+const StatusCard = styled.div`
   border: 1px solid #303030;
+  margin-left: auto;
+  margin-right: auto;
   margin-top: 1.5rem;
   margin-bottom: 1.5rem;
+  max-width: 812px;
   ${glass}
 `;
 
@@ -148,7 +200,12 @@ const ConnectedStatus = styled.div`
   font-size: 1.5rem;
 `;
 
-const ClusterData = styled.div``;
+const ClusterData = styled(Space)`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
 
 const IPAddress = styled.span`
   font-size: 2.5rem;
