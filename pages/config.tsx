@@ -1,5 +1,6 @@
 import {
   faCheckCircle,
+  faExternalLinkAlt,
   faGlobe,
   faLocationArrow,
   faMapMarkerAlt,
@@ -112,11 +113,26 @@ function Config() {
 
             <VersionInformation>
               <dl>
-                <dt>webnetesctl</dt>
+                <dt>
+                  <ExternalLink
+                    href="https://github.com/pojntfx/webnetesctl"
+                    target="_blank"
+                  >
+                    webnetesctl <FontAwesomeIcon icon={faExternalLinkAlt} />
+                  </ExternalLink>
+                </dt>
                 <dd>
                   <Text code>{packageJSON.version}</Text>
                 </dd>
-                <dt>webnetes</dt>
+
+                <dt>
+                  <ExternalLink
+                    href="https://github.com/pojntfx/webnetes"
+                    target="_blank"
+                  >
+                    webnetes <FontAwesomeIcon icon={faExternalLinkAlt} />
+                  </ExternalLink>
+                </dt>
                 <dd>
                   <Text code>
                     {packageJSON.dependencies["@pojntfx/webnetes"]}
@@ -171,6 +187,10 @@ const Overview = styled.div`
     grid-template-columns: 25% 50% 25%;
     justify-items: center;
   }
+`;
+
+const ExternalLink = styled.a`
+  color: unset;
 `;
 
 const Details = styled.div`
