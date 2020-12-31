@@ -5,7 +5,7 @@ import {
   faLocationArrow,
   faMapMarkerAlt,
   faSave,
-  faThumbtack
+  faThumbtack,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { feature } from "@ideditor/country-coder";
@@ -21,7 +21,7 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { Wrapper } from "../components/layout-wrapper";
 import ResourceEditorTmpl from "../components/resource-editor";
-import node from "../data/node";
+import nodeResource from "../data/node";
 import packageJSON from "../package.json";
 import glass from "../styles/glass";
 import { TitleSpace as TitleSpaceTmpl } from "./explorer";
@@ -37,6 +37,7 @@ function Config() {
   ]);
   const [featureLocation, setFeatureLocation] = useState("");
   const [featureFlag, setFeatureFlag] = useState("");
+  const [node, setNode] = useState(nodeResource);
 
   useEffect(() => {
     getPublicIp
@@ -185,7 +186,7 @@ function Config() {
           </Button>
         </TitleSpace>
 
-        <ResourceEditor data={node} />
+        <ResourceEditor data={node} onEdit={(value) => setNode(value)} />
       </Wrapper>
     </Animate>
   );

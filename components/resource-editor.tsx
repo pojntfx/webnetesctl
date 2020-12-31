@@ -1,21 +1,37 @@
-import Editor, { monaco } from "@monaco-editor/react";
+import { monaco, ControlledEditor } from "@monaco-editor/react";
 import yaml from "js-yaml";
 import solarizedMonaco from "monaco-themes/themes/Solarized-dark.json";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import JSONTree from "react-json-tree";
 import styled from "styled-components";
 import solarized from "../data/solarized.json";
 
 export interface IResourceEditorProps {
   data: string;
+  onEdit?: (value: string) => void;
   one?: boolean;
 }
 
 const ResourceEditor: React.FC<IResourceEditorProps> = ({
   data,
+  onEdit,
   one,
   ...otherProps
 }) => {
+  const [parsedData, setParsedData] = useState<any>({});
+
+  useEffect(() => {
+    try {
+      const parsedData = one ? yaml.safeLoad(data) : yaml.safeLoadAll(data);
+
+      setParsedData(parsedData);
+    } catch (e) {
+      console.error("could not parse YAML", e);
+
+      setParsedData({ error: e.message });
+    }
+  }, [data, one]);
+
   useEffect(() => {
     typeof window !== "undefined" &&
       monaco
@@ -33,14 +49,15 @@ const ResourceEditor: React.FC<IResourceEditorProps> = ({
 
   return (
     <ResourceDisplay {...otherProps}>
-      <Editor
+      <ControlledEditor
         height="100%"
         language="yaml"
         value={data}
+        onChange={(_, value) => onEdit && onEdit(value || "")}
         theme="solarized"
         options={{
           cursorSmoothCaretAnimation: true,
-          readOnly: true,
+          readOnly: onEdit ? false : true,
           padding: {
             top: 16,
             bottom: 16,
@@ -48,11 +65,7 @@ const ResourceEditor: React.FC<IResourceEditorProps> = ({
         }}
       />
 
-      <JSONTree
-        theme={solarized}
-        invertTheme={false}
-        data={one ? yaml.safeLoad(data) : yaml.safeLoadAll(data)}
-      />
+      <JSONTree theme={solarized} invertTheme={false} data={parsedData} />
     </ResourceDisplay>
   );
 };
