@@ -40,13 +40,11 @@ function Config() {
   }, []);
 
   useEffect(() => {
-    const location = Nominatim.reverseGeocode({
+    Nominatim.reverseGeocode({
       lat: userCoordinates[1].toString(),
       lon: userCoordinates[0].toString(),
       addressdetails: true,
     }).then((res: any) => {
-      console.log(res.display_name, res.address?.country_code);
-
       if (res.address?.country_code) {
         const feat = feature(res.address?.country_code as string);
 
@@ -141,7 +139,8 @@ function Config() {
                 <FontAwesomeIcon icon={faMapMarkerAlt} /> {t("location")}
               </dt>
               <dd>
-                {featureLocation} {featureFlag}
+                {featureLocation}
+                {`${featureFlag ? " " + featureFlag : ""}`}
               </dd>
 
               <dt>
@@ -160,12 +159,18 @@ function Config() {
 
 const Overview = styled.div`
   display: grid;
-  grid-template-columns: 25% 50% 25%;
+  grid-template-columns: 100%;
   align-items: center;
-  justify-items: center;
+  justify-items: start;
   padding: 1rem;
   padding-top: 2rem;
   padding-bottom: 2rem;
+  grid-gap: 1rem;
+
+  @media screen and (min-width: 812px) {
+    grid-template-columns: 25% 50% 25%;
+    justify-items: center;
+  }
 `;
 
 const Details = styled.div`
@@ -198,6 +203,7 @@ const StatusCard = styled.div`
 
 const ConnectedStatus = styled.div`
   font-size: 1.5rem;
+  margin: 0 auto;
 `;
 
 const ClusterData = styled(Space)`
@@ -205,6 +211,7 @@ const ClusterData = styled(Space)`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin: 0 auto;
 `;
 
 const IPAddress = styled.span`
