@@ -16,6 +16,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Button } from "antd";
 import { unstable_batchedUpdates } from "react-dom";
 import { feature } from "@ideditor/country-coder";
+import * as Nominatim from "nominatim-browser";
 
 function Config() {
   const { t } = useTranslation();
@@ -37,14 +38,24 @@ function Config() {
   }, []);
 
   useEffect(() => {
-    const feat = feature(userCoordinates as any);
+    const location = Nominatim.reverseGeocode({
+      lat: userCoordinates[1].toString(),
+      lon: userCoordinates[0].toString(),
+      addressdetails: true,
+    }).then((res: any) => {
+      console.log(res.display_name, res.address?.country_code);
 
-    if (feat) {
-      unstable_batchedUpdates(() => {
-        setFeatureLocation(feat.properties.nameEn!);
-        setFeatureFlag(feat.properties.emojiFlag!);
-      });
-    }
+      if (res.address?.country_code) {
+        const feat = feature(res.address?.country_code as string);
+
+        if (feat) {
+          unstable_batchedUpdates(() => {
+            setFeatureLocation(res.display_name);
+            setFeatureFlag(feat.properties.emojiFlag!);
+          });
+        }
+      }
+    });
   }, [userCoordinates]);
 
   const getUserCoordinates = useCallback(() => {
@@ -92,8 +103,8 @@ function Config() {
                 loading={loadingUserCoordinates}
                 icon={<FontAwesomeIcon icon={faLocationArrow} />}
               />
-              <FontAwesomeIcon icon={faMapMarkerAlt} /> Baiersbronn,{" "}
-              {featureFlag} {featureLocation}
+              <FontAwesomeIcon icon={faMapMarkerAlt} />
+              {featureLocation} {featureFlag}
             </div>
             <div>({JSON.stringify(userCoordinates)})</div>
             <div>({publicIP})</div>
