@@ -24,7 +24,7 @@ import ResourceEditorTmpl from "../components/resource-editor";
 import nodeResource from "../data/node";
 import packageJSON from "../package.json";
 import glass from "../styles/glass";
-import { TitleSpace as TitleSpaceTmpl } from "./explorer";
+import { TitleSpace } from "./explorer";
 
 function Config() {
   const { t } = useTranslation();
@@ -277,12 +277,6 @@ const ResourceEditor = styled(ResourceEditorTmpl)`
     height: calc(
       100vh - 64px - 64px - 2rem
     ); /* Top navbar, top & bottom margins */
-  }
-`;
-
-const TitleSpace = styled(TitleSpaceTmpl)`
-  h2 {
-    margin-bottom: 0;
   }
 `;
 

@@ -42,4 +42,5 @@ export default {
   metadata: "Metadata",
   nodeConfig: "Node Config",
   applyAndReload: "Apply & Reload",
+  definition: "Definition",
 };
