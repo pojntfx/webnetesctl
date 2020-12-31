@@ -382,7 +382,15 @@ function Explorer() {
                               </Tooltip>
                             ),
                             <Tooltip title={t("openInResources")}>
-                              <Button type="text" shape="circle">
+                              <Button
+                                type="text"
+                                shape="circle"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+
+                                  setSelectedResourceRow(resource);
+                                }}
+                              >
                                 <FontAwesomeIcon icon={faAngleDoubleDown} />
                               </Button>
                             </Tooltip>,
