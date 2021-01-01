@@ -5,7 +5,7 @@ import {
   faLocationArrow,
   faMapMarkerAlt,
   faSave,
-  faThumbtack,
+  faThumbtack
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { feature } from "@ideditor/country-coder";
@@ -205,7 +205,7 @@ function Config() {
 
 const Overview = styled.div`
   display: grid;
-  grid-template-columns: 100%;
+  grid-template-columns: 1fr;
   align-items: center;
   justify-items: start;
   padding: 1rem;
@@ -214,7 +214,7 @@ const Overview = styled.div`
   grid-gap: 1rem;
 
   @media screen and (min-width: 812px) {
-    grid-template-columns: 25% 50% 25%;
+    grid-template-columns: 1fr 2fr 1fr;
     justify-items: center;
   }
 `;

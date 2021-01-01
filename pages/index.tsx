@@ -716,7 +716,7 @@ const GlobeActions = styled.div`
 
 const StatsWrapper = styled.div<{ $long?: boolean }>`
   display: grid;
-  grid-template-columns: 50% 50%;
+  grid-template-columns: 1fr 1fr;
   padding: 12px 16px;
 
   ${(props) =>
