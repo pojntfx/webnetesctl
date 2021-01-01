@@ -93,20 +93,29 @@ const ActionIcon = styled(FontAwesomeIcon)`
 `;
 
 const DividerWrapper = styled.div`
-  height: 100%;
+  width: 100%;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
 
   > *:not(:first-child):not(:last-child) {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
+    padding-right: 1rem;
+    padding-left: 1rem;
   }
 
   > *:first-child,
   > *:last-child {
     flex: 1;
+  }
+
+  @media screen and (min-width: 812px) {
+    height: 100%;
+    flex-direction: column;
+
+    > *:not(:first-child):not(:last-child) {
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+    }
   }
 `;
 
