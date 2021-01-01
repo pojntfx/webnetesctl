@@ -1,10 +1,12 @@
 import {
+  faAngleDoubleRight,
   faChevronDown,
   faChevronRight,
   faCode,
   faCube,
   faExternalLinkAlt,
   faPlus,
+  faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Space } from "antd";
@@ -22,33 +24,69 @@ export interface ICreateResourceModalProps {
   open: boolean;
   onCreate: () => void;
   onCancel: () => void;
+  onMinimize: () => void;
 }
 
 const CreateResourceModal: React.FC<ICreateResourceModalProps> = ({
   open,
   onCreate,
   onCancel,
+  onMinimize,
   ...otherProps
 }) => {
   const { t } = useTranslation();
 
   const [definitionOpen, setDefinitionOpen] = useState(true);
   const [definition, setDefinition] = useState("");
+  const [maximized, setMaximized] = useState(true);
 
   return (
     <Modal
       title={
-        <Space>
-          <FontAwesomeIcon fixedWidth icon={faCube} />
-          <span>
-            {t("create")} {t("resource")}
-          </span>
-        </Space>
+        <>
+          <Space>
+            <FontAwesomeIcon fixedWidth icon={faCube} />
+            <span>
+              {t("create")} {t("resource")}
+            </span>
+          </Space>
+
+          <Space>
+            <Button
+              type="text"
+              shape="circle"
+              onClick={() => {
+                setMaximized(false);
+                onMinimize();
+              }}
+            >
+              <FontAwesomeIcon icon={faAngleDoubleRight} />
+            </Button>
+
+            <Button
+              type="text"
+              shape="circle"
+              onClick={() => {
+                setMaximized(true);
+                onCancel();
+              }}
+            >
+              <FontAwesomeIcon icon={faTimes} />
+            </Button>
+          </Space>
+        </>
       }
       centered
+      transitionName={maximized ? "fadeandzoom" : "fadeandslideright"}
       visible={open}
-      onOk={onCreate}
-      onCancel={onCancel}
+      onOk={() => {
+        setMaximized(true);
+        onCreate();
+      }}
+      onCancel={() => {
+        setMaximized(true);
+        onCancel();
+      }}
       okText={
         <Space>
           <FontAwesomeIcon fixedWidth icon={faPlus} />
@@ -57,6 +95,7 @@ const CreateResourceModal: React.FC<ICreateResourceModalProps> = ({
           </span>
         </Space>
       }
+      closable={false}
       {...otherProps}
     >
       <TitleSpace
@@ -115,6 +154,15 @@ const Modal = styled(ModalTmpl)`
   .ant-modal-header,
   .ant-modal-content {
     background: transparent;
+  }
+
+  .ant-modal-header {
+    padding-right: 16px;
+  }
+
+  .ant-modal-title {
+    display: flex;
+    justify-content: space-between;
   }
 `;
 

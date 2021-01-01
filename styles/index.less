@@ -61,7 +61,7 @@
   }
 }
 
-// Fade & slide animation
+// Fade & slide down animation
 .fadeandslide-enter {
   opacity: 0;
   animation-duration: 0.2s;
@@ -119,5 +119,66 @@
   100% {
     opacity: 0;
     transform: translateY(1rem);
+  }
+}
+
+// Fade & slide right animation
+.fadeandslideright-enter {
+  opacity: 0;
+  animation-duration: 0.2s;
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.55, 0, 0.55, 0.2);
+  animation-play-state: paused;
+}
+
+.fadeandslideright-appear {
+  opacity: 0;
+  animation-duration: 0.2s;
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.55, 0, 0.55, 0.2);
+  animation-play-state: paused;
+}
+
+.fadeandslideright-leave {
+  animation-duration: 0.2s;
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.55, 0, 0.55, 0.2);
+  animation-play-state: paused;
+}
+
+.fadeandslideright-enter.fadeandslideright-enter-active {
+  animation-name: fadeandsliderightIn;
+  animation-play-state: running;
+}
+
+.fadeandslideright-appear.fadeandslideright-appear-active {
+  animation-name: fadeandsliderightIn;
+  animation-play-state: running;
+}
+
+.fadeandslideright-leave.fadeandslideright-leave-active {
+  animation-name: fadeandsliderightOut;
+  animation-play-state: running;
+}
+
+@keyframes fadeandsliderightIn {
+  0% {
+    opacity: 0;
+    transform: translateX(1rem);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeandsliderightOut {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(1rem);
   }
 }

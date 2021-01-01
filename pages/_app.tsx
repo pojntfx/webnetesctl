@@ -1,4 +1,5 @@
 import {
+  faAngleDoubleLeft,
   faBell,
   faCaretDown,
   faCube,
@@ -16,8 +17,9 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { unstable_batchedUpdates } from "react-dom";
 import { initReactI18next, useTranslation } from "react-i18next";
-import { createGlobalStyle, ThemeProvider } from "styled-components";
+import styled, { createGlobalStyle, ThemeProvider } from "styled-components";
 import CreateResourceModal from "../components/create-resource-modal";
 import { Layout } from "../components/layout-wrapper";
 import Navbar, {
@@ -28,8 +30,9 @@ import Navbar, {
 } from "../components/navbar";
 import en from "../i18n/en";
 import universeTexture from "../img/night-sky.png";
-import "../styles/index.less";
 import frostedGlass from "../styles/frosted-glass";
+import glass from "../styles/glass";
+import "../styles/index.less";
 
 i18n.use(initReactI18next).init({
   resources: {
@@ -72,12 +75,21 @@ function MyApp({ Component, pageProps }: AppProps) {
   const [createResourceDialogOpen, setCreateResourceDialogOpen] = useState(
     false
   );
+  const [
+    createResourceDialogMaximized,
+    setCreateResourceDialogMaximized,
+  ] = useState(true);
 
   const createMenus = (
     <Menu>
       <Menu.Item
         key="resource"
-        onClick={() => setCreateResourceDialogOpen(true)}
+        onClick={() => {
+          unstable_batchedUpdates(() => {
+            setCreateResourceDialogMaximized(true);
+            setCreateResourceDialogOpen(true);
+          });
+        }}
       >
         <Space>
           <FontAwesomeIcon fixedWidth icon={faCube} />
@@ -111,10 +123,21 @@ function MyApp({ Component, pageProps }: AppProps) {
       <ThemeProvider theme={theme}>
         <Layout>
           <CreateResourceModal
-            open={createResourceDialogOpen}
+            open={createResourceDialogOpen && createResourceDialogMaximized}
             onCreate={() => setCreateResourceDialogOpen(false)}
             onCancel={() => setCreateResourceDialogOpen(false)}
+            onMinimize={() => setCreateResourceDialogMaximized(false)}
           />
+
+          {!createResourceDialogMaximized && (
+            <SideTray>
+              <Button
+                type="text"
+                onClick={() => setCreateResourceDialogMaximized(true)}
+                icon={<FontAwesomeIcon icon={faAngleDoubleLeft} />}
+              />
+            </SideTray>
+          )}
 
           <MobileHeader>
             <Tooltip title={t("findNodeOrResource")}>
@@ -217,5 +240,16 @@ function MyApp({ Component, pageProps }: AppProps) {
     </>
   );
 }
+
+const SideTray = styled.div`
+  z-index: 999;
+  position: absolute !important;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 1px solid #303030;
+  margin: 1rem;
+  right: 0;
+  ${glass}
+`;
 
 export default MyApp;
