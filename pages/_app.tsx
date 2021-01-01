@@ -9,7 +9,7 @@ import {
   faNetworkWired,
   faPlus,
   faSearch,
-  faTimes,
+  faTimes
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -20,7 +20,7 @@ import {
   notification,
   Popover,
   Space,
-  Tooltip,
+  Tooltip
 } from "antd";
 import { Content } from "antd/lib/layout/layout";
 import i18n from "i18next";
@@ -38,7 +38,7 @@ import Navbar, {
   DesktopHeader,
   MobileHeader,
   SearchInput,
-  TabsMobile,
+  TabsMobile
 } from "../components/navbar";
 import en from "../i18n/en";
 import frostedGlass from "../styles/frosted-glass";
@@ -129,10 +129,12 @@ function MyApp({ Component, pageProps }: AppProps) {
         </Space>
       </Menu.Item>
       <Menu.Item key="cluster">
-        <Space>
-          <FontAwesomeIcon fixedWidth icon={faNetworkWired} />
-          {t("cluster")}
-        </Space>
+        <a href="/start" target="_blank">
+          <Space>
+            <FontAwesomeIcon fixedWidth icon={faNetworkWired} />
+            {t("cluster")}
+          </Space>
+        </a>
       </Menu.Item>
       <Menu.Item
         key="file"
