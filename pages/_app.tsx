@@ -32,6 +32,7 @@ import { useEffect, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { initReactI18next, useTranslation } from "react-i18next";
 import styled, { createGlobalStyle, ThemeProvider } from "styled-components";
+import { messageSW } from "workbox-window";
 import CreateResourceModal from "../components/create-resource-modal";
 import { Layout } from "../components/layout-wrapper";
 import Navbar, {
@@ -140,6 +141,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       (window as any).workbox !== undefined
     ) {
       const wb = (window as any).workbox;
+      let registration: any;
 
       const showSkipWaitingPrompt = () => {
         const key = "update";
@@ -151,9 +153,17 @@ function MyApp({ Component, pageProps }: AppProps) {
             <Space>
               <Button
                 onClick={() => {
-                  notification.close(key);
+                  wb.addEventListener("controlling", () =>
+                    window.location.reload()
+                  );
 
-                  window.location.reload();
+                  if (registration && registration.waiting) {
+                    messageSW(registration.waiting, {
+                      type: "SKIP_WAITING",
+                    });
+                  }
+
+                  notification.close(key);
                 }}
                 type="primary"
               >
@@ -181,7 +191,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       wb.addEventListener("waiting", showSkipWaitingPrompt);
       wb.addEventListener("externalwaiting", showSkipWaitingPrompt);
 
-      wb.register();
+      wb.register().then((r: any) => (registration = r));
     }
   }, []);
 
