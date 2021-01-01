@@ -173,18 +173,18 @@ function MyApp({ Component, pageProps }: AppProps) {
           btn: (
             <Space>
               <Button
-                onClick={() => {
-                  wb.addEventListener("controlling", () => {
-                    window.location.reload();
-                  });
-
+                onClick={async () => {
                   wb.messageSW({ type: "SKIP_WAITING" });
+
+                  const registrations = await navigator.serviceWorker.getRegistrations();
+
+                  await Promise.all(
+                    registrations.map((reg) => reg.unregister())
+                  );
 
                   notification.close(key);
 
-                  setTimeout(() => {
-                    window.location.reload();
-                  }, 2000);
+                  window.location.reload();
                 }}
                 type="primary"
               >
