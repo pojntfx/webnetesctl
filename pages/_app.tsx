@@ -32,7 +32,6 @@ import { useEffect, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { initReactI18next, useTranslation } from "react-i18next";
 import styled, { createGlobalStyle, ThemeProvider } from "styled-components";
-import { messageSW, Workbox } from "workbox-window";
 import CreateResourceModal from "../components/create-resource-modal";
 import { Layout } from "../components/layout-wrapper";
 import Navbar, {
@@ -140,10 +139,9 @@ function MyApp({ Component, pageProps }: AppProps) {
       "serviceWorker" in navigator &&
       (window as any).workbox !== undefined
     ) {
-      const wb = new Workbox("/sw.js");
-      let registration: any;
+      const wb = (window as any).workbox;
 
-      const showSkipWaitingPrompt = () => {
+      const promptNewVersionAvailable = () => {
         const key = "update";
 
         notification.open({
@@ -157,9 +155,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                     window.location.reload();
                   });
 
-                  if (registration && registration.waiting) {
-                    messageSW(registration.waiting, { type: "SKIP_WAITING" });
-                  }
+                  wb.messageSW({ type: "SKIP_WAITING" });
 
                   notification.close(key);
                 }}
@@ -186,9 +182,10 @@ function MyApp({ Component, pageProps }: AppProps) {
         });
       };
 
-      wb.addEventListener("waiting", showSkipWaitingPrompt);
+      wb.addEventListener("waiting", promptNewVersionAvailable);
+      wb.addEventListener("externalwaiting", promptNewVersionAvailable);
 
-      wb.register().then((r) => (registration = r));
+      wb.register();
     }
   }, []);
 
