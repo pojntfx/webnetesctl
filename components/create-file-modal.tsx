@@ -89,7 +89,7 @@ const CreateFileModal: React.FC<ICreateFileModalProps> = ({
       closable={false}
       {...otherProps}
     >
-      <WideSpace direction="vertical">
+      <WideSpace size="middle" direction="vertical">
         <Upload.Dragger multiple={false} beforeUpload={() => false}>
           <div>
             <FontAwesomeIcon icon={faPlus} />
@@ -108,6 +108,17 @@ const CreateFileModal: React.FC<ICreateFileModalProps> = ({
             }}
           >
             <Input placeholder="myfile" />
+          </Form.Item>
+
+          <Form.Item
+            label={t("fileName")}
+            required
+            tooltip={{
+              title: t("fileNameDescription"),
+              icon: <FontAwesomeIcon icon={faQuestionCircle} />,
+            }}
+          >
+            <Input placeholder="My File" />
           </Form.Item>
         </Form>
       </WideSpace>
