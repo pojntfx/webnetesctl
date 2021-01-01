@@ -21,7 +21,7 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { Wrapper } from "../components/layout-wrapper";
 import ResourceEditorTmpl from "../components/resource-editor";
-import nodeResource from "../data/node";
+import nodeResource, { nodeId } from "../data/node";
 import packageJSON from "../package.json";
 import glass from "../styles/glass";
 import { TitleSpace } from "./explorer";
@@ -113,7 +113,7 @@ function Config() {
                   icon={<FontAwesomeIcon icon={faLocationArrow} />}
                 />
 
-                <IPAddress>127.0.0.10</IPAddress>
+                <IPAddress>{nodeId}</IPAddress>
               </Space>
             </ClusterData>
 

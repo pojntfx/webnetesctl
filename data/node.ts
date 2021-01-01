@@ -67,3 +67,5 @@ metadata:
 spec:
   network: ""
   prefix: 127.0.0`;
+
+export const nodeId = "127.0.2.0";

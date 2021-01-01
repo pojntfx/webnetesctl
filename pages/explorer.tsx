@@ -87,11 +87,11 @@ function Explorer() {
     const resource = router.query.resource as string;
 
     if (resource) {
-      const { kind, name, node } = parseResourceKey(resource);
+      const { kind, label, node } = parseResourceKey(resource);
 
       const foundResource: any = resources.find(
         (candidate) =>
-          candidate.name === name &&
+          candidate.label === label &&
           candidate.kind === kind &&
           candidate.node === node
       );
@@ -100,7 +100,7 @@ function Explorer() {
         unstable_batchedUpdates(() => {
           setResourcesOpen(true);
           _setSelectedResourceRow([
-            foundResource.name,
+            foundResource.label,
             foundResource.kind,
             foundResource.node,
           ]);
@@ -138,18 +138,18 @@ function Explorer() {
   const setSelectedResourceRow = (
     resource:
       | {
-          name: string;
+          label: string;
           kind: string;
           node: string;
         }
       | undefined
   ) => {
-    if (resource?.name && resource?.kind && resource?.node) {
+    if (resource?.label && resource?.kind && resource?.node) {
       setHandleRef(true);
 
       router.push(
         `/explorer?resource=${stringifyResourceKey(
-          resource?.name,
+          resource?.label,
           resource?.kind,
           resource?.node
         )}`
@@ -181,7 +181,7 @@ function Explorer() {
 
   const resourcesDataSource = resources.map((resource) => ({
     ...resource,
-    key: stringifyResourceKey(resource.name, resource.kind, resource.node),
+    key: stringifyResourceKey(resource.label, resource.kind, resource.node),
   }));
 
   const nodeColumns = [
@@ -586,7 +586,7 @@ function Explorer() {
 
                       if (
                         selectedResourceRow &&
-                        selectedResourceRow[0] === record.name &&
+                        selectedResourceRow[0] === record.label &&
                         selectedResourceRow[1] === record.kind &&
                         selectedResourceRow[2] === record.node
                       ) {

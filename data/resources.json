@@ -2,31 +2,37 @@
   {
     "kind": "Workload",
     "name": "Echo Server",
+    "label": "echo_server",
     "node": "127.0.2.1"
   },
   {
     "kind": "NetworkInterface",
     "name": "Echo",
+    "label": "echo",
     "node": "127.0.2.1"
   },
   {
     "kind": "Repository",
     "name": "WebTorrent",
+    "label": "webtorrent",
     "node": "127.0.2.1"
   },
   {
     "kind": "Workload",
     "name": "Echo Client",
+    "label": "echo_client",
     "node": "127.0.2.3"
   },
   {
     "kind": "NetworkInterface",
     "name": "Echo",
+    "label": "echo",
     "node": "127.0.2.3"
   },
   {
     "kind": "Repository",
     "name": "WebTorrent",
+    "label": "webtorrent",
     "node": "127.0.2.3"
   }
 ]

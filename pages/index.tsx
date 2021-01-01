@@ -508,7 +508,7 @@ function HomePage() {
 
                             router.push(
                               `/explorer?resource=${stringifyResourceKey(
-                                resource.name,
+                                resource.label,
                                 resource.kind,
                                 resource.node
                               )}`
@@ -532,7 +532,7 @@ function HomePage() {
 
                                       router.push(
                                         `/explorer?resource=${stringifyResourceKey(
-                                          resource.name,
+                                          resource.label,
                                           resource.kind,
                                           resource.node
                                         )}`
