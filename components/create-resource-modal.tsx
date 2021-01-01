@@ -6,7 +6,7 @@ import {
   faCube,
   faExternalLinkAlt,
   faPlus,
-  faTimes
+  faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Select as SelectTmpl, Space } from "antd";
@@ -19,7 +19,7 @@ import styled from "styled-components";
 import nodes from "../data/nodes.json";
 import {
   ExternalExampleLink as ExternalExampleLinkTmpl,
-  ExternalLink
+  ExternalLink,
 } from "../pages/config";
 import { TitleSpace } from "../pages/explorer";
 import ResourceEditorTmpl from "./resource-editor";
@@ -142,6 +142,7 @@ const CreateResourceModal: React.FC<ICreateResourceModalProps> = ({
         showSearch
         placeholder={t("selectATargetNode")}
         optionFilterProp="children"
+        notFoundContent={t("noMatchingNodesFound")}
       >
         {nodes.map((node) => (
           <Select.Option value={node.privateIP} key={node.privateIP}>

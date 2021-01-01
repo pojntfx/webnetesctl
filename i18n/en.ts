@@ -28,6 +28,7 @@ export default {
   noResourcesDeployed: "No resources deployed",
   noMatchingResourcesFound: "No matching resources found",
   noMatchingNodesFound: "No matching nodes found",
+  noMatchingReposFound: "No matching repos found",
   privateIp: "Private IP",
   location: "Location",
   publicIp: "Public IP",
@@ -55,4 +56,7 @@ export default {
   fileLabelDescription: "The label of your file; must be node-unique",
   fileName: "Name",
   fileNameDescription: "The display name of your file; must be node-unique",
+  fileRepo: "Repo",
+  fileRepoDescription: "The repo to add the file to",
+  selectAFileRepo: "Select a file repo",
 };

@@ -6,10 +6,12 @@ import {
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Form, Input, Space, Upload } from "antd";
+import { Button, Form, Input, Select, Space, Upload } from "antd";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
+import { nodeId } from "../data/node";
+import resources from "../data/resources.json";
 import { Modal } from "./create-resource-modal";
 
 export interface ICreateFileModalProps {
@@ -119,6 +121,33 @@ const CreateFileModal: React.FC<ICreateFileModalProps> = ({
             }}
           >
             <Input placeholder="My File" />
+          </Form.Item>
+
+          <Form.Item
+            label={t("fileRepo")}
+            required
+            tooltip={{
+              title: t("fileRepoDescription"),
+              icon: <FontAwesomeIcon icon={faQuestionCircle} />,
+            }}
+          >
+            <Select
+              showSearch
+              placeholder={t("selectAFileRepo")}
+              optionFilterProp="children"
+              notFoundContent={t("noMatchingReposFound")}
+            >
+              {resources
+                .filter(
+                  (resource) =>
+                    resource.node === nodeId && resource.kind === "Repository"
+                )
+                .map((repo) => (
+                  <Select.Option value={repo.label} key={repo.label}>
+                    {repo.name}
+                  </Select.Option>
+                ))}
+            </Select>
           </Form.Item>
         </Form>
       </WideSpace>

@@ -34,5 +34,11 @@
     "name": "WebTorrent",
     "label": "webtorrent",
     "node": "127.0.2.3"
+  },
+  {
+    "kind": "Repository",
+    "name": "WebTorrent",
+    "label": "webtorrent",
+    "node": "127.0.2.0"
   }
 ]
