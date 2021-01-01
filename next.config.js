@@ -8,6 +8,9 @@ const sass = require("@zeit/next-sass");
 const less = require("@zeit/next-less");
 const images = require("next-images");
 const pwa = require("next-pwa");
+const runtimeCaching = require("next-pwa/cache");
+
+runtimeCaching[0].handler = "StaleWhileRevalidate";
 
 module.exports = withPlugins(
   [
@@ -27,8 +30,10 @@ module.exports = withPlugins(
       {
         pwa: {
           disable: process.env.NODE_ENV === "development",
-          skipWaiting: false,
           dest: "public",
+          register: false,
+          skipWaiting: false,
+          runtimeCaching,
         },
       },
     ],
