@@ -67,6 +67,7 @@ const CreateResourceModal: React.FC<ICreateResourceModalProps> = ({
       try {
         await new Promise<void>((res, rej) =>
           Modal.confirm({
+            centered: true,
             icon: <> </>,
             title: (
               <Space>

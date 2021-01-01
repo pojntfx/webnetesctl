@@ -6,7 +6,7 @@ import {
   faPlus,
   faQuestionCircle,
   faTimes,
-  faTrash
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Form, Input, Select, Space, Upload } from "antd";
@@ -59,6 +59,7 @@ const CreateFileModal: React.FC<ICreateFileModalProps> = ({
       try {
         await new Promise<void>((res, rej) =>
           Modal.confirm({
+            centered: true,
             icon: <> </>,
             title: (
               <Space>
