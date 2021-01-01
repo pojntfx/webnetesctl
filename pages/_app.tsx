@@ -116,7 +116,6 @@ function MyApp({ Component, pageProps }: AppProps) {
   const [createFileDialogMaximized, setCreateFileDialogMaximized] = useState(
     true
   );
-  const [updating, setUpdating] = useState(false);
 
   const createMenus = (
     <Menu>
@@ -174,23 +173,16 @@ function MyApp({ Component, pageProps }: AppProps) {
           btn: (
             <Space>
               <Button
-                loading={updating}
                 onClick={() => {
-                  setUpdating(true);
-
                   wb.addEventListener("controlling", () => {
-                    setUpdating(false);
-
                     window.location.reload();
                   });
 
                   wb.messageSW({ type: "SKIP_WAITING" });
 
+                  notification.close(key);
+
                   setTimeout(() => {
-                    setUpdating(false);
-
-                    notification.close(key);
-
                     window.location.reload();
                   }, 2000);
                 }}
