@@ -1,13 +1,17 @@
 import {
   faAngleDoubleRight,
+  faArrowLeft,
+  faExclamationCircle,
   faFile,
   faPlus,
   faQuestionCircle,
   faTimes,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Form, Input, Select, Space, Upload } from "antd";
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { nodeId } from "../data/node";
@@ -29,9 +33,68 @@ const CreateFileModal: React.FC<ICreateFileModalProps> = ({
   ...otherProps
 }) => {
   const { t } = useTranslation();
+  const [form] = Form.useForm();
 
   const [maximized, setMaximized] = useState(true);
-  const [form] = Form.useForm();
+  const [fileLabel, setFileLabel] = useState<string>();
+  const [fileName, setFileName] = useState<string>();
+  const [fileRepo, setFileRepo] = useState<string>();
+
+  const clear = useCallback(
+    () =>
+      unstable_batchedUpdates(() => {
+        setFileLabel(undefined);
+        setFileName(undefined);
+        setFileRepo(undefined);
+        setMaximized(true);
+      }),
+    []
+  );
+
+  const cancel = useCallback(async () => {
+    if (fileLabel || fileName || fileRepo) {
+      try {
+        await new Promise<void>((res, rej) =>
+          Modal.confirm({
+            icon: <> </>,
+            title: (
+              <Space>
+                <FontAwesomeIcon icon={faExclamationCircle} />
+                {t("discardChangesTitle")}
+              </Space>
+            ),
+            content: t("discardChangesDescription"),
+            cancelText: (
+              <Space>
+                <FontAwesomeIcon icon={faArrowLeft} />
+                {t("noKeepChanges")}
+              </Space>
+            ),
+            onCancel() {
+              rej();
+            },
+            okButtonProps: { type: "primary" },
+            okText: (
+              <Space>
+                <FontAwesomeIcon icon={faTrash} />
+                {t("yesDiscardChanges")}
+              </Space>
+            ),
+            okType: "danger",
+            onOk() {
+              res();
+            },
+          })
+        );
+      } catch (e) {
+        return false;
+      }
+    }
+
+    clear();
+
+    onCancel();
+  }, [fileLabel, fileName, fileRepo]);
 
   return (
     <Modal
@@ -56,14 +119,7 @@ const CreateFileModal: React.FC<ICreateFileModalProps> = ({
               <FontAwesomeIcon icon={faAngleDoubleRight} />
             </Button>
 
-            <Button
-              type="text"
-              shape="circle"
-              onClick={() => {
-                setMaximized(true);
-                onCancel();
-              }}
-            >
+            <Button type="text" shape="circle" onClick={() => cancel()}>
               <FontAwesomeIcon icon={faTimes} />
             </Button>
           </Space>
@@ -73,13 +129,11 @@ const CreateFileModal: React.FC<ICreateFileModalProps> = ({
       transitionName={maximized ? "fadeandzoom" : "fadeandslideright"}
       visible={open}
       onOk={() => {
-        setMaximized(true);
+        clear();
+
         onCreate();
       }}
-      onCancel={() => {
-        setMaximized(true);
-        onCancel();
-      }}
+      onCancel={() => cancel()}
       okText={
         <Space>
           <FontAwesomeIcon fixedWidth icon={faPlus} />
@@ -109,7 +163,11 @@ const CreateFileModal: React.FC<ICreateFileModalProps> = ({
               icon: <FontAwesomeIcon icon={faQuestionCircle} />,
             }}
           >
-            <Input placeholder="myfile" />
+            <Input
+              placeholder="myfile"
+              value={fileLabel}
+              onChange={(e) => setFileLabel(e.target.value)}
+            />
           </Form.Item>
 
           <Form.Item
@@ -120,7 +178,11 @@ const CreateFileModal: React.FC<ICreateFileModalProps> = ({
               icon: <FontAwesomeIcon icon={faQuestionCircle} />,
             }}
           >
-            <Input placeholder="My File" />
+            <Input
+              placeholder="My File"
+              value={fileName}
+              onChange={(e) => setFileName(e.target.value)}
+            />
           </Form.Item>
 
           <Form.Item
@@ -136,6 +198,8 @@ const CreateFileModal: React.FC<ICreateFileModalProps> = ({
               placeholder={t("selectAFileRepo")}
               optionFilterProp="children"
               notFoundContent={t("noMatchingReposFound")}
+              value={fileRepo}
+              onChange={(e) => setFileRepo(e.toString())}
             >
               {resources
                 .filter(

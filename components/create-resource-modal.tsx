@@ -9,7 +9,7 @@ import {
   faExternalLinkAlt,
   faPlus,
   faTimes,
-  faTrash,
+  faTrash
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Modal as ModalTmpl, Select as SelectTmpl, Space } from "antd";
@@ -22,7 +22,7 @@ import styled from "styled-components";
 import nodes from "../data/nodes.json";
 import {
   ExternalExampleLink as ExternalExampleLinkTmpl,
-  ExternalLink,
+  ExternalLink
 } from "../pages/config";
 import { TitleSpace } from "../pages/explorer";
 import ResourceEditorTmpl from "./resource-editor";
@@ -44,15 +44,26 @@ const CreateResourceModal: React.FC<ICreateResourceModalProps> = ({
   const { t } = useTranslation();
 
   const [definitionOpen, setDefinitionOpen] = useState(true);
+  const [maximized, setMaximized] = useState(true);
   const [definition, setDefinition] = useState<string>();
   const [node, setNode] = useState<string>();
-  const [maximized, setMaximized] = useState(true);
+
+  const clear = useCallback(
+    () =>
+      unstable_batchedUpdates(() => {
+        setDefinitionOpen(true);
+        setDefinition(undefined);
+        setNode(undefined);
+        setMaximized(true);
+      }),
+    []
+  );
 
   const cancel = useCallback(async () => {
     if (definition || node) {
       try {
         await new Promise<void>((res, rej) =>
-          ModalTmpl.confirm({
+          Modal.confirm({
             icon: <> </>,
             title: (
               <Space>
@@ -88,12 +99,7 @@ const CreateResourceModal: React.FC<ICreateResourceModalProps> = ({
       }
     }
 
-    unstable_batchedUpdates(() => {
-      setDefinitionOpen(true);
-      setDefinition(undefined);
-      setNode(undefined);
-      setMaximized(true);
-    });
+    clear();
 
     onCancel();
   }, [definition, node]);
@@ -131,7 +137,8 @@ const CreateResourceModal: React.FC<ICreateResourceModalProps> = ({
       transitionName={maximized ? "fadeandzoom" : "fadeandslideright"}
       visible={open}
       onOk={() => {
-        setMaximized(true);
+        clear();
+
         onCreate();
       }}
       onCancel={() => cancel()}
