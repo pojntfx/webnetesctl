@@ -71,9 +71,18 @@ body {
   ${frostedGlass}
 }
 
-.ant-notification-notice-btn {
-width: 100%;
-overflow-x: auto;
+.ant-notification-notice-btn, .ant-modal-confirm-btns {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.ant-modal-confirm-btns {
+  white-space: nowrap;
+  display: flex;
+
+  > *:first-child {
+    margin-left: auto;
+  }
 }
 
 .ant-notification-notice {
