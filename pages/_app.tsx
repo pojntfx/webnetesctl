@@ -172,6 +172,8 @@ function MyApp({ Component, pageProps }: AppProps) {
                   wb.messageSW({ type: "SKIP_WAITING" });
 
                   notification.close(key);
+
+                  window.location.reload();
                 }}
                 type="primary"
               >
