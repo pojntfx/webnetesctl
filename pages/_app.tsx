@@ -1,5 +1,7 @@
 import {
   faAngleDoubleLeft,
+  faArrowCircleUp,
+  faBan,
   faBell,
   faCaretDown,
   faCube,
@@ -8,15 +10,25 @@ import {
   faNetworkWired,
   faPlus,
   faSearch,
+  faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Dropdown, List, Menu, Popover, Space, Tooltip } from "antd";
+import {
+  Button,
+  Dropdown,
+  List,
+  Menu,
+  notification,
+  Popover,
+  Space,
+  Tooltip,
+} from "antd";
 import { Content } from "antd/lib/layout/layout";
 import i18n from "i18next";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { initReactI18next, useTranslation } from "react-i18next";
 import styled, { createGlobalStyle, ThemeProvider } from "styled-components";
@@ -56,6 +68,16 @@ body {
 }
 
 .ant-modal-mask {
+  ${frostedGlass}
+}
+
+.ant-notification-notice-btn {
+width: 100%;
+overflow-x: auto;
+}
+
+.ant-notification-notice {
+  border: 1px solid #303030;
   ${frostedGlass}
 }
 
@@ -110,6 +132,67 @@ function MyApp({ Component, pageProps }: AppProps) {
       </Menu.Item>
     </Menu>
   );
+
+  useEffect(() => {
+    if (
+      typeof window !== "undefined" &&
+      "serviceWorker" in navigator &&
+      (window as any).workbox !== undefined
+    ) {
+      const wb = (window as any).workbox;
+      let registration: any;
+
+      const showSkipWaitingPrompt = () => {
+        const key = "update";
+
+        notification.open({
+          message: t("updateAvailable"),
+          description: t("reloadToUpdate"),
+          btn: (
+            <Space>
+              <Button
+                onClick={() => {
+                  wb.addEventListener("controlling", () =>
+                    window.location.reload()
+                  );
+
+                  if (registration && registration.waiting) {
+                    wb.messageSW(registration.waiting, {
+                      type: "SKIP_WAITING",
+                    });
+                  }
+
+                  notification.close(key);
+                }}
+                type="primary"
+              >
+                <Space>
+                  <FontAwesomeIcon icon={faArrowCircleUp} />
+                  {t("reloadAndUpdate")}
+                </Space>
+              </Button>
+
+              <Button onClick={() => notification.close(key)}>
+                <Space>
+                  <FontAwesomeIcon icon={faBan} />
+                  {t("dontUpdate")}
+                </Space>
+              </Button>
+            </Space>
+          ),
+          duration: 0,
+          onClose: () => notification.close(key),
+          closeIcon: <FontAwesomeIcon icon={faTimes} />,
+          key,
+        });
+      };
+
+      wb.addEventListener("waiting", showSkipWaitingPrompt);
+      wb.addEventListener("externalwaiting", showSkipWaitingPrompt);
+
+      wb.register().then((r: any) => (registration = r));
+    }
+  }, []);
 
   return (
     <>

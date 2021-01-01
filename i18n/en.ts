@@ -45,4 +45,8 @@ export default {
   definition: "Definition",
   youCanFindSomeExamplesInThe: "You can find some examples in the",
   youCanFindAnExampleInThe: "You can find an example in the",
+  updateAvailable: "Update available",
+  reloadToUpdate: "Do you wish to reload & use the new version?",
+  reloadAndUpdate: "Reload & Update",
+  dontUpdate: "Don't Update",
 };
