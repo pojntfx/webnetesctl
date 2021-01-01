@@ -174,6 +174,12 @@ function MyApp({ Component, pageProps }: AppProps) {
             <Space>
               <Button
                 onClick={async () => {
+                  wb.addEventListener("controlling", () => {
+                    setTimeout(() => {
+                      window.location.reload();
+                    }, 2000);
+                  });
+
                   wb.messageSW({ type: "SKIP_WAITING" });
 
                   const registrations = await navigator.serviceWorker.getRegistrations();
@@ -184,7 +190,9 @@ function MyApp({ Component, pageProps }: AppProps) {
 
                   notification.close(key);
 
-                  window.location.reload();
+                  setTimeout(() => {
+                    window.location.reload();
+                  }, 2000);
                 }}
                 type="primary"
               >
