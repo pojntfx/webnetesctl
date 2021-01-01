@@ -50,4 +50,5 @@ export default {
   reloadAndUpdate: "Reload & Update",
   dontUpdate: "Don't Update",
   selectATargetNode: "Select a target node",
+  addFile: "Add File",
 };

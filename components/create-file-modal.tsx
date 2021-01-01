@@ -1,11 +1,11 @@
 import {
-    faAngleDoubleRight,
-    faFile,
-    faPlus,
-    faTimes
+  faAngleDoubleRight,
+  faFile,
+  faPlus,
+  faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Space } from "antd";
+import { Button, Space, Upload } from "antd";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Modal } from "./create-resource-modal";
@@ -86,7 +86,13 @@ const CreateFileModal: React.FC<ICreateFileModalProps> = ({
       closable={false}
       {...otherProps}
     >
-      <h1>Hello, world!</h1>
+      <Upload.Dragger multiple={false} beforeUpload={() => false}>
+        <div>
+          <FontAwesomeIcon icon={faPlus} />
+
+          <div style={{ marginTop: 8 }}>{t("addFile")}</div>
+        </div>
+      </Upload.Dragger>
     </Modal>
   );
 };
