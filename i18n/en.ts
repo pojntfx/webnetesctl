@@ -51,4 +51,6 @@ export default {
   dontUpdate: "Don't Update",
   selectATargetNode: "Select a target node",
   addFile: "Add File",
+  fileLabel: "File Label",
+  fileLabelDescription: "The label of your file; must be node-unique",
 };

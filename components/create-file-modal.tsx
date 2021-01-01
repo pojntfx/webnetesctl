@@ -2,12 +2,14 @@ import {
   faAngleDoubleRight,
   faFile,
   faPlus,
+  faQuestionCircle,
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Space, Upload } from "antd";
+import { Button, Form, Input, Space, Upload } from "antd";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import styled from "styled-components";
 import { Modal } from "./create-resource-modal";
 
 export interface ICreateFileModalProps {
@@ -27,6 +29,7 @@ const CreateFileModal: React.FC<ICreateFileModalProps> = ({
   const { t } = useTranslation();
 
   const [maximized, setMaximized] = useState(true);
+  const [form] = Form.useForm();
 
   return (
     <Modal
@@ -86,15 +89,38 @@ const CreateFileModal: React.FC<ICreateFileModalProps> = ({
       closable={false}
       {...otherProps}
     >
-      <Upload.Dragger multiple={false} beforeUpload={() => false}>
-        <div>
-          <FontAwesomeIcon icon={faPlus} />
+      <WideSpace direction="vertical">
+        <Upload.Dragger multiple={false} beforeUpload={() => false}>
+          <div>
+            <FontAwesomeIcon icon={faPlus} />
 
-          <div style={{ marginTop: 8 }}>{t("addFile")}</div>
-        </div>
-      </Upload.Dragger>
+            <div>{t("addFile")}</div>
+          </div>
+        </Upload.Dragger>
+
+        <Form form={form} layout="vertical">
+          <Form.Item
+            label={t("fileLabel")}
+            required
+            tooltip={{
+              title: t("fileLabelDescription"),
+              icon: <FontAwesomeIcon icon={faQuestionCircle} />,
+            }}
+          >
+            <Input placeholder="myfile" />
+          </Form.Item>
+        </Form>
+      </WideSpace>
     </Modal>
   );
 };
+
+const WideSpace = styled(Space)`
+  width: 100%;
+
+  .ant-form-item:last-child {
+    margin-bottom: 0;
+  }
+`;
 
 export default CreateFileModal;
