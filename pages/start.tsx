@@ -6,46 +6,49 @@ import Animate from "rc-animate";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import bg from "../img/fernando-rodrigues-sGJUb5HJBqs-unsplash.jpg";
+import glass from "../styles/glass";
 
 function Start() {
   const { t } = useTranslation();
 
   return (
-    <Animate transitionName="fadeandzoom" transitionAppear>
-      <Wrapper>
-        <Image alt={t("webnetesLogo")} src="/logo.svg" />
+    <Wrapper>
+      <Animate transitionName="fadeandzoom" transitionAppear>
+        <ContentWrapper>
+          <Image alt={t("webnetesLogo")} src="/logo.svg" />
 
-        <ActionSplit>
-          <Action direction="vertical" align="center">
-            <ActionIcon icon={faPlus} size="3x" />
+          <ActionSplit>
+            <Action direction="vertical" align="center">
+              <ActionIcon icon={faPlus} size="3x" />
 
-            <Text strong>{t("createClusterIntro")}</Text>
+              <Text strong>{t("createClusterIntro")}</Text>
 
-            <Text>{t("createClusterDescription")}</Text>
+              <Text>{t("createClusterDescription")}</Text>
 
-            <Button type="primary">
-              {t("create")} {t("cluster")}
-            </Button>
-          </Action>
+              <Button type="primary">
+                {t("create")} {t("cluster")}
+              </Button>
+            </Action>
 
-          <DividerWrapper>
-            <Divider />
+            <DividerWrapper>
+              <Divider />
 
-            <span>{t("or")}</span>
+              <span>{t("or")}</span>
 
-            <Divider />
-          </DividerWrapper>
+              <Divider />
+            </DividerWrapper>
 
-          <Action direction="vertical" align="center">
-            <ActionIcon icon={faHandshake} size="3x" />
+            <Action direction="vertical" align="center">
+              <ActionIcon icon={faHandshake} size="3x" />
 
-            <Text strong>{t("joinClusterIntro")}</Text>
+              <Text strong>{t("joinClusterIntro")}</Text>
 
-            <Text>{t("joinClusterDescription")}</Text>
-          </Action>
-        </ActionSplit>
-      </Wrapper>
-    </Animate>
+              <Text>{t("joinClusterDescription")}</Text>
+            </Action>
+          </ActionSplit>
+        </ContentWrapper>
+      </Animate>
+    </Wrapper>
   );
 }
 
@@ -61,14 +64,21 @@ const Wrapper = styled.div`
   min-height: 100%;
 `;
 
+const ContentWrapper = styled.div``;
+
 const Image = styled.img`
+  position: relative;
+  z-index: 10;
   width: 100%;
   padding-top: 2rem;
   padding-bottom: 2rem;
-  max-width: 25rem;
+  padding-right: 1rem;
+  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.5));
+  max-height: 10rem;
 `;
 
 const ActionSplit = styled.div`
+  position: relative;
   width: 100%;
   display: grid;
   gap: 2rem;
@@ -76,9 +86,36 @@ const ActionSplit = styled.div`
   align-items: center;
   justify-items: center;
   max-width: 45rem;
+  margin-bottom: 2rem;
+
+  > * {
+    z-index: 10;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    width: 100vw;
+    height: 100%;
+    z-index: 0;
+    mask-image: linear-gradient(to top, rgb(0 0 0), rgba(0, 0, 0, 0)),
+      linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+    -webkit-mask-image: linear-gradient(to top, rgb(0 0 0), rgba(0, 0, 0, 0)),
+      linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+    mask-size: 100% 50%;
+    -webkit-mask-size: 100% 50%;
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
+    mask-position: left top, left bottom;
+    -webkit-mask-position: left top, left bottom;
+    transform: scaleY(3);
+    ${glass}
+    backdrop-filter: blur(100px);
+  }
 
   @media screen and (min-width: 812px) {
     grid-template-columns: 6fr 1fr 6fr;
+    margin-bottom: 5rem; /* Visual centering offset for logo */
   }
 `;
 
@@ -94,6 +131,7 @@ const Action = styled(Space)`
 const ActionIcon = styled(FontAwesomeIcon)`
   margin-top: 1rem;
   margin-bottom: 1rem;
+  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.5));
 `;
 
 const DividerWrapper = styled.div`
@@ -124,7 +162,7 @@ const DividerWrapper = styled.div`
 `;
 
 const Divider = styled.div`
-  border: 1px solid #303030 !important;
+  border: 1px solid rgba(255, 255, 255, 0.85) !important;
 `;
 
 export default Start;
