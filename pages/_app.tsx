@@ -226,138 +226,142 @@ function MyApp({ Component, pageProps }: AppProps) {
       </Head>
       <GlobalStyle />
       <ThemeProvider theme={theme}>
-        <Layout>
-          <CreateResourceModal
-            open={createResourceDialogOpen && createResourceDialogMaximized}
-            onCreate={() => setCreateResourceDialogOpen(false)}
-            onCancel={() => setCreateResourceDialogOpen(false)}
-            onMinimize={() => setCreateResourceDialogMaximized(false)}
-          />
+        {router.pathname.includes("/start") ? (
+          <Component {...pageProps} />
+        ) : (
+          <Layout>
+            <CreateResourceModal
+              open={createResourceDialogOpen && createResourceDialogMaximized}
+              onCreate={() => setCreateResourceDialogOpen(false)}
+              onCancel={() => setCreateResourceDialogOpen(false)}
+              onMinimize={() => setCreateResourceDialogMaximized(false)}
+            />
 
-          <CreateFileModal
-            open={createFileDialogOpen && createFileDialogMaximized}
-            onCreate={() => setCreateFileDialogOpen(false)}
-            onCancel={() => setCreateFileDialogOpen(false)}
-            onMinimize={() => setCreateFileDialogMaximized(false)}
-          />
+            <CreateFileModal
+              open={createFileDialogOpen && createFileDialogMaximized}
+              onCreate={() => setCreateFileDialogOpen(false)}
+              onCancel={() => setCreateFileDialogOpen(false)}
+              onMinimize={() => setCreateFileDialogMaximized(false)}
+            />
 
-          {(!createResourceDialogMaximized || !createFileDialogMaximized) && (
-            <SideTray>
-              {!createResourceDialogMaximized && (
-                <Button
-                  type="text"
-                  onClick={() => setCreateResourceDialogMaximized(true)}
-                  icon={<FontAwesomeIcon icon={faCube} />}
-                />
-              )}
+            {(!createResourceDialogMaximized || !createFileDialogMaximized) && (
+              <SideTray>
+                {!createResourceDialogMaximized && (
+                  <Button
+                    type="text"
+                    onClick={() => setCreateResourceDialogMaximized(true)}
+                    icon={<FontAwesomeIcon icon={faCube} />}
+                  />
+                )}
 
-              {!createFileDialogMaximized && (
-                <Button
-                  type="text"
-                  onClick={() => setCreateFileDialogMaximized(true)}
-                  icon={<FontAwesomeIcon icon={faFile} />}
-                />
-              )}
-            </SideTray>
-          )}
+                {!createFileDialogMaximized && (
+                  <Button
+                    type="text"
+                    onClick={() => setCreateFileDialogMaximized(true)}
+                    icon={<FontAwesomeIcon icon={faFile} />}
+                  />
+                )}
+              </SideTray>
+            )}
 
-          <MobileHeader>
-            <Tooltip title={t("findNodeOrResource")}>
-              <Button type="text" shape="circle">
-                <FontAwesomeIcon icon={faSearch} />
-              </Button>
-            </Tooltip>
-
-            <Space>
-              <Popover
-                title={t("notifications")}
-                trigger="click"
-                visible={notificationsOpen}
-                onVisibleChange={(open) => setNotificationsOpen(open)}
-                content={
-                  <List>
-                    <List.Item>Example notification 1</List.Item>
-                    <List.Item>Example notification 2</List.Item>
-                  </List>
-                }
-              >
-                <Button
-                  type="text"
-                  shape="circle"
-                  onClick={() => setNotificationsOpen(true)}
-                >
-                  <FontAwesomeIcon icon={faBell} />
-                </Button>
-              </Popover>
-
-              <Dropdown overlay={createMenus}>
+            <MobileHeader>
+              <Tooltip title={t("findNodeOrResource")}>
                 <Button type="text" shape="circle">
-                  <FontAwesomeIcon icon={faPlus} />
-                </Button>
-              </Dropdown>
-
-              <Tooltip title={t("invite")}>
-                <Button type="primary" shape="circle">
-                  <FontAwesomeIcon icon={faHandshake} />
+                  <FontAwesomeIcon icon={faSearch} />
                 </Button>
               </Tooltip>
-            </Space>
-          </MobileHeader>
 
-          <DesktopHeader>
-            <Navbar path={router.pathname} />
-
-            <SearchInput placeholder={t("findNodeOrResource")} />
-
-            <Space>
-              <Popover
-                title={t("notifications")}
-                trigger="click"
-                visible={notificationsOpen}
-                onVisibleChange={(open) => setNotificationsOpen(open)}
-                content={
-                  <List>
-                    <List.Item>Example notification 1</List.Item>
-                    <List.Item>Example notification 2</List.Item>
-                  </List>
-                }
-              >
-                <Button
-                  type="text"
-                  shape="circle"
-                  onClick={() => setNotificationsOpen(true)}
+              <Space>
+                <Popover
+                  title={t("notifications")}
+                  trigger="click"
+                  visible={notificationsOpen}
+                  onVisibleChange={(open) => setNotificationsOpen(open)}
+                  content={
+                    <List>
+                      <List.Item>Example notification 1</List.Item>
+                      <List.Item>Example notification 2</List.Item>
+                    </List>
+                  }
                 >
-                  <FontAwesomeIcon icon={faBell} />
-                </Button>
-              </Popover>
+                  <Button
+                    type="text"
+                    shape="circle"
+                    onClick={() => setNotificationsOpen(true)}
+                  >
+                    <FontAwesomeIcon icon={faBell} />
+                  </Button>
+                </Popover>
 
-              <Dropdown overlay={createMenus}>
-                <Button>
-                  <Space>
+                <Dropdown overlay={createMenus}>
+                  <Button type="text" shape="circle">
                     <FontAwesomeIcon icon={faPlus} />
-                    {t("create")}
-                    <FontAwesomeIcon icon={faCaretDown} />
+                  </Button>
+                </Dropdown>
+
+                <Tooltip title={t("invite")}>
+                  <Button type="primary" shape="circle">
+                    <FontAwesomeIcon icon={faHandshake} />
+                  </Button>
+                </Tooltip>
+              </Space>
+            </MobileHeader>
+
+            <DesktopHeader>
+              <Navbar path={router.pathname} />
+
+              <SearchInput placeholder={t("findNodeOrResource")} />
+
+              <Space>
+                <Popover
+                  title={t("notifications")}
+                  trigger="click"
+                  visible={notificationsOpen}
+                  onVisibleChange={(open) => setNotificationsOpen(open)}
+                  content={
+                    <List>
+                      <List.Item>Example notification 1</List.Item>
+                      <List.Item>Example notification 2</List.Item>
+                    </List>
+                  }
+                >
+                  <Button
+                    type="text"
+                    shape="circle"
+                    onClick={() => setNotificationsOpen(true)}
+                  >
+                    <FontAwesomeIcon icon={faBell} />
+                  </Button>
+                </Popover>
+
+                <Dropdown overlay={createMenus}>
+                  <Button>
+                    <Space>
+                      <FontAwesomeIcon icon={faPlus} />
+                      {t("create")}
+                      <FontAwesomeIcon icon={faCaretDown} />
+                    </Space>
+                  </Button>
+                </Dropdown>
+
+                <Button type="primary">
+                  <Space>
+                    <FontAwesomeIcon icon={faHandshake} />
+                    {t("invite")}
                   </Space>
                 </Button>
-              </Dropdown>
+              </Space>
+            </DesktopHeader>
 
-              <Button type="primary">
-                <Space>
-                  <FontAwesomeIcon icon={faHandshake} />
-                  {t("invite")}
-                </Space>
-              </Button>
-            </Space>
-          </DesktopHeader>
+            <Content>
+              <Component {...pageProps} />
+            </Content>
 
-          <Content>
-            <Component {...pageProps} />
-          </Content>
-
-          <TabsMobile>
-            <Navbar path={router.pathname} />
-          </TabsMobile>
-        </Layout>
+            <TabsMobile>
+              <Navbar path={router.pathname} />
+            </TabsMobile>
+          </Layout>
+        )}
       </ThemeProvider>
     </>
   );

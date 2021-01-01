@@ -67,4 +67,5 @@ export default {
     "You can find your created resources in the",
   youCanFindYourCreatedFileResourcesInThe:
     "You can find your created file resources in the",
+  webnetesLogo: "Webnetes Logo",
 };
