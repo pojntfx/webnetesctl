@@ -9,11 +9,13 @@ import {
   faExternalLinkAlt,
   faPlus,
   faTimes,
-  faTrash
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Modal as ModalTmpl, Select as SelectTmpl, Space } from "antd";
+import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
+import { useRouter } from "next/router";
 import Animate from "rc-animate";
 import { useCallback, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
@@ -22,7 +24,7 @@ import styled from "styled-components";
 import nodes from "../data/nodes.json";
 import {
   ExternalExampleLink as ExternalExampleLinkTmpl,
-  ExternalLink
+  ExternalLink,
 } from "../pages/config";
 import { TitleSpace } from "../pages/explorer";
 import ResourceEditorTmpl from "./resource-editor";
@@ -42,6 +44,7 @@ const CreateResourceModal: React.FC<ICreateResourceModalProps> = ({
   ...otherProps
 }) => {
   const { t } = useTranslation();
+  const router = useRouter();
 
   const [definitionOpen, setDefinitionOpen] = useState(true);
   const [maximized, setMaximized] = useState(true);
@@ -203,6 +206,24 @@ const CreateResourceModal: React.FC<ICreateResourceModalProps> = ({
           </Select.Option>
         ))}
       </Select>
+
+      <Text>
+        {t("youCanFindYourCreatedResourcesInThe")}{" "}
+        <a
+          href="/explorer"
+          onClick={(e) => {
+            e.preventDefault();
+
+            setMaximized(false);
+            onMinimize();
+
+            router.push("/explorer");
+          }}
+        >
+          {t("explorer")}
+        </a>
+        .
+      </Text>
     </Modal>
   );
 };
@@ -242,6 +263,7 @@ export const ExternalExampleLink = styled(ExternalExampleLinkTmpl)`
 
 const Select = styled(SelectTmpl)`
   width: 100%;
+  margin-bottom: 1rem;
 `;
 
 export default CreateResourceModal;

@@ -63,4 +63,8 @@ export default {
   discardChangesDescription: "Are you sure you wish to discard your changes?",
   noKeepChanges: "Keep changes",
   yesDiscardChanges: "Discard changes",
+  youCanFindYourCreatedResourcesInThe:
+    "You can find your created resources in the",
+  youCanFindYourCreatedFileResourcesInThe:
+    "You can find your created file resources in the",
 };

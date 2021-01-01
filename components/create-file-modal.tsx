@@ -6,10 +6,12 @@ import {
   faPlus,
   faQuestionCircle,
   faTimes,
-  faTrash,
+  faTrash
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Form, Input, Select, Space, Upload } from "antd";
+import Text from "antd/lib/typography/Text";
+import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
@@ -34,6 +36,7 @@ const CreateFileModal: React.FC<ICreateFileModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const [form] = Form.useForm();
+  const router = useRouter();
 
   const [maximized, setMaximized] = useState(true);
   const [fileLabel, setFileLabel] = useState<string>();
@@ -214,6 +217,24 @@ const CreateFileModal: React.FC<ICreateFileModalProps> = ({
             </Select>
           </Form.Item>
         </Form>
+
+        <Text>
+          {t("youCanFindYourCreatedFileResourcesInThe")}{" "}
+          <a
+            href="/explorer"
+            onClick={(e) => {
+              e.preventDefault();
+
+              setMaximized(false);
+              onMinimize();
+
+              router.push("/explorer");
+            }}
+          >
+            {t("explorer")}
+          </a>
+          .
+        </Text>
       </WideSpace>
     </Modal>
   );
