@@ -140,7 +140,6 @@ function MyApp({ Component, pageProps }: AppProps) {
       (window as any).workbox !== undefined
     ) {
       const wb = (window as any).workbox;
-      let registration: any;
 
       const showSkipWaitingPrompt = () => {
         const key = "update";
@@ -152,17 +151,9 @@ function MyApp({ Component, pageProps }: AppProps) {
             <Space>
               <Button
                 onClick={() => {
-                  wb.addEventListener("controlling", () =>
-                    window.location.reload()
-                  );
-
-                  if (registration && registration.waiting) {
-                    wb.messageSW(registration.waiting, {
-                      type: "SKIP_WAITING",
-                    });
-                  }
-
                   notification.close(key);
+
+                  window.location.reload();
                 }}
                 type="primary"
               >
@@ -190,7 +181,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       wb.addEventListener("waiting", showSkipWaitingPrompt);
       wb.addEventListener("externalwaiting", showSkipWaitingPrompt);
 
-      wb.register().then((r: any) => (registration = r));
+      wb.register();
     }
   }, []);
 
