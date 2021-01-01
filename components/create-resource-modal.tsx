@@ -1,19 +1,22 @@
 import {
   faAngleDoubleRight,
+  faArrowLeft,
   faChevronDown,
   faChevronRight,
   faCode,
   faCube,
+  faExclamationCircle,
   faExternalLinkAlt,
   faPlus,
   faTimes,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Select as SelectTmpl, Space } from "antd";
-import ModalTmpl from "antd/lib/modal/Modal";
+import { Button, Modal as ModalTmpl, Select as SelectTmpl, Space } from "antd";
 import Title from "antd/lib/typography/Title";
 import Animate from "rc-animate";
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import nodes from "../data/nodes.json";
@@ -41,8 +44,59 @@ const CreateResourceModal: React.FC<ICreateResourceModalProps> = ({
   const { t } = useTranslation();
 
   const [definitionOpen, setDefinitionOpen] = useState(true);
-  const [definition, setDefinition] = useState("");
+  const [definition, setDefinition] = useState<string>();
+  const [node, setNode] = useState<string>();
   const [maximized, setMaximized] = useState(true);
+
+  const cancel = useCallback(async () => {
+    if (definition || node) {
+      try {
+        await new Promise<void>((res, rej) =>
+          ModalTmpl.confirm({
+            icon: <> </>,
+            title: (
+              <Space>
+                <FontAwesomeIcon icon={faExclamationCircle} />
+                {t("discardChangesTitle")}
+              </Space>
+            ),
+            content: t("discardChangesDescription"),
+            cancelText: (
+              <Space>
+                <FontAwesomeIcon icon={faArrowLeft} />
+                {t("noKeepChanges")}
+              </Space>
+            ),
+            onCancel() {
+              rej();
+            },
+            okButtonProps: { type: "primary" },
+            okText: (
+              <Space>
+                <FontAwesomeIcon icon={faTrash} />
+                {t("yesDiscardChanges")}
+              </Space>
+            ),
+            okType: "danger",
+            onOk() {
+              res();
+            },
+          })
+        );
+      } catch (e) {
+        return false;
+      }
+    }
+
+    unstable_batchedUpdates(() => {
+      setDefinitionOpen(true);
+      setDefinition(undefined);
+      setNode(undefined);
+      setMaximized(true);
+    });
+
+    onCancel();
+  }, [definition, node]);
 
   return (
     <Modal
@@ -67,14 +121,7 @@ const CreateResourceModal: React.FC<ICreateResourceModalProps> = ({
               <FontAwesomeIcon icon={faAngleDoubleRight} />
             </Button>
 
-            <Button
-              type="text"
-              shape="circle"
-              onClick={() => {
-                setMaximized(true);
-                onCancel();
-              }}
-            >
+            <Button type="text" shape="circle" onClick={() => cancel()}>
               <FontAwesomeIcon icon={faTimes} />
             </Button>
           </Space>
@@ -87,10 +134,7 @@ const CreateResourceModal: React.FC<ICreateResourceModalProps> = ({
         setMaximized(true);
         onCreate();
       }}
-      onCancel={() => {
-        setMaximized(true);
-        onCancel();
-      }}
+      onCancel={() => cancel()}
       okText={
         <Space>
           <FontAwesomeIcon fixedWidth icon={faPlus} />
@@ -120,7 +164,7 @@ const CreateResourceModal: React.FC<ICreateResourceModalProps> = ({
         {definitionOpen && (
           <div>
             <ResourceEditor
-              data={definition}
+              data={definition || ""}
               onEdit={(value) => setDefinition(value)}
             />
 
@@ -143,6 +187,8 @@ const CreateResourceModal: React.FC<ICreateResourceModalProps> = ({
         placeholder={t("selectATargetNode")}
         optionFilterProp="children"
         notFoundContent={t("noMatchingNodesFound")}
+        onChange={(e) => setNode(e.toString())}
+        value={node}
       >
         {nodes.map((node) => (
           <Select.Option value={node.privateIP} key={node.privateIP}>

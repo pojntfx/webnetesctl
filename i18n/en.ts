@@ -59,4 +59,8 @@ export default {
   fileRepo: "Repo",
   fileRepoDescription: "The repo to add the file to",
   selectAFileRepo: "Select a file repo",
+  discardChangesTitle: "Unsaved changes",
+  discardChangesDescription: "Are you sure you wish to discard your changes?",
+  noKeepChanges: "Keep changes",
+  yesDiscardChanges: "Discard changes",
 };
