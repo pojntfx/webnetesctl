@@ -49,4 +49,5 @@ export default {
   reloadToUpdate: "Do you wish to reload & use the new version?",
   reloadAndUpdate: "Reload & Update",
   dontUpdate: "Don't Update",
+  selectATargetNode: "Select a target node",
 };

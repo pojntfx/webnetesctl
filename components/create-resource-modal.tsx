@@ -9,16 +9,20 @@ import {
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Space } from "antd";
+import { Button, Select as SelectTmpl, Space } from "antd";
 import ModalTmpl from "antd/lib/modal/Modal";
 import Title from "antd/lib/typography/Title";
 import Animate from "rc-animate";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { ExternalExampleLink, ExternalLink } from "../pages/config";
+import {
+  ExternalExampleLink as ExternalExampleLinkTmpl,
+  ExternalLink,
+} from "../pages/config";
 import { TitleSpace } from "../pages/explorer";
 import ResourceEditorTmpl from "./resource-editor";
+import nodes from "../data/nodes.json";
 
 export interface ICreateResourceModalProps {
   open: boolean;
@@ -37,6 +41,7 @@ const CreateResourceModal: React.FC<ICreateResourceModalProps> = ({
   const { t } = useTranslation();
 
   const [definitionOpen, setDefinitionOpen] = useState(true);
+  const [nodesOpen, setNodesOpen] = useState(true);
   const [definition, setDefinition] = useState("");
   const [maximized, setMaximized] = useState(true);
 
@@ -133,6 +138,18 @@ const CreateResourceModal: React.FC<ICreateResourceModalProps> = ({
           </div>
         )}
       </Animate>
+
+      <Select
+        showSearch
+        placeholder={t("selectATargetNode")}
+        optionFilterProp="children"
+      >
+        {nodes.map((node) => (
+          <Select.Option value={node.privateIP} key={node.privateIP}>
+            {node.privateIP} ({node.location}, {node.publicIP})
+          </Select.Option>
+        ))}
+      </Select>
     </Modal>
   );
 };
@@ -164,6 +181,14 @@ const Modal = styled(ModalTmpl)`
     display: flex;
     justify-content: space-between;
   }
+`;
+
+const ExternalExampleLink = styled(ExternalExampleLinkTmpl)`
+  padding-bottom: 1rem;
+`;
+
+const Select = styled(SelectTmpl)`
+  width: 100%;
 `;
 
 export default CreateResourceModal;
