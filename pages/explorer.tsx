@@ -366,292 +366,297 @@ function Explorer() {
   ];
 
   return (
-    <Animate transitionName="fadeandzoom" transitionAppear>
-      <Wrapper>
-        <TitleSpace
-          align="center"
-          onClick={() => setNodesOpen((nodesOpen) => !nodesOpen)}
-        >
-          <Title level={2}>
-            <FontAwesomeIcon icon={faMobile} /> {t("node", { count: 2 })}
-          </Title>
-
-          <Button
-            type="text"
-            shape="circle"
+    <Wrapper>
+      <Animate transitionName="fadeandzoom" transitionAppear>
+        <div>
+          <TitleSpace
+            align="center"
             onClick={() => setNodesOpen((nodesOpen) => !nodesOpen)}
           >
-            <FontAwesomeIcon
-              icon={nodesOpen ? faChevronDown : faChevronRight}
-            />
-          </Button>
-        </TitleSpace>
+            <Title level={2}>
+              <FontAwesomeIcon icon={faMobile} /> {t("node", { count: 2 })}
+            </Title>
 
-        <Animate transitionName="fadeandslide" transitionAppear>
-          {nodesOpen && (
-            <WideSpace direction="vertical" size="middle">
-              <Input.Search
-                placeholder={t("filterNodes")}
-                onChange={(e) => setNodesFilter(e.target.value)}
-                value={nodesFilter}
+            <Button
+              type="text"
+              shape="circle"
+              onClick={() => setNodesOpen((nodesOpen) => !nodesOpen)}
+            >
+              <FontAwesomeIcon
+                icon={nodesOpen ? faChevronDown : faChevronRight}
               />
+            </Button>
+          </TitleSpace>
 
-              <Table
-                dataSource={filterKeys(nodesDataSource, nodesFilter)}
-                columns={nodeColumns as any}
-                scroll={{ x: "max-content" }}
-                locale={{
-                  emptyText: t("noMatchingNodesFound"),
-                }}
-                expandable={{
-                  expandedRowRender: (record) => {
-                    const matchingResources = resources.filter(
-                      (resource) =>
-                        resource.node ===
-                        (record as typeof nodesDataSource[0]).privateIP
-                    );
+          <Animate transitionName="fadeandslide" transitionAppear>
+            {nodesOpen && (
+              <WideSpace direction="vertical" size="middle">
+                <Input.Search
+                  placeholder={t("filterNodes")}
+                  onChange={(e) => setNodesFilter(e.target.value)}
+                  value={nodesFilter}
+                />
 
-                    if (matchingResources.length === 0) {
-                      return (
-                        <div ref={refInView as any}>
-                          <Empty
-                            description={t("noResourcesDeployed")}
-                            image={Empty.PRESENTED_IMAGE_SIMPLE}
-                          />
-                        </div>
+                <Table
+                  dataSource={filterKeys(nodesDataSource, nodesFilter)}
+                  columns={nodeColumns as any}
+                  scroll={{ x: "max-content" }}
+                  locale={{
+                    emptyText: t("noMatchingNodesFound"),
+                  }}
+                  expandable={{
+                    expandedRowRender: (record) => {
+                      const matchingResources = resources.filter(
+                        (resource) =>
+                          resource.node ===
+                          (record as typeof nodesDataSource[0]).privateIP
                       );
-                    } else {
-                      return (
-                        <div ref={refInView as any}>
-                          <ResourceList>
-                            {matchingResources.map((resource, index) => (
-                              <ResourceItem
-                                onClick={(e) => {
-                                  e.stopPropagation();
 
-                                  setSelectedResourceRow(resource);
-                                }}
-                                actions={[
-                                  resource.kind === "Workload" && (
-                                    <Tooltip title={t("openInTerminal")}>
-                                      <Button type="text" shape="circle">
-                                        <FontAwesomeIcon icon={faTerminal} />
+                      if (matchingResources.length === 0) {
+                        return (
+                          <div ref={refInView as any}>
+                            <Empty
+                              description={t("noResourcesDeployed")}
+                              image={Empty.PRESENTED_IMAGE_SIMPLE}
+                            />
+                          </div>
+                        );
+                      } else {
+                        return (
+                          <div ref={refInView as any}>
+                            <ResourceList>
+                              {matchingResources.map((resource, index) => (
+                                <ResourceItem
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+
+                                    setSelectedResourceRow(resource);
+                                  }}
+                                  actions={[
+                                    resource.kind === "Workload" && (
+                                      <Tooltip title={t("openInTerminal")}>
+                                        <Button type="text" shape="circle">
+                                          <FontAwesomeIcon icon={faTerminal} />
+                                        </Button>
+                                      </Tooltip>
+                                    ),
+                                    <Tooltip title={t("openInResources")}>
+                                      <Button
+                                        type="text"
+                                        shape="circle"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+
+                                          setSelectedResourceRow(resource);
+                                        }}
+                                      >
+                                        <FontAwesomeIcon
+                                          icon={faAngleDoubleDown}
+                                        />
                                       </Button>
-                                    </Tooltip>
-                                  ),
-                                  <Tooltip title={t("openInResources")}>
-                                    <Button
-                                      type="text"
-                                      shape="circle"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-
-                                        setSelectedResourceRow(resource);
-                                      }}
+                                    </Tooltip>,
+                                    <Dropdown
+                                      overlay={
+                                        <Menu>
+                                          <Menu.Item key="delete">
+                                            <Space>
+                                              <FontAwesomeIcon
+                                                fixedWidth
+                                                icon={faTrash}
+                                              />
+                                              {t("delete")}
+                                            </Space>
+                                          </Menu.Item>
+                                        </Menu>
+                                      }
                                     >
-                                      <FontAwesomeIcon
-                                        icon={faAngleDoubleDown}
-                                      />
-                                    </Button>
-                                  </Tooltip>,
-                                  <Dropdown
-                                    overlay={
-                                      <Menu>
-                                        <Menu.Item key="delete">
-                                          <Space>
-                                            <FontAwesomeIcon
-                                              fixedWidth
-                                              icon={faTrash}
-                                            />
-                                            {t("delete")}
-                                          </Space>
-                                        </Menu.Item>
-                                      </Menu>
+                                      <Button type="text" shape="circle">
+                                        <FontAwesomeIcon icon={faEllipsisV} />
+                                      </Button>
+                                    </Dropdown>,
+                                  ].filter((component) => component)}
+                                  key={index}
+                                >
+                                  <List.Item.Meta
+                                    title={
+                                      <>
+                                        {resource.name}{" "}
+                                        <Text code>{resource.kind}</Text>
+                                      </>
                                     }
-                                  >
-                                    <Button type="text" shape="circle">
-                                      <FontAwesomeIcon icon={faEllipsisV} />
-                                    </Button>
-                                  </Dropdown>,
-                                ].filter((component) => component)}
-                                key={index}
-                              >
-                                <List.Item.Meta
-                                  title={
-                                    <>
-                                      {resource.name}{" "}
-                                      <Text code>{resource.kind}</Text>
-                                    </>
-                                  }
-                                />
-                              </ResourceItem>
-                            ))}
-                          </ResourceList>
-                        </div>
-                      );
-                    }
-                  },
-                  expandedRowKeys: (() => {
-                    const keys = [selectedNodeRow].filter((s) => s);
-
-                    if (keys.length > 0) {
-                      return keys;
-                    } else {
-                      return undefined;
-                    }
-                  })() as string[],
-                  expandIcon: ({ expanded, record }) => (
-                    <Space>
-                      <Button
-                        type="text"
-                        shape="circle"
-                        onClick={(e) => {
-                          e.stopPropagation();
-
-                          expanded
-                            ? setSelectedNodeRow(undefined)
-                            : setSelectedNodeRow(
-                                (record as typeof nodesDataSource[0]).privateIP
-                              );
-                        }}
-                      >
-                        <FontAwesomeIcon
-                          fixedWidth
-                          icon={expanded ? faMinus : faPlus}
-                        />
-                      </Button>
-                      <FontAwesomeIcon fixedWidth icon={faCube} />{" "}
-                      {
-                        resources.filter(
-                          (resource) =>
-                            resource.node ===
-                            (record as typeof nodesDataSource[0]).privateIP
-                        ).length
-                      }
-                    </Space>
-                  ),
-                }}
-                onRow={(rawRecord) => {
-                  const record = rawRecord as typeof nodesDataSource[0];
-
-                  return {
-                    onClick: () => {
-                      if (selectedNodeRow === record.privateIP) {
-                        setSelectedNodeRow(undefined);
-                      } else {
-                        setSelectedNodeRow(record.privateIP);
+                                  />
+                                </ResourceItem>
+                              ))}
+                            </ResourceList>
+                          </div>
+                        );
                       }
                     },
-                  };
-                }}
-              />
-            </WideSpace>
-          )}
-        </Animate>
-
-        <TitleSpace
-          align="center"
-          onClick={() => setResourcesOpen((resourcesOpen) => !resourcesOpen)}
-        >
-          <Title level={2}>
-            <FontAwesomeIcon icon={faCube} /> {t("resource", { count: 2 })}
-          </Title>
-          <Button type="text" shape="circle">
-            <FontAwesomeIcon
-              icon={resourcesOpen ? faChevronDown : faChevronRight}
-            />
-          </Button>
-        </TitleSpace>
-
-        <Animate transitionName="fadeandslide" transitionAppear>
-          {resourcesOpen && (
-            <WideSpace direction="vertical" size="middle">
-              <Input.Search
-                placeholder={t("filterResources")}
-                onChange={(e) => setResourcesFilter(e.target.value)}
-                value={resourcesFilter}
-              />
-
-              <ResourceTable
-                dataSource={filterKeys(resourcesDataSource, resourcesFilter)}
-                columns={resourceColumns as any}
-                scroll={{ x: "max-content" }}
-                locale={{
-                  emptyText: t("noMatchingResourcesFound"),
-                }}
-                onRow={(rawRecord) => {
-                  return {
-                    onClick: () => {
-                      const record = rawRecord as typeof resourcesDataSource[0];
-
-                      if (
-                        selectedResourceRow &&
-                        selectedResourceRow[0] === record.label &&
-                        selectedResourceRow[1] === record.kind &&
-                        selectedResourceRow[2] === record.node
-                      ) {
-                        setSelectedResourceRow(undefined);
-                      } else {
-                        setSelectedResourceRow(record);
-                      }
-                    },
-                  };
-                }}
-                expandable={{
-                  expandedRowRender: (rawRecord) => {
-                    const record = rawRecord as typeof resourcesDataSource[0];
-
-                    return <ResourceEditor one data={yaml.safeDump(record)} />;
-                  },
-                  expandedRowKeys: (() => {
-                    if (selectedResourceRow) {
-                      const keys = [
-                        stringifyResourceKey(
-                          selectedResourceRow[0],
-                          selectedResourceRow[1],
-                          selectedResourceRow[2]
-                        ),
-                      ].filter((s) => s);
+                    expandedRowKeys: (() => {
+                      const keys = [selectedNodeRow].filter((s) => s);
 
                       if (keys.length > 0) {
                         return keys;
                       } else {
                         return undefined;
                       }
-                    } else {
-                      return undefined;
-                    }
-                  })() as string[],
-                  expandIcon: ({ expanded, record: rawRecord }) => (
-                    <Space>
-                      <Button
-                        type="text"
-                        shape="circle"
-                        onClick={(e) => {
-                          e.stopPropagation();
+                    })() as string[],
+                    expandIcon: ({ expanded, record }) => (
+                      <Space>
+                        <Button
+                          type="text"
+                          shape="circle"
+                          onClick={(e) => {
+                            e.stopPropagation();
 
-                          const record = rawRecord as typeof resourcesDataSource[0];
+                            expanded
+                              ? setSelectedNodeRow(undefined)
+                              : setSelectedNodeRow(
+                                  (record as typeof nodesDataSource[0])
+                                    .privateIP
+                                );
+                          }}
+                        >
+                          <FontAwesomeIcon
+                            fixedWidth
+                            icon={expanded ? faMinus : faPlus}
+                          />
+                        </Button>
+                        <FontAwesomeIcon fixedWidth icon={faCube} />{" "}
+                        {
+                          resources.filter(
+                            (resource) =>
+                              resource.node ===
+                              (record as typeof nodesDataSource[0]).privateIP
+                          ).length
+                        }
+                      </Space>
+                    ),
+                  }}
+                  onRow={(rawRecord) => {
+                    const record = rawRecord as typeof nodesDataSource[0];
 
-                          expanded
-                            ? setSelectedResourceRow(undefined)
-                            : setSelectedResourceRow(record);
-                        }}
-                      >
-                        <FontAwesomeIcon
-                          fixedWidth
-                          icon={expanded ? faMinus : faPlus}
-                        />
-                      </Button>
-                      <FontAwesomeIcon fixedWidth icon={faCode} />{" "}
-                    </Space>
-                  ),
-                }}
+                    return {
+                      onClick: () => {
+                        if (selectedNodeRow === record.privateIP) {
+                          setSelectedNodeRow(undefined);
+                        } else {
+                          setSelectedNodeRow(record.privateIP);
+                        }
+                      },
+                    };
+                  }}
+                />
+              </WideSpace>
+            )}
+          </Animate>
+
+          <TitleSpace
+            align="center"
+            onClick={() => setResourcesOpen((resourcesOpen) => !resourcesOpen)}
+          >
+            <Title level={2}>
+              <FontAwesomeIcon icon={faCube} /> {t("resource", { count: 2 })}
+            </Title>
+            <Button type="text" shape="circle">
+              <FontAwesomeIcon
+                icon={resourcesOpen ? faChevronDown : faChevronRight}
               />
-            </WideSpace>
-          )}
-        </Animate>
-      </Wrapper>
-    </Animate>
+            </Button>
+          </TitleSpace>
+
+          <Animate transitionName="fadeandslide" transitionAppear>
+            {resourcesOpen && (
+              <WideSpace direction="vertical" size="middle">
+                <Input.Search
+                  placeholder={t("filterResources")}
+                  onChange={(e) => setResourcesFilter(e.target.value)}
+                  value={resourcesFilter}
+                />
+
+                <ResourceTable
+                  dataSource={filterKeys(resourcesDataSource, resourcesFilter)}
+                  columns={resourceColumns as any}
+                  scroll={{ x: "max-content" }}
+                  locale={{
+                    emptyText: t("noMatchingResourcesFound"),
+                  }}
+                  onRow={(rawRecord) => {
+                    return {
+                      onClick: () => {
+                        const record = rawRecord as typeof resourcesDataSource[0];
+
+                        if (
+                          selectedResourceRow &&
+                          selectedResourceRow[0] === record.label &&
+                          selectedResourceRow[1] === record.kind &&
+                          selectedResourceRow[2] === record.node
+                        ) {
+                          setSelectedResourceRow(undefined);
+                        } else {
+                          setSelectedResourceRow(record);
+                        }
+                      },
+                    };
+                  }}
+                  expandable={{
+                    expandedRowRender: (rawRecord) => {
+                      const record = rawRecord as typeof resourcesDataSource[0];
+
+                      return (
+                        <ResourceEditor one data={yaml.safeDump(record)} />
+                      );
+                    },
+                    expandedRowKeys: (() => {
+                      if (selectedResourceRow) {
+                        const keys = [
+                          stringifyResourceKey(
+                            selectedResourceRow[0],
+                            selectedResourceRow[1],
+                            selectedResourceRow[2]
+                          ),
+                        ].filter((s) => s);
+
+                        if (keys.length > 0) {
+                          return keys;
+                        } else {
+                          return undefined;
+                        }
+                      } else {
+                        return undefined;
+                      }
+                    })() as string[],
+                    expandIcon: ({ expanded, record: rawRecord }) => (
+                      <Space>
+                        <Button
+                          type="text"
+                          shape="circle"
+                          onClick={(e) => {
+                            e.stopPropagation();
+
+                            const record = rawRecord as typeof resourcesDataSource[0];
+
+                            expanded
+                              ? setSelectedResourceRow(undefined)
+                              : setSelectedResourceRow(record);
+                          }}
+                        >
+                          <FontAwesomeIcon
+                            fixedWidth
+                            icon={expanded ? faMinus : faPlus}
+                          />
+                        </Button>
+                        <FontAwesomeIcon fixedWidth icon={faCode} />{" "}
+                      </Space>
+                    ),
+                  }}
+                />
+              </WideSpace>
+            )}
+          </Animate>
+        </div>
+      </Animate>
+    </Wrapper>
   );
 }
 

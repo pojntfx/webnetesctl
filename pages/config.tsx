@@ -5,7 +5,7 @@ import {
   faLocationArrow,
   faMapMarkerAlt,
   faSave,
-  faThumbtack
+  faThumbtack,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { feature } from "@ideditor/country-coder";
@@ -92,114 +92,116 @@ function Config() {
   }, []);
 
   return (
-    <Animate transitionName="fadeandzoom" transitionAppear>
-      <Wrapper>
-        <StatusCard>
-          <Overview>
-            <ConnectedStatus>
-              <FontAwesomeIcon icon={faCheckCircle} size="lg" fixedWidth />{" "}
-              {t("connected")}!
-            </ConnectedStatus>
+    <Wrapper>
+      <Animate transitionName="fadeandzoom" transitionAppear>
+        <div>
+          <StatusCard>
+            <Overview>
+              <ConnectedStatus>
+                <FontAwesomeIcon icon={faCheckCircle} size="lg" fixedWidth />{" "}
+                {t("connected")}!
+              </ConnectedStatus>
 
-            <ClusterData direction="vertical" align="center">
-              <div>{t("youAre")}:</div>
+              <ClusterData direction="vertical" align="center">
+                <div>{t("youAre")}:</div>
 
-              <Space align="center">
-                <Button
-                  type="text"
-                  shape="circle"
-                  onClick={getUserCoordinates}
-                  loading={loadingUserCoordinates}
-                  icon={<FontAwesomeIcon icon={faLocationArrow} />}
-                />
+                <Space align="center">
+                  <Button
+                    type="text"
+                    shape="circle"
+                    onClick={getUserCoordinates}
+                    loading={loadingUserCoordinates}
+                    icon={<FontAwesomeIcon icon={faLocationArrow} />}
+                  />
 
-                <IPAddress>{nodeId}</IPAddress>
-              </Space>
-            </ClusterData>
+                  <IPAddress>{nodeId}</IPAddress>
+                </Space>
+              </ClusterData>
 
-            <VersionInformation>
+              <VersionInformation>
+                <dl>
+                  <dt>
+                    <ExternalLink
+                      href="https://github.com/pojntfx/webnetesctl"
+                      target="_blank"
+                    >
+                      webnetesctl <FontAwesomeIcon icon={faExternalLinkAlt} />
+                    </ExternalLink>
+                  </dt>
+                  <dd>
+                    <Text code>{packageJSON.version}</Text>
+                  </dd>
+
+                  <dt>
+                    <ExternalLink
+                      href="https://github.com/pojntfx/webnetes"
+                      target="_blank"
+                    >
+                      webnetes <FontAwesomeIcon icon={faExternalLinkAlt} />
+                    </ExternalLink>
+                  </dt>
+                  <dd>
+                    <Text code>
+                      {packageJSON.dependencies["@pojntfx/webnetes"]}
+                    </Text>
+                  </dd>
+                </dl>
+              </VersionInformation>
+            </Overview>
+
+            <Divider>{t("metadata")}</Divider>
+
+            <Details>
               <dl>
                 <dt>
-                  <ExternalLink
-                    href="https://github.com/pojntfx/webnetesctl"
-                    target="_blank"
-                  >
-                    webnetesctl <FontAwesomeIcon icon={faExternalLinkAlt} />
-                  </ExternalLink>
+                  <FontAwesomeIcon icon={faGlobe} /> {t("publicIp")}
+                </dt>
+                <dd>{publicIP}</dd>
+
+                <dt>
+                  <FontAwesomeIcon icon={faMapMarkerAlt} /> {t("location")}
                 </dt>
                 <dd>
-                  <Text code>{packageJSON.version}</Text>
+                  {featureLocation}
+                  {`${featureFlag ? " " + featureFlag : ""}`}
                 </dd>
 
                 <dt>
-                  <ExternalLink
-                    href="https://github.com/pojntfx/webnetes"
-                    target="_blank"
-                  >
-                    webnetes <FontAwesomeIcon icon={faExternalLinkAlt} />
-                  </ExternalLink>
+                  <FontAwesomeIcon icon={faThumbtack} /> {t("coordinates")}
                 </dt>
                 <dd>
-                  <Text code>
-                    {packageJSON.dependencies["@pojntfx/webnetes"]}
-                  </Text>
+                  {userCoordinates[0]}, {userCoordinates[1]}
                 </dd>
               </dl>
-            </VersionInformation>
-          </Overview>
+            </Details>
+          </StatusCard>
 
-          <Divider>{t("metadata")}</Divider>
+          <TitleSpace align="center">
+            <Title level={2}>{t("nodeConfig")}</Title>
 
-          <Details>
-            <dl>
-              <dt>
-                <FontAwesomeIcon icon={faGlobe} /> {t("publicIp")}
-              </dt>
-              <dd>{publicIP}</dd>
+            <Button>
+              <Space>
+                <FontAwesomeIcon icon={faSave} />
+                {t("applyAndReload")}
+              </Space>
+            </Button>
+          </TitleSpace>
 
-              <dt>
-                <FontAwesomeIcon icon={faMapMarkerAlt} /> {t("location")}
-              </dt>
-              <dd>
-                {featureLocation}
-                {`${featureFlag ? " " + featureFlag : ""}`}
-              </dd>
+          <ResourceEditor data={node} onEdit={(value) => setNode(value)} />
 
-              <dt>
-                <FontAwesomeIcon icon={faThumbtack} /> {t("coordinates")}
-              </dt>
-              <dd>
-                {userCoordinates[0]}, {userCoordinates[1]}
-              </dd>
-            </dl>
-          </Details>
-        </StatusCard>
-
-        <TitleSpace align="center">
-          <Title level={2}>{t("nodeConfig")}</Title>
-
-          <Button>
-            <Space>
-              <FontAwesomeIcon icon={faSave} />
-              {t("applyAndReload")}
-            </Space>
-          </Button>
-        </TitleSpace>
-
-        <ResourceEditor data={node} onEdit={(value) => setNode(value)} />
-
-        <ExternalExampleLink>
-          {t("youCanFindAnExampleInThe")}{" "}
-          <ExternalLink
-            href="https://github.com/pojntfx/webnetes/blob/main/app/webnetes_node/node.yaml"
-            target="_blank"
-          >
-            GitHub Repository <FontAwesomeIcon icon={faExternalLinkAlt} />
-          </ExternalLink>
-          .
-        </ExternalExampleLink>
-      </Wrapper>
-    </Animate>
+          <ExternalExampleLink>
+            {t("youCanFindAnExampleInThe")}{" "}
+            <ExternalLink
+              href="https://github.com/pojntfx/webnetes/blob/main/app/webnetes_node/node.yaml"
+              target="_blank"
+            >
+              GitHub Repository <FontAwesomeIcon icon={faExternalLinkAlt} />
+            </ExternalLink>
+            .
+          </ExternalExampleLink>
+        </div>
+      </Animate>
+    </Wrapper>
   );
 }
 

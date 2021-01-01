@@ -41,7 +41,6 @@ import Navbar, {
   TabsMobile,
 } from "../components/navbar";
 import en from "../i18n/en";
-import universeTexture from "../img/night-sky.png";
 import frostedGlass from "../styles/frosted-glass";
 import glass from "../styles/glass";
 import "../styles/index.less";
@@ -58,10 +57,6 @@ i18n.use(initReactI18next).init({
 
 const GlobalStyle = createGlobalStyle`
 body {
-  background: url(${universeTexture}) no-repeat center center fixed; 
-  background-size: cover;
-  overflow: hidden;
-
   > #__next, > * > section, .ant-layout-content {
     height: 100%;
   }

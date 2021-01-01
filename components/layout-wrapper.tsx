@@ -1,7 +1,11 @@
-import styled from "styled-components";
 import LayoutTmpl from "antd/lib/layout/layout";
+import styled from "styled-components";
+import bg from "../img/night-sky.png";
 
 export const Wrapper = styled.div`
+  background: url(${bg}) no-repeat center center fixed;
+  background-size: cover;
+  overflow: hidden;
   padding-top: calc(1rem + 64px);
   padding-bottom: calc(1rem + 64px);
   padding-left: 1rem;

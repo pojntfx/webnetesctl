@@ -5,6 +5,7 @@ import Text from "antd/lib/typography/Text";
 import Animate from "rc-animate";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
+import bg from "../img/fernando-rodrigues-sGJUb5HJBqs-unsplash.jpg";
 
 function Start() {
   const { t } = useTranslation();
@@ -49,6 +50,9 @@ function Start() {
 }
 
 const Wrapper = styled.div`
+  background: url(${bg}) no-repeat center center fixed;
+  background-size: cover;
+  overflow: hidden;
   padding: 1rem;
   display: flex;
   flex-direction: column;
