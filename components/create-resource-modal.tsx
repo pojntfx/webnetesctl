@@ -6,7 +6,7 @@ import {
   faCube,
   faExternalLinkAlt,
   faPlus,
-  faTimes,
+  faTimes
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Select as SelectTmpl, Space } from "antd";
@@ -16,13 +16,13 @@ import Animate from "rc-animate";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
+import nodes from "../data/nodes.json";
 import {
   ExternalExampleLink as ExternalExampleLinkTmpl,
-  ExternalLink,
+  ExternalLink
 } from "../pages/config";
 import { TitleSpace } from "../pages/explorer";
 import ResourceEditorTmpl from "./resource-editor";
-import nodes from "../data/nodes.json";
 
 export interface ICreateResourceModalProps {
   open: boolean;
@@ -41,7 +41,6 @@ const CreateResourceModal: React.FC<ICreateResourceModalProps> = ({
   const { t } = useTranslation();
 
   const [definitionOpen, setDefinitionOpen] = useState(true);
-  const [nodesOpen, setNodesOpen] = useState(true);
   const [definition, setDefinition] = useState("");
   const [maximized, setMaximized] = useState(true);
 
@@ -160,7 +159,7 @@ const ResourceEditor = styled(ResourceEditorTmpl)`
   min-height: 60vh;
 `;
 
-const Modal = styled(ModalTmpl)`
+export const Modal = styled(ModalTmpl)`
   min-width: 80vw;
 
   .ant-modal-content {
@@ -183,7 +182,7 @@ const Modal = styled(ModalTmpl)`
   }
 `;
 
-const ExternalExampleLink = styled(ExternalExampleLinkTmpl)`
+export const ExternalExampleLink = styled(ExternalExampleLinkTmpl)`
   padding-bottom: 1rem;
 `;
 

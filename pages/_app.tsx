@@ -1,5 +1,4 @@
 import {
-  faAngleDoubleLeft,
   faArrowCircleUp,
   faBan,
   faBell,
@@ -32,6 +31,7 @@ import { useEffect, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { initReactI18next, useTranslation } from "react-i18next";
 import styled, { createGlobalStyle, ThemeProvider } from "styled-components";
+import CreateFileModal from "../components/create-file-modal";
 import CreateResourceModal from "../components/create-resource-modal";
 import { Layout } from "../components/layout-wrapper";
 import Navbar, {
@@ -94,13 +94,19 @@ function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
 
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+
   const [createResourceDialogOpen, setCreateResourceDialogOpen] = useState(
     false
   );
+  const [createFileDialogOpen, setCreateFileDialogOpen] = useState(false);
+
   const [
     createResourceDialogMaximized,
     setCreateResourceDialogMaximized,
   ] = useState(true);
+  const [createFileDialogMaximized, setCreateFileDialogMaximized] = useState(
+    true
+  );
 
   const createMenus = (
     <Menu>
@@ -124,7 +130,15 @@ function MyApp({ Component, pageProps }: AppProps) {
           {t("cluster")}
         </Space>
       </Menu.Item>
-      <Menu.Item key="file">
+      <Menu.Item
+        key="file"
+        onClick={() => {
+          unstable_batchedUpdates(() => {
+            setCreateFileDialogMaximized(true);
+            setCreateFileDialogOpen(true);
+          });
+        }}
+      >
         <Space>
           <FontAwesomeIcon fixedWidth icon={faFile} />
           {t("file")}
@@ -207,13 +221,30 @@ function MyApp({ Component, pageProps }: AppProps) {
             onMinimize={() => setCreateResourceDialogMaximized(false)}
           />
 
-          {!createResourceDialogMaximized && (
+          <CreateFileModal
+            open={createFileDialogOpen && createFileDialogMaximized}
+            onCreate={() => setCreateFileDialogOpen(false)}
+            onCancel={() => setCreateFileDialogOpen(false)}
+            onMinimize={() => setCreateFileDialogMaximized(false)}
+          />
+
+          {(!createResourceDialogMaximized || !createFileDialogMaximized) && (
             <SideTray>
-              <Button
-                type="text"
-                onClick={() => setCreateResourceDialogMaximized(true)}
-                icon={<FontAwesomeIcon icon={faAngleDoubleLeft} />}
-              />
+              {!createResourceDialogMaximized && (
+                <Button
+                  type="text"
+                  onClick={() => setCreateResourceDialogMaximized(true)}
+                  icon={<FontAwesomeIcon icon={faCube} />}
+                />
+              )}
+
+              {!createFileDialogMaximized && (
+                <Button
+                  type="text"
+                  onClick={() => setCreateFileDialogMaximized(true)}
+                  icon={<FontAwesomeIcon icon={faFile} />}
+                />
+              )}
             </SideTray>
           )}
 
@@ -327,7 +358,13 @@ const SideTray = styled.div`
   border: 1px solid #303030;
   margin: 1rem;
   right: 0;
+  display: flex;
+  flex-direction: column;
   ${glass}
+
+  > *:first-child:not(:last-child) {
+    border-bottom: 1px solid #303030;
+  }
 `;
 
 export default MyApp;
