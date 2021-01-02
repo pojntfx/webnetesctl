@@ -83,5 +83,6 @@ export default {
   inviteNotesLaterNote: "You can always join nodes later.",
   continueToOverview: "Continue to Overview",
   done: "Done",
-  advancedSetup: "Advanced Setup",
+  advancedNodeConfig: "Advanced Node Config",
+  useThis: "Use This",
 };

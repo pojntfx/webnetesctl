@@ -8,6 +8,7 @@ import Animate from "rc-animate";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
+import EditNodeConfigModal from "../components/edit-node-config-modal";
 import bg from "../img/fernando-rodrigues-sGJUb5HJBqs-unsplash.jpg";
 import glass from "../styles/glass";
 
@@ -16,12 +17,23 @@ function Start() {
   const router = useRouter();
 
   const [clusterId, setClusterId] = useState<string>();
+  const [editNodeConfigModalOpen, setEditNodeConfigModalOpen] = useState(false);
 
   return (
     <Wrapper>
       <BlurWrapper>
         <Animate transitionName="fadeandzoom" transitionAppear>
           <div>
+            <EditNodeConfigModal
+              open={editNodeConfigModalOpen}
+              onDone={() => {
+                setEditNodeConfigModalOpen(false);
+
+                router.push("/created");
+              }}
+              onCancel={() => setEditNodeConfigModalOpen(false)}
+            />
+
             <Image alt={t("webnetesLogo")} src="/logo.svg" />
 
             <ActionSplit>
@@ -33,23 +45,25 @@ function Start() {
 
                   <Text>{t("createClusterDescription")}</Text>
 
-                  <Link href="/created">
-                    <Dropdown.Button
-                      overlay={
-                        <Menu>
-                          <Menu.Item key="cluster">
-                            <Space>
-                              <FontAwesomeIcon fixedWidth icon={faCogs} />
-                              {t("advancedSetup")}
-                            </Space>
-                          </Menu.Item>
-                        </Menu>
-                      }
-                      type="primary"
-                    >
-                      {t("create")} {t("cluster")}
-                    </Dropdown.Button>
-                  </Link>
+                  <Dropdown.Button
+                    onClick={() => router.push("/created")}
+                    overlay={
+                      <Menu>
+                        <Menu.Item
+                          key="cluster"
+                          onClick={() => setEditNodeConfigModalOpen(true)}
+                        >
+                          <Space>
+                            <FontAwesomeIcon fixedWidth icon={faCogs} />
+                            {t("advancedNodeConfig")}
+                          </Space>
+                        </Menu.Item>
+                      </Menu>
+                    }
+                    type="primary"
+                  >
+                    {t("create")} {t("cluster")}
+                  </Dropdown.Button>
                 </Action>
 
                 <DividerWrapper>
