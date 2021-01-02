@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import ParticlesTmpl from "react-particles-js";
 import styled from "styled-components";
 import {
-  BlurWrapper,
+  BlurWrapper as BlurWrapperTmpl,
   ContentWrapper as ContentWrapperTmpl,
   Wrapper,
 } from "./created";
@@ -80,12 +80,16 @@ const Particles = styled(ParticlesTmpl)`
 `;
 
 const ContentWrapper = styled(ContentWrapperTmpl)`
-  padding-top: 2rem;
-  padding-bottom: 2rem;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
 
   h1 {
     margin-bottom: 0;
   }
+`;
+
+const BlurWrapper = styled(BlurWrapperTmpl)`
+  margin-top: auto;
 `;
 
 export default Worker;
