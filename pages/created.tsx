@@ -225,7 +225,7 @@ const ShareNoteWrapper = styled.div`
   width: 100%;
 `;
 
-const Wrapper = styled.div`
+export const Wrapper = styled.div`
   background: url(${bg}) no-repeat center center fixed;
   background-size: cover;
   overflow: hidden;
@@ -261,14 +261,14 @@ const Wrapper = styled.div`
   }
 `;
 
-const ContentWrapper = styled.div`
+export const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 `;
 
-const BlurWrapper = styled.div`
+export const BlurWrapper = styled.div`
   width: 100%;
 
   &::after {

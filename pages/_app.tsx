@@ -231,7 +231,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       </Head>
       <GlobalStyle />
       <ThemeProvider theme={theme}>
-        {/^\/(start|created)/.test(router.pathname) ? (
+        {/^\/(start|created|worker)/.test(router.pathname) ? (
           <Component {...pageProps} />
         ) : (
           <Layout>

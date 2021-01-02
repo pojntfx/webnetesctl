@@ -3,7 +3,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Input, Space } from "antd";
 import Text from "antd/lib/typography/Text";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import Animate from "rc-animate";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import bg from "../img/fernando-rodrigues-sGJUb5HJBqs-unsplash.jpg";
@@ -11,6 +13,9 @@ import glass from "../styles/glass";
 
 function Start() {
   const { t } = useTranslation();
+  const router = useRouter();
+
+  const [clusterId, setClusterId] = useState<string>();
 
   return (
     <Wrapper>
@@ -53,6 +58,11 @@ function Start() {
                   <Input.Search
                     enterButton={t("joinCluster")}
                     placeholder={t("clusterId")}
+                    value={clusterId}
+                    onChange={(e) => setClusterId(e.target.value)}
+                    onSearch={() =>
+                      clusterId && router.push(`/worker?id=${clusterId}`)
+                    }
                   />
                 </Action>
               </div>
