@@ -70,9 +70,31 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
   min-height: 100%;
+  position: relative;
+
+  &::after {
+    position: absolute;
+    content: "";
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: linear-gradient(
+      black,
+      transparent,
+      transparent,
+      transparent,
+      transparent,
+      transparent,
+      transparent,
+      black
+    );
+  }
 `;
 
-const ContentWrapper = styled.div``;
+const ContentWrapper = styled.div`
+  width: 100%;
+`;
 
 const Image = styled.img`
   position: relative;
@@ -111,7 +133,7 @@ const ActionSplit = styled.div`
   &::after {
     content: "";
     position: absolute;
-    width: 100vw;
+    width: 100%;
     height: 100%;
     z-index: 0;
     mask-image: linear-gradient(to top, rgb(0 0 0), rgba(0, 0, 0, 0)),
@@ -178,10 +200,10 @@ const DividerWrapper = styled.div`
 `;
 
 const Divider = styled.div`
-  border-right: 0.5px solid rgba(255, 255, 255, 0.85) !important;
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.85) !important;
 
   @media screen and (min-width: 812px) {
-    border-bottom: 0.5px solid rgba(255, 255, 255, 0.85) !important;
+    border-right: 0.5px solid rgba(255, 255, 255, 0.85) !important;
   }
 `;
 
