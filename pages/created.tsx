@@ -137,7 +137,7 @@ function Created() {
 }
 
 const Icon = styled(FontAwesomeIcon)`
-  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.5));
+  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.5));
 `;
 
 const ActionBar = styled.div`
@@ -157,13 +157,11 @@ const Header = styled(Space)`
   padding-right: 1.5rem;
   padding-top: 3rem;
   padding-bottom: 3rem;
-  z-index: 10;
 `;
 
 const Card = styled(CardTmpl)`
   margin-left: 1rem;
   margin-right: 1rem;
-  z-index: 10;
 
   .ant-card-body {
     padding-bottom: 12px;
@@ -175,7 +173,7 @@ const Card = styled(CardTmpl)`
 `;
 
 const Title = styled(TitleTmpl)`
-  text-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
+  text-shadow: 0 0 3px rgba(255, 255, 255, 0.5);
   text-align: center;
   margin-bottom: 0 !important;
   font-size: 34px !important;
@@ -201,29 +199,6 @@ const ShareNoteWrapper = styled.div`
   padding-bottom: 2rem;
   position: relative;
   width: 100%;
-
-  &::after {
-    content: "";
-    position: absolute;
-    width: 100vw;
-    height: 100%;
-    left: 0;
-    top: 0;
-    z-index: 0;
-    mask-image: linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)),
-      linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
-    mask-size: 100% 50%;
-    mask-repeat: no-repeat;
-    mask-position: left top, left bottom;
-    transform: scaleY(3);
-    ${glass}
-    backdrop-filter: blur(100px);
-    pointer-events: none;
-  }
-
-  > * {
-    z-index: 10;
-  }
 `;
 
 const Wrapper = styled.div`
@@ -238,22 +213,21 @@ const Wrapper = styled.div`
   position: relative;
 
   &::after {
-    position: absolute;
     content: "";
+    position: absolute;
+    width: 100vw;
     height: 100%;
-    width: 100%;
-    top: 0;
     left: 0;
-    background: linear-gradient(
-      black,
-      transparent,
-      transparent,
-      transparent,
-      transparent,
-      transparent,
-      transparent,
-      black
-    );
+    top: 50%;
+    z-index: 0;
+    mask-image: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0)),
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0));
+    mask-size: 100% 50%;
+    mask-repeat: no-repeat;
+    mask-position: left top, left bottom;
+    transform: scaleY(3);
+    ${glass}
+    backdrop-filter: blur(50px);
     pointer-events: none;
   }
 

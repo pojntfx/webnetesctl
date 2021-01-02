@@ -74,26 +74,26 @@ const Wrapper = styled.div`
   position: relative;
 
   &::after {
-    position: absolute;
     content: "";
+    position: absolute;
+    width: 100vw;
     height: 100%;
-    width: 100%;
-    top: 0;
     left: 0;
-    background: linear-gradient(
-      black,
-      transparent,
-      transparent,
-      transparent,
-      transparent,
-      transparent,
-      transparent,
-      black
-    );
+    top: 50%;
+    z-index: 0;
+    mask-image: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0)),
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0));
+    mask-size: 100% 50%;
+    mask-repeat: no-repeat;
+    mask-position: left top, left bottom;
+    transform: scaleY(3);
+    ${glass}
+    backdrop-filter: blur(50px);
     pointer-events: none;
   }
 
   > * {
+    z-index: 10;
     width: 100%;
   }
 `;
@@ -144,25 +144,6 @@ const ActionSplit = styled.div`
     @media screen and (min-width: 812px) {
       grid-template-columns: 6fr 1fr 6fr;
       margin-bottom: 5rem; /* Visual centering offset for logo */
-    }
-
-    &::after {
-      content: "";
-      position: absolute;
-      width: 100vw;
-      height: 100%;
-      left: 0;
-      top: 0;
-      z-index: 0;
-      mask-image: linear-gradient(to top, rgb(0 0 0), rgba(0, 0, 0, 0)),
-        linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
-      mask-size: 100% 50%;
-      mask-repeat: no-repeat;
-      mask-position: left top, left bottom;
-      transform: scaleY(3);
-      ${glass}
-      backdrop-filter: blur(100px);
-      pointer-events: none;
     }
   }
 `;
