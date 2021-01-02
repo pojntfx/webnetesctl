@@ -9,6 +9,7 @@ import { Button, Card as CardTmpl, Space, Tooltip } from "antd";
 import Text from "antd/lib/typography/Text";
 import TitleTmpl from "antd/lib/typography/Title";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import Animate from "rc-animate";
 import { useEffect, useState } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
@@ -120,12 +121,14 @@ function Created() {
           </ShareNoteWrapper>
 
           <ActionBar>
-            <ActionButton type="primary">
-              <Space>
-                <FontAwesomeIcon icon={faArrowRight} />
-                {t("continueToOverview")}
-              </Space>
-            </ActionButton>
+            <Link href="/">
+              <ActionButton type="primary">
+                <Space>
+                  <FontAwesomeIcon icon={faArrowRight} />
+                  {t("continueToOverview")}
+                </Space>
+              </ActionButton>
+            </Link>
           </ActionBar>
         </ContentWrapper>
       </Animate>

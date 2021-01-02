@@ -27,7 +27,7 @@ function Start() {
 
                 <Text>{t("createClusterDescription")}</Text>
 
-                <Link href="/">
+                <Link href="/created">
                   <Button type="primary">
                     {t("create")} {t("cluster")}
                   </Button>
