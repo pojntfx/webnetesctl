@@ -156,14 +156,9 @@ const ActionSplit = styled.div`
       z-index: 0;
       mask-image: linear-gradient(to top, rgb(0 0 0), rgba(0, 0, 0, 0)),
         linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
-      -webkit-mask-image: linear-gradient(to top, rgb(0 0 0), rgba(0, 0, 0, 0)),
-        linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
       mask-size: 100% 50%;
-      -webkit-mask-size: 100% 50%;
       mask-repeat: no-repeat;
-      -webkit-mask-repeat: no-repeat;
       mask-position: left top, left bottom;
-      -webkit-mask-position: left top, left bottom;
       transform: scaleY(3);
       ${glass}
       backdrop-filter: blur(100px);

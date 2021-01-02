@@ -155,7 +155,6 @@ const Header = styled(Space)`
   padding-top: 3rem;
   padding-bottom: 3rem;
   z-index: 10;
-  max-width: 40rem;
 `;
 
 const Card = styled(CardTmpl)`
@@ -208,21 +207,12 @@ const ShareNoteWrapper = styled.div`
     left: 0;
     top: 0;
     z-index: 0;
-    mask-image: linear-gradient(to top, rgb(0 0 0 / 80%), rgba(0, 0, 0, 0)),
-      linear-gradient(to bottom, rgb(0 0 0 / 80%), rgba(0, 0, 0, 0));
-    -webkit-mask-image: linear-gradient(
-        to top,
-        rgb(0 0 0 / 80%),
-        rgba(0, 0, 0, 0)
-      ),
-      linear-gradient(to bottom, rgb(0 0 0 / 80%), rgba(0, 0, 0, 0));
+    mask-image: linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)),
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0));
     mask-size: 100% 50%;
-    -webkit-mask-size: 100% 50%;
     mask-repeat: no-repeat;
-    -webkit-mask-repeat: no-repeat;
     mask-position: left top, left bottom;
-    -webkit-mask-position: left top, left bottom;
-    transform: scaleY(5);
+    transform: scaleY(3);
     ${glass}
     backdrop-filter: blur(100px);
     pointer-events: none;
