@@ -68,9 +68,9 @@ export default {
   youCanFindYourCreatedFileResourcesInThe:
     "You can find your created file resources in the",
   webnetesLogo: "Webnetes Logo",
-  createClusterIntro: "Start solving problems together.",
+  createClusterIntro: "Start solving problems together",
   createClusterDescription: "You'll be the manager.",
-  joinClusterIntro: "Participate in a cluster.",
+  joinClusterIntro: "Participate in a cluster",
   joinClusterDescription: "You'll be a worker.",
   or: "OR",
   clusterId: "Cluster ID",
