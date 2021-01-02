@@ -165,6 +165,7 @@ const ActionSplit = styled.div`
       transform: scaleY(3);
       ${glass}
       backdrop-filter: blur(100px);
+      pointer-events: none;
     }
   }
 `;

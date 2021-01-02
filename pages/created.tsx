@@ -1,9 +1,13 @@
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Space } from "antd";
 import TitleTmpl from "antd/lib/typography/Title";
 import dynamic from "next/dynamic";
 import Animate from "rc-animate";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import bg from "../img/fernando-rodrigues-sGJUb5HJBqs-unsplash.jpg";
+import icon from "../img/icon-512x512.png";
 
 function Created() {
   const { t } = useTranslation();
@@ -12,21 +16,25 @@ function Created() {
     <Wrapper>
       <Animate transitionName="fadeandzoom" transitionAppear>
         <ContentWrapper>
-          <Title level={1}>🎉 {t("clusterCreatedSuccessfully")}</Title>
+          <Header align="center" size="middle">
+            <Icon icon={faCheckCircle} size="4x" />
+
+            <Title level={1}>{t("clusterCreatedSuccessfully")}</Title>
+          </Header>
 
           <QRCode
             value={`${
               typeof window !== "undefined" && window.location.origin
             }/join?id=127.0.2`}
-            size={128}
+            size={256}
             fgColor="#ffffff"
             bgColor="#000000"
             level="H"
             renderAs="svg"
             imageSettings={{
-              src: "https://webnetesctl.vercel.app/icons/apple-touch-icon.png",
-              height: 50,
-              width: 50,
+              src: icon as string,
+              height: 78,
+              width: 78,
               excavate: false,
             }}
           />
@@ -36,13 +44,27 @@ function Created() {
   );
 }
 
+const Icon = styled(FontAwesomeIcon)`
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.5));
+`;
+
+const Header = styled(Space)`
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+`;
+
 const Title = styled(TitleTmpl)`
   text-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
   text-align: center;
+  margin-bottom: 0 !important;
+  font-size: 36px !important;
 `;
 
 const QRCode = styled(dynamic(import("qrcode.react"), { ssr: false }))`
   box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
+  max-width: 100%;
 `;
 
 const Wrapper = styled.div`
@@ -74,6 +96,7 @@ const Wrapper = styled.div`
       transparent,
       black
     );
+    pointer-events: none;
   }
 `;
 
