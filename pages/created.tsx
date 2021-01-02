@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import bg from "../img/fernando-rodrigues-sGJUb5HJBqs-unsplash.jpg";
 import icon from "../img/icon-512x512.png";
+import glass from "../styles/glass";
 import { ExternalLink } from "./config";
 
 const confettiConfig = {
@@ -110,6 +111,12 @@ function Created() {
               </Space>
             </Space>
           </Card>
+
+          <ShareNoteWrapper>
+            <Text strong>{t("scanQRCodeOrShareLinkToInvite")}</Text>
+
+            <Text>{t("inviteNotesLaterNote")}</Text>
+          </ShareNoteWrapper>
         </ContentWrapper>
       </Animate>
     </Wrapper>
@@ -121,13 +128,18 @@ const Icon = styled(FontAwesomeIcon)`
 `;
 
 const Header = styled(Space)`
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-  padding-top: 2rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  padding-top: 3rem;
   padding-bottom: 3rem;
+  z-index: 10;
 `;
 
 const Card = styled(CardTmpl)`
+  margin-left: 1rem;
+  margin-right: 1rem;
+  z-index: 10;
+
   .ant-card-body {
     padding-bottom: 12px;
   }
@@ -154,6 +166,46 @@ const QRCode = styled(dynamic(import("qrcode.react"), { ssr: false }))`
   height: 100%;
 `;
 
+const ShareNoteWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  position: relative;
+  width: 100%;
+
+  &::after {
+    content: "";
+    position: absolute;
+    width: 100vw;
+    height: 100%;
+    left: 0;
+    top: 0;
+    z-index: 0;
+    mask-image: linear-gradient(to top, rgb(0 0 0), rgba(0, 0, 0, 0)),
+      linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+    -webkit-mask-image: linear-gradient(to top, rgb(0 0 0), rgba(0, 0, 0, 0)),
+      linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+    mask-size: 100% 50%;
+    -webkit-mask-size: 100% 50%;
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
+    mask-position: left top, left bottom;
+    -webkit-mask-position: left top, left bottom;
+    transform: scaleY(3);
+    ${glass}
+    backdrop-filter: blur(100px);
+    pointer-events: none;
+  }
+
+  > * {
+    z-index: 10;
+  }
+`;
+
 const Wrapper = styled.div`
   background: url(${bg}) no-repeat center center fixed;
   background-size: cover;
@@ -164,7 +216,6 @@ const Wrapper = styled.div`
   align-items: center;
   min-height: 100%;
   position: relative;
-  padding: 1rem;
 
   &::after {
     position: absolute;
@@ -185,6 +236,11 @@ const Wrapper = styled.div`
     );
     pointer-events: none;
   }
+
+  > * {
+    z-index: 10;
+    width: 100%;
+  }
 `;
 
 const ContentWrapper = styled.div`
@@ -192,6 +248,7 @@ const ContentWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 100%;
 `;
 
 export default Created;

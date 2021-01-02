@@ -90,6 +90,7 @@ const Wrapper = styled.div`
       transparent,
       black
     );
+    pointer-events: none;
   }
 
   > * {
@@ -151,6 +152,7 @@ const ActionSplit = styled.div`
       width: 100vw;
       height: 100%;
       left: 0;
+      top: 0;
       z-index: 0;
       mask-image: linear-gradient(to top, rgb(0 0 0), rgba(0, 0, 0, 0)),
         linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));

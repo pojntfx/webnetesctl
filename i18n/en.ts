@@ -76,6 +76,9 @@ export default {
   clusterId: "Cluster ID",
   joinCluster: "Join Cluster",
   clusterCreatedSuccessfully: "Cluster created successfully!",
-  copiedToClipboard: "Copied to clipboard!",
-  copyToClipboard: "Copy to clipboard",
+  copiedToClipboard: "Link copied to clipboard!",
+  copyToClipboard: "Copy link to clipboard",
+  scanQRCodeOrShareLinkToInvite:
+    "Scan the QR code or share the link to invite nodes.",
+  inviteNotesLaterNote: "You can always join nodes later.",
 };
