@@ -1,7 +1,8 @@
 import { faHandshake, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Space } from "antd";
+import { Button, Input, Space } from "antd";
 import Text from "antd/lib/typography/Text";
+import Link from "next/link";
 import Animate from "rc-animate";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
@@ -25,9 +26,11 @@ function Start() {
 
               <Text>{t("createClusterDescription")}</Text>
 
-              <Button type="primary">
-                {t("create")} {t("cluster")}
-              </Button>
+              <Link href="/">
+                <Button type="primary">
+                  {t("create")} {t("cluster")}
+                </Button>
+              </Link>
             </Action>
 
             <DividerWrapper>
@@ -44,6 +47,11 @@ function Start() {
               <Text strong>{t("joinClusterIntro")}</Text>
 
               <Text>{t("joinClusterDescription")}</Text>
+
+              <Input.Search
+                enterButton={t("joinCluster")}
+                placeholder={t("clusterId")}
+              />
             </Action>
           </ActionSplit>
         </ContentWrapper>
@@ -87,6 +95,14 @@ const ActionSplit = styled.div`
   justify-items: center;
   max-width: 45rem;
   margin-bottom: 2rem;
+
+  .ant-btn-primary {
+    background: #177ddc94 !important;
+
+    &:hover {
+      background: #177ddc !important;
+    }
+  }
 
   > * {
     z-index: 10;
@@ -162,7 +178,11 @@ const DividerWrapper = styled.div`
 `;
 
 const Divider = styled.div`
-  border: 1px solid rgba(255, 255, 255, 0.85) !important;
+  border-right: 0.5px solid rgba(255, 255, 255, 0.85) !important;
+
+  @media screen and (min-width: 812px) {
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.85) !important;
+  }
 `;
 
 export default Start;

@@ -73,4 +73,6 @@ export default {
   joinClusterIntro: "Participate in a cluster.",
   joinClusterDescription: "You'll be a worker.",
   or: "OR",
+  clusterId: "Cluster ID",
+  joinCluster: "Join Cluster",
 };
