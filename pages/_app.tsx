@@ -33,6 +33,7 @@ import { initReactI18next, useTranslation } from "react-i18next";
 import styled, { createGlobalStyle, ThemeProvider } from "styled-components";
 import CreateFileModal from "../components/create-file-modal";
 import CreateResourceModal from "../components/create-resource-modal";
+import InviteModal from "../components/invite-modal";
 import { Layout } from "../components/layout-wrapper";
 import Navbar, {
   DesktopHeader,
@@ -103,6 +104,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     false
   );
   const [createFileDialogOpen, setCreateFileDialogOpen] = useState(false);
+  const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
 
   const [
     createResourceDialogMaximized,
@@ -249,6 +251,11 @@ function MyApp({ Component, pageProps }: AppProps) {
               onMinimize={() => setCreateFileDialogMaximized(false)}
             />
 
+            <InviteModal
+              open={inviteDialogOpen}
+              onDone={() => setInviteDialogOpen(false)}
+            />
+
             {(!createResourceDialogMaximized || !createFileDialogMaximized) && (
               <SideTray>
                 {!createResourceDialogMaximized && (
@@ -305,7 +312,11 @@ function MyApp({ Component, pageProps }: AppProps) {
                 </Dropdown>
 
                 <Tooltip title={t("invite")}>
-                  <Button type="primary" shape="circle">
+                  <Button
+                    type="primary"
+                    shape="circle"
+                    onClick={() => setInviteDialogOpen(true)}
+                  >
                     <FontAwesomeIcon icon={faHandshake} />
                   </Button>
                 </Tooltip>
@@ -349,7 +360,10 @@ function MyApp({ Component, pageProps }: AppProps) {
                   </Button>
                 </Dropdown>
 
-                <Button type="primary">
+                <Button
+                  type="primary"
+                  onClick={() => setInviteDialogOpen(true)}
+                >
                   <Space>
                     <FontAwesomeIcon icon={faHandshake} />
                     {t("invite")}

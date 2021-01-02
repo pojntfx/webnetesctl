@@ -36,7 +36,7 @@ function Created() {
     setLink(
       `${
         typeof window !== "undefined" && window.location.origin
-      }/join?id=127.0.2`
+      }/worker?id=127.0.2`
     );
   }, []);
 
