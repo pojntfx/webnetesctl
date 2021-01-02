@@ -76,7 +76,7 @@ const Particles = styled(ParticlesTmpl)`
   background: transparent;
   width: 100%;
   height: 100%;
-  position: fixed;
+  position: absolute;
 `;
 
 const ContentWrapper = styled(ContentWrapperTmpl)`
