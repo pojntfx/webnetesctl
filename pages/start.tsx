@@ -1,6 +1,6 @@
-import { faHandshake, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faCogs, faHandshake, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Input, Space } from "antd";
+import { Dropdown, Input, Menu, Space } from "antd";
 import Text from "antd/lib/typography/Text";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -34,9 +34,21 @@ function Start() {
                   <Text>{t("createClusterDescription")}</Text>
 
                   <Link href="/created">
-                    <Button type="primary">
+                    <Dropdown.Button
+                      overlay={
+                        <Menu>
+                          <Menu.Item key="cluster">
+                            <Space>
+                              <FontAwesomeIcon fixedWidth icon={faCogs} />
+                              {t("advancedSetup")}
+                            </Space>
+                          </Menu.Item>
+                        </Menu>
+                      }
+                      type="primary"
+                    >
                       {t("create")} {t("cluster")}
-                    </Button>
+                    </Dropdown.Button>
                   </Link>
                 </Action>
 
@@ -174,10 +186,19 @@ const ActionSplit = styled.div`
     margin-bottom: 2rem;
 
     .ant-btn-primary {
-      background: #177ddc94 !important;
+      box-shadow: none !important;
 
-      &:hover {
-        background: #177ddc !important;
+      &:last-child:not(:first-child) {
+        border-color: rgb(67, 67, 67) !important;
+        border-left: 0;
+      }
+
+      &:first-child {
+        background: #177ddc94 !important;
+
+        &:hover {
+          background: #177ddc !important;
+        }
       }
     }
 
