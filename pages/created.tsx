@@ -1,25 +1,17 @@
-import {
-  faArrowRight,
-  faCheckCircle,
-  faCopy,
-  faGlassCheers,
-} from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight, faGlassCheers } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Card as CardTmpl, Space, Tooltip } from "antd";
+import { Button, Space } from "antd";
 import Text from "antd/lib/typography/Text";
 import TitleTmpl from "antd/lib/typography/Title";
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import Animate from "rc-animate";
 import { useEffect, useState } from "react";
-import { CopyToClipboard } from "react-copy-to-clipboard";
 import Confetti from "react-dom-confetti";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
+import { QRLink } from "../components/qr-link";
 import bg from "../img/fernando-rodrigues-sGJUb5HJBqs-unsplash.jpg";
-import icon from "../img/icon-512x512.png";
 import glass from "../styles/glass";
-import { ExternalLink } from "./config";
 
 const confettiConfig = {
   angle: 90,
@@ -39,7 +31,6 @@ function Created() {
   const { t } = useTranslation();
 
   const [link, setLink] = useState<string>();
-  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     setLink(
@@ -62,58 +53,7 @@ function Created() {
               <Title level={1}>{t("clusterCreatedSuccessfully")}</Title>
             </Header>
 
-            <Card>
-              <Space direction="vertical" align="center">
-                <QRCode
-                  value={link || ""}
-                  size={256}
-                  fgColor="#ffffff"
-                  bgColor="#000000"
-                  level="H"
-                  renderAs="svg"
-                  imageSettings={{
-                    src: icon as string,
-                    height: 78,
-                    width: 78,
-                    excavate: false,
-                  }}
-                />
-
-                <NestedSpace>
-                  <Text code>
-                    <ExternalLink href={link || ""} target="_blank">
-                      {link || ""}
-                    </ExternalLink>
-                  </Text>
-
-                  <Tooltip
-                    title={
-                      copied ? (
-                        <Space>
-                          <FontAwesomeIcon icon={faCheckCircle} />
-                          {t("copiedToClipboard")}
-                        </Space>
-                      ) : (
-                        t("copyToClipboard")
-                      )
-                    }
-                  >
-                    <CopyToClipboard
-                      text={link || ""}
-                      onCopy={() => {
-                        setCopied(true);
-
-                        setTimeout(() => setCopied(false), 5000);
-                      }}
-                    >
-                      <Button type="text" shape="circle">
-                        <FontAwesomeIcon icon={faCopy} fixedWidth />
-                      </Button>
-                    </CopyToClipboard>
-                  </Tooltip>
-                </NestedSpace>
-              </Space>
-            </Card>
+            <QRLink link={link || ""} />
 
             <ShareNoteWrapper>
               <Text strong>{t("scanQRCodeOrShareLinkToInvite")}</Text>
@@ -161,41 +101,6 @@ const Header = styled(Space)`
   padding-bottom: 3rem;
 `;
 
-const Card = styled(CardTmpl)`
-  margin-left: 1rem;
-  margin-right: 1rem;
-  max-width: calc(100% - 1rem - 1rem);
-
-  .ant-card-body {
-    padding-bottom: 12px;
-  }
-
-  .ant-space,
-  .ant-space-item {
-    width: 100%;
-  }
-
-  @media screen and (min-width: 812px) {
-    max-width: 17rem;
-  }
-`;
-
-const NestedSpace = styled(Space)`
-  .ant-space-item {
-    width: auto;
-  }
-
-  .ant-space-item:first-child {
-    white-space: nowrap;
-    overflow-x: auto;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
-    scrollbar-width: none;
-  }
-`;
-
 const Title = styled(TitleTmpl)`
   text-shadow: 0 0 3px rgba(255, 255, 255, 0.5);
   text-align: center;
@@ -205,12 +110,6 @@ const Title = styled(TitleTmpl)`
   @media screen and (min-width: 812px) {
     font-size: 36px !important;
   }
-`;
-
-const QRCode = styled(dynamic(import("qrcode.react"), { ssr: false }))`
-  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
-  width: 100%;
-  height: 100%;
 `;
 
 const ShareNoteWrapper = styled.div`
