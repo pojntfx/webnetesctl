@@ -1,4 +1,5 @@
 import {
+  faArrowRight,
   faCheckCircle,
   faCopy,
   faGlassCheers,
@@ -117,6 +118,15 @@ function Created() {
 
             <Text>{t("inviteNotesLaterNote")}</Text>
           </ShareNoteWrapper>
+
+          <ActionBar>
+            <ActionButton type="primary">
+              <Space>
+                <FontAwesomeIcon icon={faArrowRight} />
+                {t("continueToOverview")}
+              </Space>
+            </ActionButton>
+          </ActionBar>
         </ContentWrapper>
       </Animate>
     </Wrapper>
@@ -127,12 +137,25 @@ const Icon = styled(FontAwesomeIcon)`
   filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.5));
 `;
 
+const ActionBar = styled.div`
+  padding-bottom: 2rem;
+`;
+
+const ActionButton = styled(Button)`
+  background: #177ddc94 !important;
+
+  &:hover {
+    background: #177ddc !important;
+  }
+`;
+
 const Header = styled(Space)`
   padding-left: 1.5rem;
   padding-right: 1.5rem;
   padding-top: 3rem;
   padding-bottom: 3rem;
   z-index: 10;
+  max-width: 40rem;
 `;
 
 const Card = styled(CardTmpl)`
@@ -185,17 +208,21 @@ const ShareNoteWrapper = styled.div`
     left: 0;
     top: 0;
     z-index: 0;
-    mask-image: linear-gradient(to top, rgb(0 0 0), rgba(0, 0, 0, 0)),
-      linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
-    -webkit-mask-image: linear-gradient(to top, rgb(0 0 0), rgba(0, 0, 0, 0)),
-      linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+    mask-image: linear-gradient(to top, rgb(0 0 0 / 80%), rgba(0, 0, 0, 0)),
+      linear-gradient(to bottom, rgb(0 0 0 / 80%), rgba(0, 0, 0, 0));
+    -webkit-mask-image: linear-gradient(
+        to top,
+        rgb(0 0 0 / 80%),
+        rgba(0, 0, 0, 0)
+      ),
+      linear-gradient(to bottom, rgb(0 0 0 / 80%), rgba(0, 0, 0, 0));
     mask-size: 100% 50%;
     -webkit-mask-size: 100% 50%;
     mask-repeat: no-repeat;
     -webkit-mask-repeat: no-repeat;
     mask-position: left top, left bottom;
     -webkit-mask-position: left top, left bottom;
-    transform: scaleY(3);
+    transform: scaleY(5);
     ${glass}
     backdrop-filter: blur(100px);
     pointer-events: none;

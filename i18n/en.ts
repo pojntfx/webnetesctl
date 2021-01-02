@@ -81,4 +81,5 @@ export default {
   scanQRCodeOrShareLinkToInvite:
     "Scan the QR code or share the link to invite nodes.",
   inviteNotesLaterNote: "You can always join nodes later.",
+  continueToOverview: "Continue to Overview",
 };
