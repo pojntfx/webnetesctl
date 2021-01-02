@@ -222,7 +222,7 @@ const Overview = styled.div`
 `;
 
 export const ExternalLink = styled.a`
-  color: unset;
+  color: unset !important;
 `;
 
 export const ExternalExampleLink = styled.div`

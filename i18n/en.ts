@@ -76,4 +76,6 @@ export default {
   clusterId: "Cluster ID",
   joinCluster: "Join Cluster",
   clusterCreatedSuccessfully: "Cluster created successfully!",
+  copiedToClipboard: "Copied to clipboard!",
+  copyToClipboard: "Copy to clipboard",
 };
