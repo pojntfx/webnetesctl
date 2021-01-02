@@ -11,9 +11,7 @@ import EditNodeConfigModal from "../components/edit-node-config-modal";
 import node from "../data/node";
 import bg from "../img/fernando-rodrigues-sGJUb5HJBqs-unsplash.jpg";
 import glass from "../styles/glass";
-import yaml from "js-yaml";
-import { JSONCrush } from "jsoncrush";
-import { urlencodeYAML } from "../utils/urltranscode";
+import { urlencodeYAMLAll } from "../utils/urltranscode";
 
 function Start() {
   const { t } = useTranslation();
@@ -34,7 +32,7 @@ function Start() {
 
                 try {
                   router.push(
-                    `/created?nodeConfig=${urlencodeYAML(definition)}`
+                    `/created?nodeConfig=${urlencodeYAMLAll(definition)}`
                   );
                 } catch (e) {
                   console.error("could not parse definition", e);
@@ -56,7 +54,9 @@ function Start() {
 
                   <Dropdown.Button
                     onClick={() =>
-                      router.push(`/created?nodeConfig=${urlencodeYAML(node)}`)
+                      router.push(
+                        `/created?nodeConfig=${urlencodeYAMLAll(node)}`
+                      )
                     }
                     overlay={
                       <Menu>

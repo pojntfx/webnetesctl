@@ -1,8 +1,10 @@
 import { useRouter } from "next/router";
 import Animate from "rc-animate";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ParticlesTmpl from "react-particles-js";
 import styled from "styled-components";
+import { urldecodeYAMLAll } from "../utils/urltranscode";
 import {
   BlurWrapper as BlurWrapperTmpl,
   ContentWrapper as ContentWrapperTmpl,
@@ -56,6 +58,24 @@ const particlesConfig: typeof ParticlesTmpl["arguments"] = {
 function Worker() {
   const { t } = useTranslation();
   const router = useRouter();
+
+  const [nodeConfig, setNodeConfig] = useState<string>();
+
+  useEffect(() => {
+    const rawNodeConfig = router.query.nodeConfig;
+
+    if (rawNodeConfig) {
+      try {
+        setNodeConfig(urldecodeYAMLAll(rawNodeConfig as string));
+      } catch (e) {
+        console.log("could not decode node config", e);
+      }
+    }
+  }, [router.query.nodeConfig]);
+
+  useEffect(() => {
+    nodeConfig && console.log(nodeConfig);
+  }, [nodeConfig]);
 
   return (
     <Wrapper>
