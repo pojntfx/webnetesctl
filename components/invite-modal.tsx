@@ -5,6 +5,8 @@ import Text from "antd/lib/typography/Text";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
+import node from "../data/node";
+import { urlencodeYAML } from "../utils/urltranscode";
 import { Modal as ModalTmpl } from "./create-resource-modal";
 import { QRLink } from "./qr-link";
 
@@ -26,7 +28,7 @@ const InviteModal: React.FC<IInviteModalProps> = ({
     setLink(
       `${
         typeof window !== "undefined" && window.location.origin
-      }/worker?id=127.0.2`
+      }/worker?id=127.0.2&nodeConfig=${urlencodeYAML(node)}`
     );
   }, []);
 

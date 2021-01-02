@@ -2,15 +2,18 @@ import { faCogs, faHandshake, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dropdown, Input, Menu, Space } from "antd";
 import Text from "antd/lib/typography/Text";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import Animate from "rc-animate";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import EditNodeConfigModal from "../components/edit-node-config-modal";
+import node from "../data/node";
 import bg from "../img/fernando-rodrigues-sGJUb5HJBqs-unsplash.jpg";
 import glass from "../styles/glass";
+import yaml from "js-yaml";
+import { JSONCrush } from "jsoncrush";
+import { urlencodeYAML } from "../utils/urltranscode";
 
 function Start() {
   const { t } = useTranslation();
@@ -26,10 +29,16 @@ function Start() {
           <div>
             <EditNodeConfigModal
               open={editNodeConfigModalOpen}
-              onDone={() => {
+              onDone={(definition) => {
                 setEditNodeConfigModalOpen(false);
 
-                router.push("/created");
+                try {
+                  router.push(
+                    `/created?nodeConfig=${urlencodeYAML(definition)}`
+                  );
+                } catch (e) {
+                  console.error("could not parse definition", e);
+                }
               }}
               onCancel={() => setEditNodeConfigModalOpen(false)}
             />
@@ -46,7 +55,9 @@ function Start() {
                   <Text>{t("createClusterDescription")}</Text>
 
                   <Dropdown.Button
-                    onClick={() => router.push("/created")}
+                    onClick={() =>
+                      router.push(`/created?nodeConfig=${urlencodeYAML(node)}`)
+                    }
                     overlay={
                       <Menu>
                         <Menu.Item

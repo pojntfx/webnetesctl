@@ -3,6 +3,7 @@ const transpile = require("next-transpile-modules")([
   "xterm-for-react",
   "@ant-design/charts",
   "@antv/g6/es",
+  "jsoncrush",
 ]);
 const sass = require("@zeit/next-sass");
 const less = require("@zeit/next-less");

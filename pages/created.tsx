@@ -4,6 +4,7 @@ import { Button, Space } from "antd";
 import Text from "antd/lib/typography/Text";
 import TitleTmpl from "antd/lib/typography/Title";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import Animate from "rc-animate";
 import { useEffect, useState } from "react";
 import Confetti from "react-dom-confetti";
@@ -31,12 +32,13 @@ function Created() {
   const { t } = useTranslation();
 
   const [link, setLink] = useState<string>();
+  const router = useRouter();
 
   useEffect(() => {
     setLink(
       `${
         typeof window !== "undefined" && window.location.origin
-      }/worker?id=127.0.2`
+      }/worker?id=127.0.2&nodeConfig=${router.query.nodeConfig as string}`
     );
   }, []);
 

@@ -23,7 +23,7 @@ import ResourceEditorTmpl from "./resource-editor";
 
 export interface IEditNodeConfigModalProps {
   open: boolean;
-  onDone: () => void;
+  onDone: (definition: string) => void;
   onCancel: () => void;
 }
 
@@ -109,7 +109,7 @@ const EditNodeConfigModal: React.FC<IEditNodeConfigModalProps> = ({
       onOk={() => {
         clear();
 
-        onDone();
+        onDone(definition);
       }}
       onCancel={() => cancel()}
       okText={
