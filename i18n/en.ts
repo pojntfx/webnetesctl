@@ -75,4 +75,5 @@ export default {
   or: "OR",
   clusterId: "Cluster ID",
   joinCluster: "Join Cluster",
+  clusterCreatedSuccessfully: "Cluster created successfully!",
 };
