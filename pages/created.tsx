@@ -270,6 +270,12 @@ export const ContentWrapper = styled.div`
 
 export const BlurWrapper = styled.div`
   width: 100%;
+  position: relative;
+
+  .ant-input,
+  .ant-btn {
+    ${glass}
+  }
 
   &::after {
     position: absolute;
@@ -285,11 +291,9 @@ export const BlurWrapper = styled.div`
       left 0%,
       left 100%,
       color-stop(100%, rgba(0, 0, 0, 0)),
-      color-stop(90%, rgba(0, 0, 0, 0.5)),
       color-stop(80%, rgba(0, 0, 0, 0.7)),
       color-stop(50%, rgba(0, 0, 0, 1)),
       color-stop(20%, rgba(0, 0, 0, 0.7)),
-      color-stop(10%, rgba(0, 0, 0, 0.5)),
       color-stop(0%, rgba(0, 0, 0, 0))
     );
     transform: scaleY(1.5);

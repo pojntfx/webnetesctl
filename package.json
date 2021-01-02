@@ -103,6 +103,7 @@
     "react-globe.gl": "^2.13.0",
     "react-i18next": "^11.8.4",
     "react-json-tree": "^0.13.0",
+    "react-particles-js": "^3.4.1",
     "styled-components": "^5.2.1",
     "three-globe": "^2.11.1",
     "use-window-size-hook": "^1.1.22",
