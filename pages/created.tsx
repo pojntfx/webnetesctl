@@ -4,18 +4,42 @@ import { Space } from "antd";
 import TitleTmpl from "antd/lib/typography/Title";
 import dynamic from "next/dynamic";
 import Animate from "rc-animate";
+import { useEffect, useState } from "react";
+import Confetti from "react-dom-confetti";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import bg from "../img/fernando-rodrigues-sGJUb5HJBqs-unsplash.jpg";
 import icon from "../img/icon-512x512.png";
 
+const confettiConfig = {
+  angle: 90,
+  spread: 360,
+  startVelocity: 40,
+  elementCount: 70,
+  dragFriction: 0.12,
+  duration: 3000,
+  stagger: 3,
+  width: "10px",
+  height: "10px",
+  perspective: "1000px",
+  colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"],
+};
+
 function Created() {
   const { t } = useTranslation();
+
+  const [created, setCreated] = useState(false);
+
+  useEffect(() => {
+    setCreated(true);
+  }, []);
 
   return (
     <Wrapper>
       <Animate transitionName="fadeandzoom" transitionAppear>
         <ContentWrapper>
+          <Confetti active={created} config={confettiConfig} />
+
           <Header align="center" size="middle">
             <Icon icon={faCheckCircle} size="4x" />
 
