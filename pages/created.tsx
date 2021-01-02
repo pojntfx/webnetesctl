@@ -79,7 +79,7 @@ function Created() {
                   }}
                 />
 
-                <Space>
+                <NestedSpace>
                   <Text code>
                     <ExternalLink href={link || ""} target="_blank">
                       {link || ""}
@@ -111,7 +111,7 @@ function Created() {
                       </Button>
                     </CopyToClipboard>
                   </Tooltip>
-                </Space>
+                </NestedSpace>
               </Space>
             </Card>
 
@@ -164,13 +164,35 @@ const Header = styled(Space)`
 const Card = styled(CardTmpl)`
   margin-left: 1rem;
   margin-right: 1rem;
+  max-width: calc(100% - 1rem - 1rem);
 
   .ant-card-body {
     padding-bottom: 12px;
   }
 
-  .ant-space-item:first-child {
+  .ant-space,
+  .ant-space-item {
     width: 100%;
+  }
+
+  @media screen and (min-width: 812px) {
+    max-width: 17rem;
+  }
+`;
+
+const NestedSpace = styled(Space)`
+  .ant-space-item {
+    width: auto;
+  }
+
+  .ant-space-item:first-child {
+    white-space: nowrap;
+    overflow-x: auto;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    scrollbar-width: none;
   }
 `;
 
