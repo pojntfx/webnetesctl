@@ -19,40 +19,42 @@ function Start() {
           <Image alt={t("webnetesLogo")} src="/logo.svg" />
 
           <ActionSplit>
-            <Action direction="vertical" align="center">
-              <ActionIcon icon={faPlus} size="3x" />
+            <div>
+              <Action direction="vertical" align="center">
+                <ActionIcon icon={faPlus} size="3x" />
 
-              <Text strong>{t("createClusterIntro")}</Text>
+                <Text strong>{t("createClusterIntro")}</Text>
 
-              <Text>{t("createClusterDescription")}</Text>
+                <Text>{t("createClusterDescription")}</Text>
 
-              <Link href="/">
-                <Button type="primary">
-                  {t("create")} {t("cluster")}
-                </Button>
-              </Link>
-            </Action>
+                <Link href="/">
+                  <Button type="primary">
+                    {t("create")} {t("cluster")}
+                  </Button>
+                </Link>
+              </Action>
 
-            <DividerWrapper>
-              <Divider />
+              <DividerWrapper>
+                <Divider />
 
-              <span>{t("or")}</span>
+                <span>{t("or")}</span>
 
-              <Divider />
-            </DividerWrapper>
+                <Divider />
+              </DividerWrapper>
 
-            <Action direction="vertical" align="center">
-              <ActionIcon icon={faHandshake} size="3x" />
+              <Action direction="vertical" align="center">
+                <ActionIcon icon={faHandshake} size="3x" />
 
-              <Text strong>{t("joinClusterIntro")}</Text>
+                <Text strong>{t("joinClusterIntro")}</Text>
 
-              <Text>{t("joinClusterDescription")}</Text>
+                <Text>{t("joinClusterDescription")}</Text>
 
-              <Input.Search
-                enterButton={t("joinCluster")}
-                placeholder={t("clusterId")}
-              />
-            </Action>
+                <Input.Search
+                  enterButton={t("joinCluster")}
+                  placeholder={t("clusterId")}
+                />
+              </Action>
+            </div>
           </ActionSplit>
         </ContentWrapper>
       </Animate>
@@ -64,7 +66,6 @@ const Wrapper = styled.div`
   background: url(${bg}) no-repeat center center fixed;
   background-size: cover;
   overflow: hidden;
-  padding: 1rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -90,6 +91,10 @@ const Wrapper = styled.div`
       black
     );
   }
+
+  > * {
+    width: 100%;
+  }
 `;
 
 const ContentWrapper = styled.div`
@@ -110,50 +115,57 @@ const Image = styled.img`
 const ActionSplit = styled.div`
   position: relative;
   width: 100%;
-  display: grid;
-  gap: 2rem;
-  grid-template-columns: 1fr;
-  align-items: center;
-  justify-items: center;
-  max-width: 45rem;
-  margin-bottom: 2rem;
-
-  .ant-btn-primary {
-    background: #177ddc94 !important;
-
-    &:hover {
-      background: #177ddc !important;
-    }
-  }
 
   > * {
-    z-index: 10;
-  }
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin: 0 auto;
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: 1fr;
+    align-items: center;
+    justify-items: center;
+    max-width: 45rem;
+    margin-bottom: 2rem;
 
-  &::after {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    mask-image: linear-gradient(to top, rgb(0 0 0), rgba(0, 0, 0, 0)),
-      linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
-    -webkit-mask-image: linear-gradient(to top, rgb(0 0 0), rgba(0, 0, 0, 0)),
-      linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
-    mask-size: 100% 50%;
-    -webkit-mask-size: 100% 50%;
-    mask-repeat: no-repeat;
-    -webkit-mask-repeat: no-repeat;
-    mask-position: left top, left bottom;
-    -webkit-mask-position: left top, left bottom;
-    transform: scaleY(3);
-    ${glass}
-    backdrop-filter: blur(100px);
-  }
+    .ant-btn-primary {
+      background: #177ddc94 !important;
 
-  @media screen and (min-width: 812px) {
-    grid-template-columns: 6fr 1fr 6fr;
-    margin-bottom: 5rem; /* Visual centering offset for logo */
+      &:hover {
+        background: #177ddc !important;
+      }
+    }
+
+    > * {
+      z-index: 10;
+    }
+
+    @media screen and (min-width: 812px) {
+      grid-template-columns: 6fr 1fr 6fr;
+      margin-bottom: 5rem; /* Visual centering offset for logo */
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      width: 100vw;
+      height: 100%;
+      left: 0;
+      z-index: 0;
+      mask-image: linear-gradient(to top, rgb(0 0 0), rgba(0, 0, 0, 0)),
+        linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+      -webkit-mask-image: linear-gradient(to top, rgb(0 0 0), rgba(0, 0, 0, 0)),
+        linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+      mask-size: 100% 50%;
+      -webkit-mask-size: 100% 50%;
+      mask-repeat: no-repeat;
+      -webkit-mask-repeat: no-repeat;
+      mask-position: left top, left bottom;
+      -webkit-mask-position: left top, left bottom;
+      transform: scaleY(3);
+      ${glass}
+      backdrop-filter: blur(100px);
+    }
   }
 `;
 
