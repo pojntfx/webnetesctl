@@ -14,50 +14,52 @@ function Start() {
 
   return (
     <Wrapper>
-      <Animate transitionName="fadeandzoom" transitionAppear>
-        <ContentWrapper>
-          <Image alt={t("webnetesLogo")} src="/logo.svg" />
+      <BlurWrapper>
+        <Animate transitionName="fadeandzoom" transitionAppear>
+          <div>
+            <Image alt={t("webnetesLogo")} src="/logo.svg" />
 
-          <ActionSplit>
-            <div>
-              <Action direction="vertical" align="center">
-                <ActionIcon icon={faPlus} size="3x" />
+            <ActionSplit>
+              <div>
+                <Action direction="vertical" align="center">
+                  <ActionIcon icon={faPlus} size="3x" />
 
-                <Text strong>{t("createClusterIntro")}</Text>
+                  <Text strong>{t("createClusterIntro")}</Text>
 
-                <Text>{t("createClusterDescription")}</Text>
+                  <Text>{t("createClusterDescription")}</Text>
 
-                <Link href="/created">
-                  <Button type="primary">
-                    {t("create")} {t("cluster")}
-                  </Button>
-                </Link>
-              </Action>
+                  <Link href="/created">
+                    <Button type="primary">
+                      {t("create")} {t("cluster")}
+                    </Button>
+                  </Link>
+                </Action>
 
-              <DividerWrapper>
-                <Divider />
+                <DividerWrapper>
+                  <Divider />
 
-                <span>{t("or")}</span>
+                  <span>{t("or")}</span>
 
-                <Divider />
-              </DividerWrapper>
+                  <Divider />
+                </DividerWrapper>
 
-              <Action direction="vertical" align="center">
-                <ActionIcon icon={faHandshake} size="3x" />
+                <Action direction="vertical" align="center">
+                  <ActionIcon icon={faHandshake} size="3x" />
 
-                <Text strong>{t("joinClusterIntro")}</Text>
+                  <Text strong>{t("joinClusterIntro")}</Text>
 
-                <Text>{t("joinClusterDescription")}</Text>
+                  <Text>{t("joinClusterDescription")}</Text>
 
-                <Input.Search
-                  enterButton={t("joinCluster")}
-                  placeholder={t("clusterId")}
-                />
-              </Action>
-            </div>
-          </ActionSplit>
-        </ContentWrapper>
-      </Animate>
+                  <Input.Search
+                    enterButton={t("joinCluster")}
+                    placeholder={t("clusterId")}
+                  />
+                </Action>
+              </div>
+            </ActionSplit>
+          </div>
+        </Animate>
+      </BlurWrapper>
     </Wrapper>
   );
 }
@@ -74,37 +76,66 @@ const Wrapper = styled.div`
   position: relative;
 
   &::after {
-    content: "";
     position: absolute;
-    width: 100vw;
+    content: "";
     height: 100%;
+    width: 100%;
+    top: 0;
     left: 0;
-    top: 50%;
-    z-index: 0;
-    mask-image: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0)),
-      linear-gradient(to bottom, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0));
-    mask-size: 100% 50%;
-    mask-repeat: no-repeat;
-    mask-position: left top, left bottom;
-    transform: scaleY(3);
-    ${glass}
-    backdrop-filter: blur(50px);
+    background: linear-gradient(
+      black,
+      transparent,
+      transparent,
+      transparent,
+      transparent,
+      transparent,
+      transparent,
+      black
+    );
     pointer-events: none;
   }
 
   > * {
-    z-index: 10;
     width: 100%;
   }
 `;
 
-const ContentWrapper = styled.div`
+const BlurWrapper = styled.div`
   width: 100%;
+  position: relative;
+  padding-bottom: 4rem; // Visual centering offset for logo
+
+  &::after {
+    position: absolute;
+    content: "";
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    ${glass}
+    pointer-events: none;
+    -webkit-mask-image: -webkit-gradient(
+      linear,
+      left 0%,
+      left 100%,
+      color-stop(100%, rgba(0, 0, 0, 0)),
+      color-stop(90%, rgba(0, 0, 0, 0.5)),
+      color-stop(80%, rgba(0, 0, 0, 0.7)),
+      color-stop(50%, rgba(0, 0, 0, 1)),
+      color-stop(20%, rgba(0, 0, 0, 0.7)),
+      color-stop(10%, rgba(0, 0, 0, 0.5)),
+      color-stop(0%, rgba(0, 0, 0, 0))
+    );
+    transform: scaleY(1.5);
+  }
+
+  * {
+    z-index: 10;
+  }
 `;
 
 const Image = styled.img`
   position: relative;
-  z-index: 10;
   width: 100%;
   padding-top: 2rem;
   padding-bottom: 2rem;
@@ -137,13 +168,8 @@ const ActionSplit = styled.div`
       }
     }
 
-    > * {
-      z-index: 10;
-    }
-
     @media screen and (min-width: 812px) {
       grid-template-columns: 6fr 1fr 6fr;
-      margin-bottom: 5rem; /* Visual centering offset for logo */
     }
   }
 `;

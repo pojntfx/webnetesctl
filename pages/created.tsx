@@ -51,87 +51,89 @@ function Created() {
 
   return (
     <Wrapper>
-      <Animate transitionName="fadeandzoom" transitionAppear>
-        <ContentWrapper>
-          <Confetti active={link ? true : false} config={confettiConfig} />
+      <BlurWrapper>
+        <Animate transitionName="fadeandzoom" transitionAppear>
+          <ContentWrapper>
+            <Confetti active={link ? true : false} config={confettiConfig} />
 
-          <Header align="center" size="middle">
-            <Icon icon={faGlassCheers} size="4x" fixedWidth />
+            <Header align="center" size="middle">
+              <Icon icon={faGlassCheers} size="4x" fixedWidth />
 
-            <Title level={1}>{t("clusterCreatedSuccessfully")}</Title>
-          </Header>
+              <Title level={1}>{t("clusterCreatedSuccessfully")}</Title>
+            </Header>
 
-          <Card>
-            <Space direction="vertical" align="center">
-              <QRCode
-                value={link || ""}
-                size={256}
-                fgColor="#ffffff"
-                bgColor="#000000"
-                level="H"
-                renderAs="svg"
-                imageSettings={{
-                  src: icon as string,
-                  height: 78,
-                  width: 78,
-                  excavate: false,
-                }}
-              />
+            <Card>
+              <Space direction="vertical" align="center">
+                <QRCode
+                  value={link || ""}
+                  size={256}
+                  fgColor="#ffffff"
+                  bgColor="#000000"
+                  level="H"
+                  renderAs="svg"
+                  imageSettings={{
+                    src: icon as string,
+                    height: 78,
+                    width: 78,
+                    excavate: false,
+                  }}
+                />
 
-              <Space>
-                <Text code>
-                  <ExternalLink href={link || ""} target="_blank">
-                    {link || ""}
-                  </ExternalLink>
-                </Text>
-
-                <Tooltip
-                  title={
-                    copied ? (
-                      <Space>
-                        <FontAwesomeIcon icon={faCheckCircle} />
-                        {t("copiedToClipboard")}
-                      </Space>
-                    ) : (
-                      t("copyToClipboard")
-                    )
-                  }
-                >
-                  <CopyToClipboard
-                    text={link || ""}
-                    onCopy={() => {
-                      setCopied(true);
-
-                      setTimeout(() => setCopied(false), 5000);
-                    }}
-                  >
-                    <Button type="text" shape="circle">
-                      <FontAwesomeIcon icon={faCopy} fixedWidth />
-                    </Button>
-                  </CopyToClipboard>
-                </Tooltip>
-              </Space>
-            </Space>
-          </Card>
-
-          <ShareNoteWrapper>
-            <Text strong>{t("scanQRCodeOrShareLinkToInvite")}</Text>
-
-            <Text>{t("inviteNotesLaterNote")}</Text>
-          </ShareNoteWrapper>
-
-          <ActionBar>
-            <Link href="/">
-              <ActionButton type="primary">
                 <Space>
-                  <FontAwesomeIcon icon={faArrowRight} />
-                  {t("continueToOverview")}
+                  <Text code>
+                    <ExternalLink href={link || ""} target="_blank">
+                      {link || ""}
+                    </ExternalLink>
+                  </Text>
+
+                  <Tooltip
+                    title={
+                      copied ? (
+                        <Space>
+                          <FontAwesomeIcon icon={faCheckCircle} />
+                          {t("copiedToClipboard")}
+                        </Space>
+                      ) : (
+                        t("copyToClipboard")
+                      )
+                    }
+                  >
+                    <CopyToClipboard
+                      text={link || ""}
+                      onCopy={() => {
+                        setCopied(true);
+
+                        setTimeout(() => setCopied(false), 5000);
+                      }}
+                    >
+                      <Button type="text" shape="circle">
+                        <FontAwesomeIcon icon={faCopy} fixedWidth />
+                      </Button>
+                    </CopyToClipboard>
+                  </Tooltip>
                 </Space>
-              </ActionButton>
-            </Link>
-          </ActionBar>
-        </ContentWrapper>
-      </Animate>
+              </Space>
+            </Card>
+
+            <ShareNoteWrapper>
+              <Text strong>{t("scanQRCodeOrShareLinkToInvite")}</Text>
+
+              <Text>{t("inviteNotesLaterNote")}</Text>
+            </ShareNoteWrapper>
+
+            <ActionBar>
+              <Link href="/">
+                <ActionButton type="primary">
+                  <Space>
+                    <FontAwesomeIcon icon={faArrowRight} />
+                    {t("continueToOverview")}
+                  </Space>
+                </ActionButton>
+              </Link>
+            </ActionBar>
+          </ContentWrapper>
+        </Animate>
+      </BlurWrapper>
     </Wrapper>
   );
 }
@@ -213,26 +215,26 @@ const Wrapper = styled.div`
   position: relative;
 
   &::after {
-    content: "";
     position: absolute;
-    width: 100vw;
+    content: "";
     height: 100%;
+    width: 100%;
+    top: 0;
     left: 0;
-    top: 50%;
-    z-index: 0;
-    mask-image: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0)),
-      linear-gradient(to bottom, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0));
-    mask-size: 100% 50%;
-    mask-repeat: no-repeat;
-    mask-position: left top, left bottom;
-    transform: scaleY(3);
-    ${glass}
-    backdrop-filter: blur(50px);
+    background: linear-gradient(
+      black,
+      transparent,
+      transparent,
+      transparent,
+      transparent,
+      transparent,
+      transparent,
+      black
+    );
     pointer-events: none;
   }
 
   > * {
-    z-index: 10;
     width: 100%;
   }
 `;
@@ -242,7 +244,38 @@ const ContentWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+`;
+
+const BlurWrapper = styled.div`
   width: 100%;
+
+  &::after {
+    position: absolute;
+    content: "";
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    ${glass}
+    pointer-events: none;
+    -webkit-mask-image: -webkit-gradient(
+      linear,
+      left 0%,
+      left 100%,
+      color-stop(100%, rgba(0, 0, 0, 0)),
+      color-stop(90%, rgba(0, 0, 0, 0.5)),
+      color-stop(80%, rgba(0, 0, 0, 0.7)),
+      color-stop(50%, rgba(0, 0, 0, 1)),
+      color-stop(20%, rgba(0, 0, 0, 0.7)),
+      color-stop(10%, rgba(0, 0, 0, 0.5)),
+      color-stop(0%, rgba(0, 0, 0, 0))
+    );
+    transform: scaleY(1.5);
+  }
+
+  * {
+    z-index: 10;
+  }
 `;
 
 export default Created;
