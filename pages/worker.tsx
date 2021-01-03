@@ -1,6 +1,7 @@
 import {
   faAngleDoubleLeft,
   faAngleDoubleRight,
+  faChevronDown,
   faChevronUp,
   faCube,
   faLocationArrow,
@@ -16,14 +17,15 @@ import { useRouter } from "next/router";
 import Animate from "rc-animate";
 import { forwardRef, useCallback, useEffect, useState } from "react";
 import useDimensions from "react-cool-dimensions";
+import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import ParticlesTmpl from "react-particles-js";
 import styled from "styled-components";
 import SpriteText from "three-spritetext";
 import { useWindowSize } from "use-window-size-hook";
+import composite from "../data/composite.json";
 import localResources from "../data/local-resources.json";
 import network from "../data/network.json";
-import composite from "../data/composite.json";
 import glass from "../styles/glass";
 import { urldecodeYAMLAll } from "../utils/urltranscode";
 import {
@@ -87,6 +89,7 @@ function Worker() {
   const [nodeConfig, setNodeConfig] = useState<string>();
   const [rightGaugeOpen, setRightGaugeOpen] = useState(true);
   const [leftGaugeOpen, setLeftGaugeOpen] = useState(true);
+  const [compositeGraphOpen, setCompositeGraphOpen] = useState(false);
 
   useEffect(() => {
     const rawNodeConfig = router.query.nodeConfig;
@@ -127,27 +130,29 @@ function Worker() {
       <Particles params={particlesConfig} />
 
       <CompositeGraphAnimate transitionName="fadeandzoom" transitionAppear>
-        <CompositeGraphWrapper>
-          <Graph
-            graphData={composite}
-            backgroundColor="rgba(0,0,0,0)"
-            showNavInfo={false}
-            width={width}
-            height={height}
-            nodeThreeObject={(node: any) => {
-              const sprite = new SpriteText(node.id?.toString());
+        {compositeGraphOpen && (
+          <CompositeGraphWrapper>
+            <Graph
+              graphData={composite}
+              backgroundColor="rgba(0,0,0,0)"
+              showNavInfo={false}
+              width={width}
+              height={height}
+              nodeThreeObject={(node: any) => {
+                const sprite = new SpriteText(node.id?.toString());
 
-              sprite.color = "#ffffff";
-              sprite.textHeight = 2;
-              sprite.backgroundColor = node.color + "F0";
-              sprite.padding = 2;
+                sprite.color = "#ffffff";
+                sprite.textHeight = 2;
+                sprite.backgroundColor = node.color + "F0";
+                sprite.padding = 2;
 
-              return sprite;
-            }}
-            nodeAutoColorBy="group"
-            ref={compositeGraphRef}
-          />
-        </CompositeGraphWrapper>
+                return sprite;
+              }}
+              nodeAutoColorBy="group"
+              ref={compositeGraphRef}
+            />
+          </CompositeGraphWrapper>
+        )}
       </CompositeGraphAnimate>
 
       <BlurWrapper>
@@ -209,10 +214,7 @@ function Worker() {
                 </Animate>
               </LeftGaugeWrapper>
 
-              <LeftGaugeAnimate
-                transitionName="fadeandslideleft"
-                transitionAppear
-              >
+              <LeftGaugeToggle>
                 {!leftGaugeOpen && (
                   <LeftGaugeButton
                     type="text"
@@ -223,11 +225,33 @@ function Worker() {
                     </Text>
                   </LeftGaugeButton>
                 )}
-              </LeftGaugeAnimate>
+              </LeftGaugeToggle>
 
               <Space direction="vertical" align="center">
-                <MainExpandButton type="text" shape="circle">
-                  <FontAwesomeIcon icon={faChevronUp} />
+                <MainExpandButton
+                  type="text"
+                  shape="circle"
+                  onClick={() =>
+                    setCompositeGraphOpen((open) => {
+                      if (!open) {
+                        unstable_batchedUpdates(() => {
+                          setLeftGaugeOpen(false);
+                          setRightGaugeOpen(false);
+                        });
+                      } else {
+                        unstable_batchedUpdates(() => {
+                          setLeftGaugeOpen(true);
+                          setRightGaugeOpen(true);
+                        });
+                      }
+
+                      return !open;
+                    })
+                  }
+                >
+                  <FontAwesomeIcon
+                    icon={compositeGraphOpen ? faChevronDown : faChevronUp}
+                  />
                 </MainExpandButton>
 
                 <TitleSpace align="center">
@@ -300,10 +324,7 @@ function Worker() {
                 </Animate>
               </RightGaugeWrapper>
 
-              <RightGaugeAnimate
-                transitionName="fadeandslideright"
-                transitionAppear
-              >
+              <RightGaugeToggle>
                 {!rightGaugeOpen && (
                   <RightGaugeButton
                     type="text"
@@ -314,7 +335,7 @@ function Worker() {
                     </Text>
                   </RightGaugeButton>
                 )}
-              </RightGaugeAnimate>
+              </RightGaugeToggle>
             </BottomBarWrapper>
           </ContentWrapper>
         </Animate>
@@ -343,18 +364,19 @@ const Card = styled(CardTmpl)`
   }
 `;
 
-const LeftGaugeAnimate = styled(Animate)`
+const LeftGaugeToggle = styled.div`
   position: absolute;
   left: 0;
 `;
 
-const RightGaugeAnimate = styled(Animate)`
+const RightGaugeToggle = styled.div`
   position: absolute;
   right: 0;
 `;
 
 const LeftGaugeWrapper = styled.div<any>`
   position: absolute;
+  z-index: 100;
   left: 0;
   bottom: 0;
 `;
@@ -369,6 +391,7 @@ const LeftGauge = styled(Card)`
 
 const RightGaugeWrapper = styled.div<any>`
   position: absolute;
+  z-index: 100;
   right: 0;
   bottom: 0;
 `;
