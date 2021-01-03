@@ -210,7 +210,10 @@ function Worker() {
                 }
               })()}
             >
-              <LeftGaugeWrapper ref={leftGaugeRef}>
+              <LeftGaugeWrapper
+                $maximized={leftGaugeMaximized}
+                ref={leftGaugeRef}
+              >
                 <Animate transitionName="fadeandslideleft" transitionAppear>
                   {leftGaugeOpen && (
                     <LeftGauge
@@ -221,7 +224,15 @@ function Worker() {
                           graphData={localResources}
                           backgroundColor="rgba(0,0,0,0)"
                           showNavInfo={false}
-                          width={width ? (width > 821 ? 256 : width) : 0}
+                          width={
+                            width
+                              ? leftGaugeMaximized
+                                ? width
+                                : width > 821
+                                ? 256
+                                : width
+                              : 0
+                          }
                           height={
                             leftGaugeMaximized
                               ? height
@@ -356,7 +367,10 @@ function Worker() {
                 </Text>
               </Space>
 
-              <RightGaugeWrapper ref={rightGaugeRef}>
+              <RightGaugeWrapper
+                $maximized={rightGaugeMaximized}
+                ref={rightGaugeRef}
+              >
                 <Animate transitionName="fadeandslideright" transitionAppear>
                   {rightGaugeOpen && (
                     <RightGauge
@@ -367,7 +381,15 @@ function Worker() {
                           graphData={network}
                           backgroundColor="rgba(0,0,0,0)"
                           showNavInfo={false}
-                          width={width ? (width > 821 ? 256 : width) : 0}
+                          width={
+                            width
+                              ? rightGaugeMaximized
+                                ? width
+                                : width > 821
+                                ? 256
+                                : width
+                              : 0
+                          }
                           height={
                             rightGaugeMaximized
                               ? height
@@ -486,11 +508,13 @@ const RightGaugeToggle = styled.div`
   right: 0;
 `;
 
-const LeftGaugeWrapper = styled.div<any>`
+const LeftGaugeWrapper = styled.div<{ ref: any; $maximized: boolean }>`
   position: absolute;
   z-index: 100;
   left: 0;
   bottom: 0;
+
+  ${(props) => (props.$maximized ? "z-index: 110;" : "")}
 `;
 
 const LeftGauge = styled(Card)<{ $maximized: boolean }>`
@@ -503,11 +527,13 @@ const LeftGauge = styled(Card)<{ $maximized: boolean }>`
   ${(props) => (props.$maximized ? "border-top: 0;" : "")}
 `;
 
-const RightGaugeWrapper = styled.div<any>`
+const RightGaugeWrapper = styled.div<{ ref: any; $maximized: boolean }>`
   position: absolute;
   z-index: 100;
   right: 0;
   bottom: 0;
+
+  ${(props) => (props.$maximized ? "z-index: 110;" : "")}
 `;
 
 const RightGauge = styled(Card)<{ $maximized: boolean }>`
