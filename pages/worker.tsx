@@ -181,17 +181,20 @@ function Worker() {
           <ContentWrapper>
             <BottomBarWrapper
               ref={bottomBarRef}
-              $padding={
-                width
+              $padding={(() => {
+                const leftHeight =
+                  leftGaugeHeight && (leftGaugeHeight - bottomBarHeight) / 2;
+                const rightHeight =
+                  rightGaugeHeight && (rightGaugeHeight - bottomBarHeight) / 2;
+
+                return width
                   ? width > 821
-                    ? (leftGaugeHeight &&
-                        (leftGaugeHeight - bottomBarHeight) / 2) ||
-                      (rightGaugeHeight &&
-                        (rightGaugeHeight - bottomBarHeight) / 2) ||
-                      0
+                    ? leftHeight < rightHeight
+                      ? leftHeight || rightHeight
+                      : rightHeight || leftHeight
                     : 0
-                  : 0
-              }
+                  : 0;
+              })()}
             >
               <LeftGaugeWrapper ref={leftGaugeRef}>
                 <Animate transitionName="fadeandslideleft" transitionAppear>
