@@ -25,6 +25,7 @@ import nodeResource, { nodeId } from "../data/node";
 import packageJSON from "../package.json";
 import glass from "../styles/glass";
 import { TitleSpace } from "./explorer";
+import { LocationButton } from "./worker";
 
 function Config() {
   const { t } = useTranslation();
@@ -106,12 +107,12 @@ function Config() {
                 <div>{t("youAre")}:</div>
 
                 <Space align="center">
-                  <Button
+                  <LocationButton
                     type="text"
                     shape="circle"
                     onClick={getUserCoordinates}
                     loading={loadingUserCoordinates}
-                    icon={<FontAwesomeIcon icon={faLocationArrow} />}
+                    icon={<FontAwesomeIcon icon={faLocationArrow} fixedWidth />}
                   />
 
                   <IPAddress>{nodeId}</IPAddress>

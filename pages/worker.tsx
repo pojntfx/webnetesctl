@@ -1,6 +1,7 @@
 import {
   faChevronUp,
   faCube,
+  faLocationArrow,
   faMobile,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -177,7 +178,15 @@ function Worker() {
                 </CardSpace>
               </LeftGauge>
 
-              <Title level={1}>{router.query.id}</Title>
+              <Space align="center">
+                <LocationButton
+                  type="text"
+                  shape="circle"
+                  icon={<FontAwesomeIcon icon={faLocationArrow} fixedWidth />}
+                />
+
+                <Title level={1}>{router.query.id}</Title>
+              </Space>
 
               <RightGauge
                 cover={
@@ -301,5 +310,15 @@ const GraphTmpl = dynamic(() => import("../components/graph"), {
 const Graph = forwardRef((props: any, ref) => (
   <GraphTmpl {...props} forwardRef={ref} />
 ));
+
+export const LocationButton = styled(Button)`
+  &:not(.ant-btn-loading) {
+    > *:first-child {
+      /* Visual centering of location arrow */
+      margin-top: 0.35rem;
+      width: 0.9rem !important;
+    }
+  }
+`;
 
 export default Worker;
