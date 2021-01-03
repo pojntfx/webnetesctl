@@ -108,6 +108,7 @@
     "react-particles-js": "^3.4.1",
     "styled-components": "^5.2.1",
     "three-globe": "^2.11.1",
+    "three-spritetext": "^1.5.3",
     "use-window-size-hook": "^1.1.22",
     "xterm-for-react": "^1.0.4",
     "yargs": "^16.2.0"

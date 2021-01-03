@@ -12,6 +12,7 @@ import {
 } from "./created";
 import network from "../data/network.json";
 import dynamic from "next/dynamic";
+import SpriteText from "three-spritetext";
 
 const particlesConfig: typeof ParticlesTmpl["arguments"] = {
   particles: {
@@ -92,6 +93,16 @@ function Worker() {
               graphData={network}
               backgroundColor="rgba(0,0,0,0)"
               showNavInfo={false}
+              nodeThreeObject={(node) => {
+                const sprite = new SpriteText(node.id?.toString());
+
+                sprite.color = "#ffffff";
+                sprite.textHeight = 6;
+                sprite.backgroundColor = "rgba(0,0,0,0.5)";
+                sprite.padding = 2;
+
+                return sprite;
+              }}
             />
           </ContentWrapper>
         </Animate>
