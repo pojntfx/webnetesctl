@@ -10,7 +10,7 @@ import {
   ContentWrapper as ContentWrapperTmpl,
   Wrapper,
 } from "./created";
-import data from "../data/miserables.json";
+import network from "../data/network.json";
 import dynamic from "next/dynamic";
 
 const particlesConfig: typeof ParticlesTmpl["arguments"] = {
@@ -88,7 +88,11 @@ function Worker() {
           <ContentWrapper>
             <h1>{router.query.id}</h1>
 
-            <ForceGraph3D graphData={data} backgroundColor="rgba(0,0,0,0)" />
+            <ForceGraph3D
+              graphData={network}
+              backgroundColor="rgba(0,0,0,0)"
+              showNavInfo={false}
+            />
           </ContentWrapper>
         </Animate>
       </BlurWrapper>
