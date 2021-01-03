@@ -23,6 +23,7 @@ import SpriteText from "three-spritetext";
 import { useWindowSize } from "use-window-size-hook";
 import localResources from "../data/local-resources.json";
 import network from "../data/network.json";
+import composite from "../data/composite.json";
 import glass from "../styles/glass";
 import { urldecodeYAMLAll } from "../utils/urltranscode";
 import {
@@ -78,7 +79,7 @@ const particlesConfig: typeof ParticlesTmpl["arguments"] = {
 function Worker() {
   const { t } = useTranslation();
   const router = useRouter();
-  const { height } = useWindowSize();
+  const { width, height } = useWindowSize();
   const { ref: bottomBarRef, height: bottomBarHeight } = useDimensions();
   const { ref: rightGaugeRef, height: rightGaugeHeight } = useDimensions();
   const { ref: leftGaugeRef, height: leftGaugeHeight } = useDimensions();
@@ -125,28 +126,33 @@ function Worker() {
     <Wrapper>
       <Particles params={particlesConfig} />
 
+      <CompositeGraphAnimate transitionName="fadeandzoom" transitionAppear>
+        <CompositeGraphWrapper>
+          <Graph
+            graphData={composite}
+            backgroundColor="rgba(0,0,0,0)"
+            showNavInfo={false}
+            width={width}
+            height={height}
+            nodeThreeObject={(node: any) => {
+              const sprite = new SpriteText(node.id?.toString());
+
+              sprite.color = "#ffffff";
+              sprite.textHeight = 2;
+              sprite.backgroundColor = node.color + "F0";
+              sprite.padding = 2;
+
+              return sprite;
+            }}
+            nodeAutoColorBy="group"
+            ref={compositeGraphRef}
+          />
+        </CompositeGraphWrapper>
+      </CompositeGraphAnimate>
+
       <BlurWrapper>
         <Animate transitionName="fadeandzoom" transitionAppear>
           <ContentWrapper>
-            {/* <Graph
-              graphData={composite}
-              backgroundColor="rgba(0,0,0,0)"
-              showNavInfo={false}
-              height={height ? height - bottomBarHeight : 0}
-              nodeThreeObject={(node: any) => {
-                const sprite = new SpriteText(node.id?.toString());
-
-                sprite.color = "#ffffff";
-                sprite.textHeight = 2;
-                sprite.backgroundColor = node.color + "F0";
-                sprite.padding = 2;
-
-                return sprite;
-              }}
-              nodeAutoColorBy="group"
-              ref={compositeGraphRef}
-            /> */}
-
             <BottomBarWrapper
               ref={bottomBarRef}
               $minHeight={leftGaugeHeight || rightGaugeHeight || 0}
@@ -172,7 +178,7 @@ function Worker() {
 
                             return sprite;
                           }}
-                          ref={networkGraphRef}
+                          ref={resourceGraphRef}
                         />
                       }
                     >
@@ -425,6 +431,18 @@ const GraphTmpl = dynamic(() => import("../components/graph"), {
 const Graph = forwardRef((props: any, ref) => (
   <GraphTmpl {...props} forwardRef={ref} />
 ));
+
+const CompositeGraphAnimate = styled(Animate)`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+`;
+
+const CompositeGraphWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  ${glass}
+`;
 
 export const LocationButton = styled(Button)`
   &:not(.ant-btn-loading) {
