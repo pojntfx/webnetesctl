@@ -113,19 +113,19 @@ function Worker() {
 
   const networkGraphRef = useCallback((graph) => {
     if (graph) {
-      setTimeout(() => graph.zoomToFit(500, 0), 1000);
+      setTimeout(() => graph.zoomToFit(500, 0), 500);
     }
   }, []);
 
   const resourceGraphRef = useCallback((graph) => {
     if (graph) {
-      setTimeout(() => graph.zoomToFit(500, 0), 1000);
+      setTimeout(() => graph.zoomToFit(500, 0), 500);
     }
   }, []);
 
   const compositeGraphRef = useCallback((graph) => {
     if (graph) {
-      setTimeout(() => graph.zoomToFit(500, 0), 1000);
+      setTimeout(() => graph.zoomToFit(500, 0), 500);
     }
   }, []);
 
@@ -137,6 +137,7 @@ function Worker() {
         {compositeGraphOpen && (
           <CompositeGraphWrapper>
             <Graph
+              warmupTicks={500}
               graphData={composite}
               backgroundColor="rgba(0,0,0,0)"
               showNavInfo={false}
@@ -164,7 +165,17 @@ function Worker() {
           <ContentWrapper>
             <BottomBarWrapper
               ref={bottomBarRef}
-              $minHeight={leftGaugeHeight || rightGaugeHeight || 0}
+              $padding={
+                width
+                  ? width > 821
+                    ? (leftGaugeHeight &&
+                        (leftGaugeHeight - bottomBarHeight) / 2) ||
+                      (rightGaugeHeight &&
+                        (rightGaugeHeight - bottomBarHeight) / 2) ||
+                      0
+                    : 0
+                  : 0
+              }
             >
               <LeftGaugeWrapper ref={leftGaugeRef}>
                 <Animate transitionName="fadeandslideleft" transitionAppear>
@@ -172,6 +183,7 @@ function Worker() {
                     <LeftGauge
                       cover={
                         <Graph
+                          warmupTicks={500}
                           graphData={localResources}
                           backgroundColor="rgba(0,0,0,0)"
                           showNavInfo={false}
@@ -256,7 +268,7 @@ function Worker() {
                   }
                 >
                   <FontAwesomeIcon
-                    icon={compositeGraphOpen ? faChevronDown : faChevronUp}
+                    icon={compositeGraphOpen ? faChevronUp : faChevronDown}
                   />
                 </MainExpandButton>
 
@@ -284,6 +296,7 @@ function Worker() {
                     <RightGauge
                       cover={
                         <Graph
+                          warmupTicks={500}
                           graphData={network}
                           backgroundColor="rgba(0,0,0,0)"
                           showNavInfo={false}
@@ -435,7 +448,7 @@ const ContentWrapper = styled(ContentWrapperTmpl)`
 `;
 
 const BottomBarWrapper = styled.div<{
-  $minHeight: number | undefined;
+  $padding: number | undefined;
   ref: any;
 }>`
   width: 100%;
@@ -443,11 +456,14 @@ const BottomBarWrapper = styled.div<{
   justify-content: center;
   align-items: center;
   flex-direction: row;
-
-  ${(props) => (props.$minHeight ? `min-height: ${props.$minHeight}px;` : "")}
-
   padding-bottom: 2rem;
   padding-top: 2rem;
+  transition: all 0.5s ease-out;
+
+  ${(props) =>
+    props.$padding
+      ? `padding-bottom: ${props.$padding}px; padding-top: ${props.$padding}px;`
+      : ""}
 `;
 
 const BlurWrapper = styled(BlurWrapperTmpl)`
