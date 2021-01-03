@@ -1,9 +1,11 @@
 import {
+  faAngleDoubleLeft,
+  faAngleDoubleRight,
   faChevronUp,
   faCube,
   faLocationArrow,
   faMapMarkerAlt,
-  faMobile,
+  faMobile
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Card as CardTmpl, Space } from "antd";
@@ -26,7 +28,7 @@ import { urldecodeYAMLAll } from "../utils/urltranscode";
 import {
   BlurWrapper as BlurWrapperTmpl,
   ContentWrapper as ContentWrapperTmpl,
-  Wrapper,
+  Wrapper
 } from "./created";
 
 const particlesConfig: typeof ParticlesTmpl["arguments"] = {
@@ -165,9 +167,15 @@ function Worker() {
                 }
               >
                 <CardSpace>
-                  <Button type="text" shape="circle">
-                    <FontAwesomeIcon icon={faChevronUp} />
-                  </Button>
+                  <Space>
+                    <Button type="text" shape="circle">
+                      <FontAwesomeIcon icon={faAngleDoubleLeft} />
+                    </Button>
+
+                    <Button type="text" shape="circle">
+                      <FontAwesomeIcon icon={faChevronUp} />
+                    </Button>
+                  </Space>
 
                   <span>
                     <Text strong>
@@ -231,9 +239,15 @@ function Worker() {
                     {t("node", { count: 4 })}
                   </span>
 
-                  <Button type="text" shape="circle">
-                    <FontAwesomeIcon icon={faChevronUp} />
-                  </Button>
+                  <Space>
+                    <Button type="text" shape="circle">
+                      <FontAwesomeIcon icon={faChevronUp} />
+                    </Button>
+
+                    <Button type="text" shape="circle">
+                      <FontAwesomeIcon icon={faAngleDoubleRight} />
+                    </Button>
+                  </Space>
                 </CardSpace>
               </RightGauge>
             </BottomBarWrapper>
