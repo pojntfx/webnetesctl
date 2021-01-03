@@ -3,7 +3,9 @@ import {
   faAngleDoubleRight,
   faChevronDown,
   faChevronUp,
+  faCompress,
   faCube,
+  faExpand,
   faLocationArrow,
   faMapMarkerAlt,
   faMobile,
@@ -85,6 +87,14 @@ function Worker() {
   const { ref: bottomBarRef, height: bottomBarHeight } = useDimensions();
   const { ref: rightGaugeRef, height: rightGaugeHeight } = useDimensions();
   const { ref: leftGaugeRef, height: leftGaugeHeight } = useDimensions();
+  const {
+    ref: rightGaugeToolbarRef,
+    height: rightGaugeToolbarHeight,
+  } = useDimensions();
+  const {
+    ref: leftGaugeToolbarRef,
+    height: leftGaugeToolbarHeight,
+  } = useDimensions();
 
   const [nodeConfig, setNodeConfig] = useState<string>();
   const [rightGaugeOpen, setRightGaugeOpen] = useState(
@@ -94,6 +104,8 @@ function Worker() {
     width ? (width > 821 ? true : false) : false
   );
   const [compositeGraphOpen, setCompositeGraphOpen] = useState(false);
+  const [rightGaugeMaximized, setRightGaugeMaximized] = useState(false);
+  const [leftGaugeMaximized, setLeftGaugeMaximized] = useState(false);
 
   useEffect(() => {
     const rawNodeConfig = router.query.nodeConfig;
@@ -192,7 +204,13 @@ function Worker() {
                           backgroundColor="rgba(0,0,0,0)"
                           showNavInfo={false}
                           width={width ? (width > 821 ? 256 : width) : 0}
-                          height={200}
+                          height={
+                            leftGaugeMaximized
+                              ? height
+                                ? height - leftGaugeToolbarHeight
+                                : 0
+                              : 200
+                          }
                           nodeThreeObject={(node: any) => {
                             const sprite = new SpriteText(node.id?.toString());
 
@@ -207,28 +225,40 @@ function Worker() {
                         />
                       }
                     >
-                      <CardSpace>
-                        <div>
-                          <Text strong>
-                            <FontAwesomeIcon icon={faMobile} /> 16{" "}
-                          </Text>
-                          {t("resource", { count: 16 })}
-                        </div>
+                      <CardSpaceWrapper ref={leftGaugeToolbarRef}>
+                        <CardSpace>
+                          <div>
+                            <Text strong>
+                              <FontAwesomeIcon icon={faMobile} /> 16{" "}
+                            </Text>
+                            {t("resource", { count: 16 })}
+                          </div>
 
-                        <Space>
-                          <Button type="text" shape="circle">
-                            <FontAwesomeIcon icon={faChevronUp} />
-                          </Button>
+                          <Space>
+                            <Button
+                              type="text"
+                              shape="circle"
+                              onClick={() =>
+                                setLeftGaugeMaximized((maximized) => !maximized)
+                              }
+                            >
+                              <FontAwesomeIcon
+                                icon={
+                                  leftGaugeMaximized ? faCompress : faExpand
+                                }
+                              />
+                            </Button>
 
-                          <Button
-                            type="text"
-                            shape="circle"
-                            onClick={() => setLeftGaugeOpen(false)}
-                          >
-                            <FontAwesomeIcon icon={faAngleDoubleLeft} />
-                          </Button>
-                        </Space>
-                      </CardSpace>
+                            <Button
+                              type="text"
+                              shape="circle"
+                              onClick={() => setLeftGaugeOpen(false)}
+                            >
+                              <FontAwesomeIcon icon={faAngleDoubleLeft} />
+                            </Button>
+                          </Space>
+                        </CardSpace>
+                      </CardSpaceWrapper>
                     </LeftGauge>
                   )}
                 </Animate>
@@ -272,7 +302,15 @@ function Worker() {
                   }
                 >
                   <FontAwesomeIcon
-                    icon={compositeGraphOpen ? faChevronUp : faChevronDown}
+                    icon={
+                      width && width > 821
+                        ? compositeGraphOpen
+                          ? faChevronUp
+                          : faChevronDown
+                        : compositeGraphOpen
+                        ? faChevronDown
+                        : faChevronUp
+                    }
                   />
                 </MainExpandButton>
 
@@ -305,7 +343,13 @@ function Worker() {
                           backgroundColor="rgba(0,0,0,0)"
                           showNavInfo={false}
                           width={width ? (width > 821 ? 256 : width) : 0}
-                          height={200}
+                          height={
+                            rightGaugeMaximized
+                              ? height
+                                ? height - rightGaugeToolbarHeight
+                                : 0
+                              : 200
+                          }
                           nodeThreeObject={(node: any) => {
                             const sprite = new SpriteText(node.id?.toString());
 
@@ -320,28 +364,42 @@ function Worker() {
                         />
                       }
                     >
-                      <CardSpace>
-                        <span>
-                          <Text strong>
-                            <FontAwesomeIcon icon={faMobile} /> 4{" "}
-                          </Text>
-                          {t("node", { count: 4 })}
-                        </span>
+                      <CardSpaceWrapper ref={rightGaugeToolbarRef}>
+                        <CardSpace>
+                          <div>
+                            <Text strong>
+                              <FontAwesomeIcon icon={faMobile} /> 4{" "}
+                            </Text>
+                            {t("node", { count: 4 })}
+                          </div>
 
-                        <Space>
-                          <Button type="text" shape="circle">
-                            <FontAwesomeIcon icon={faChevronUp} />
-                          </Button>
+                          <Space>
+                            <Button
+                              type="text"
+                              shape="circle"
+                              onClick={() =>
+                                setRightGaugeMaximized(
+                                  (maximized) => !maximized
+                                )
+                              }
+                            >
+                              <FontAwesomeIcon
+                                icon={
+                                  rightGaugeMaximized ? faCompress : faExpand
+                                }
+                              />
+                            </Button>
 
-                          <Button
-                            type="text"
-                            shape="circle"
-                            onClick={() => setRightGaugeOpen(false)}
-                          >
-                            <FontAwesomeIcon icon={faAngleDoubleRight} />
-                          </Button>
-                        </Space>
-                      </CardSpace>
+                            <Button
+                              type="text"
+                              shape="circle"
+                              onClick={() => setRightGaugeOpen(false)}
+                            >
+                              <FontAwesomeIcon icon={faAngleDoubleRight} />
+                            </Button>
+                          </Space>
+                        </CardSpace>
+                      </CardSpaceWrapper>
                     </RightGauge>
                   )}
                 </Animate>
@@ -366,6 +424,8 @@ function Worker() {
     </Wrapper>
   );
 }
+
+const CardSpaceWrapper = styled.div<any>``;
 
 const CardSpace = styled(Space)`
   width: 100%;
