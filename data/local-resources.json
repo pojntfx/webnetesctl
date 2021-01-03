@@ -1,0 +1,25 @@
+{
+  "nodes": [
+    { "id": "127.0.2.0", "group": 1 },
+    { "id": "Workload/echo_server", "group": 2 },
+    { "id": "Workload/echo_client", "group": 2 },
+    { "id": "NetworkInterface/echo_client", "group": 3 },
+    { "id": "NetworkInterface/echo_server", "group": 3 },
+    { "id": "Repository/webtorrent", "group": 4 }
+  ],
+  "links": [
+    { "source": "127.0.2.0", "target": "Workload/echo_server", "value": 1 },
+    { "source": "127.0.2.0", "target": "Workload/echo_client", "value": 1 },
+    {
+      "source": "127.0.2.0",
+      "target": "NetworkInterface/echo_client",
+      "value": 1
+    },
+    {
+      "source": "127.0.2.0",
+      "target": "NetworkInterface/echo_server",
+      "value": 1
+    },
+    { "source": "127.0.2.0", "target": "Repository/webtorrent", "value": 1 }
+  ]
+}

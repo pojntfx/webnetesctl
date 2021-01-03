@@ -8,6 +8,7 @@ import ParticlesTmpl from "react-particles-js";
 import styled from "styled-components";
 import SpriteText from "three-spritetext";
 import network from "../data/network.json";
+import localResources from "../data/local-resources.json";
 import { urldecodeYAMLAll } from "../utils/urltranscode";
 import {
   BlurWrapper as BlurWrapperTmpl,
@@ -81,9 +82,15 @@ function Worker() {
     nodeConfig && console.log(nodeConfig);
   }, [nodeConfig]);
 
-  const graphRef = useCallback((node) => {
-    if (node) {
-      setTimeout(() => node.zoomToFit(500, 0), 1000);
+  const networkGraphRef = useCallback((graph) => {
+    if (graph) {
+      setTimeout(() => graph.zoomToFit(500, 0), 1000);
+    }
+  }, []);
+
+  const resourceGraphRef = useCallback((graph) => {
+    if (graph) {
+      setTimeout(() => graph.zoomToFit(500, 0), 1000);
     }
   }, []);
 
@@ -94,6 +101,27 @@ function Worker() {
       <BlurWrapper>
         <Animate transitionName="fadeandzoom" transitionAppear>
           <ContentWrapper>
+            <Graph
+              graphData={localResources}
+              backgroundColor="rgba(0,0,0,0)"
+              showNavInfo={false}
+              width={256}
+              height={256}
+              nodeThreeObject={(node: any) => {
+                const sprite = new SpriteText(node.id?.toString());
+
+                sprite.color = "#ffffff";
+                sprite.textHeight = 6; // TODO: Set by group
+                sprite.backgroundColor = "rgba(0,0,0,0.5)"; // TODO: Set by group
+                sprite.padding = 2;
+
+                return sprite;
+              }}
+              ref={resourceGraphRef}
+            />
+
+            <Title level={1}>{router.query.id}</Title>
+
             <Graph
               graphData={network}
               backgroundColor="rgba(0,0,0,0)"
@@ -110,10 +138,8 @@ function Worker() {
 
                 return sprite;
               }}
-              ref={graphRef}
+              ref={networkGraphRef}
             />
-
-            <Title level={1}>{router.query.id}</Title>
           </ContentWrapper>
         </Animate>
       </BlurWrapper>
