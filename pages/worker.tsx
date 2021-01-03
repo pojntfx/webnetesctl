@@ -7,8 +7,10 @@ import { useTranslation } from "react-i18next";
 import ParticlesTmpl from "react-particles-js";
 import styled from "styled-components";
 import SpriteText from "three-spritetext";
-import network from "../data/network.json";
+import { useWindowSize } from "use-window-size-hook";
+import composite from "../data/composite.json";
 import localResources from "../data/local-resources.json";
+import network from "../data/network.json";
 import { urldecodeYAMLAll } from "../utils/urltranscode";
 import {
   BlurWrapper as BlurWrapperTmpl,
@@ -63,6 +65,7 @@ const particlesConfig: typeof ParticlesTmpl["arguments"] = {
 function Worker() {
   const { t } = useTranslation();
   const router = useRouter();
+  const { height } = useWindowSize();
 
   const [nodeConfig, setNodeConfig] = useState<string>();
 
@@ -94,6 +97,12 @@ function Worker() {
     }
   }, []);
 
+  const compositeGraphRef = useCallback((graph) => {
+    if (graph) {
+      setTimeout(() => graph.zoomToFit(500, 0), 1000);
+    }
+  }, []);
+
   return (
     <Wrapper>
       <Particles params={particlesConfig} />
@@ -102,44 +111,65 @@ function Worker() {
         <Animate transitionName="fadeandzoom" transitionAppear>
           <ContentWrapper>
             <Graph
-              graphData={localResources}
+              graphData={composite}
               backgroundColor="rgba(0,0,0,0)"
               showNavInfo={false}
-              width={256}
-              height={256}
+              height={height ? height - 48 * 2 : 0}
               nodeThreeObject={(node: any) => {
                 const sprite = new SpriteText(node.id?.toString());
 
                 sprite.color = "#ffffff";
-                sprite.textHeight = 6; // TODO: Set by group
-                sprite.backgroundColor = "rgba(0,0,0,0.5)"; // TODO: Set by group
+                sprite.textHeight = 2;
+                sprite.backgroundColor = node.color + "F0";
                 sprite.padding = 2;
 
                 return sprite;
               }}
-              ref={resourceGraphRef}
+              nodeAutoColorBy="group"
+              ref={compositeGraphRef}
             />
 
-            <Title level={1}>{router.query.id}</Title>
+            <BottomBarWrapper>
+              <Graph
+                graphData={localResources}
+                backgroundColor="rgba(0,0,0,0)"
+                showNavInfo={false}
+                width={256}
+                height={256}
+                nodeThreeObject={(node: any) => {
+                  const sprite = new SpriteText(node.id?.toString());
 
-            <Graph
-              graphData={network}
-              backgroundColor="rgba(0,0,0,0)"
-              showNavInfo={false}
-              width={256}
-              height={256}
-              nodeThreeObject={(node: any) => {
-                const sprite = new SpriteText(node.id?.toString());
+                  sprite.color = "#ffffff";
+                  sprite.textHeight = 6; // TODO: Set by group
+                  sprite.backgroundColor = "rgba(0,0,0,0.5)"; // TODO: Set by group
+                  sprite.padding = 2;
 
-                sprite.color = "#ffffff";
-                sprite.textHeight = 6;
-                sprite.backgroundColor = "rgba(0,0,0,0.5)";
-                sprite.padding = 2;
+                  return sprite;
+                }}
+                ref={resourceGraphRef}
+              />
 
-                return sprite;
-              }}
-              ref={networkGraphRef}
-            />
+              <Title level={1}>{router.query.id}</Title>
+
+              <Graph
+                graphData={network}
+                backgroundColor="rgba(0,0,0,0)"
+                showNavInfo={false}
+                width={256}
+                height={256}
+                nodeThreeObject={(node: any) => {
+                  const sprite = new SpriteText(node.id?.toString());
+
+                  sprite.color = "#ffffff";
+                  sprite.textHeight = 6;
+                  sprite.backgroundColor = "rgba(0,0,0,0.5)";
+                  sprite.padding = 2;
+
+                  return sprite;
+                }}
+                ref={networkGraphRef}
+              />
+            </BottomBarWrapper>
           </ContentWrapper>
         </Animate>
       </BlurWrapper>
@@ -158,14 +188,17 @@ const ContentWrapper = styled(ContentWrapperTmpl)`
   padding-top: 3rem;
   padding-bottom: 3rem;
 
+  .ant-typography {
+    margin-bottom: 0;
+  }
+`;
+
+const BottomBarWrapper = styled.div`
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-direction: row;
-
-  .ant-typography {
-    margin-bottom: 0;
-  }
 `;
 
 const BlurWrapper = styled(BlurWrapperTmpl)`
