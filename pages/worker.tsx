@@ -87,8 +87,12 @@ function Worker() {
   const { ref: leftGaugeRef, height: leftGaugeHeight } = useDimensions();
 
   const [nodeConfig, setNodeConfig] = useState<string>();
-  const [rightGaugeOpen, setRightGaugeOpen] = useState(true);
-  const [leftGaugeOpen, setLeftGaugeOpen] = useState(true);
+  const [rightGaugeOpen, setRightGaugeOpen] = useState(
+    width ? (width > 821 ? true : false) : false
+  );
+  const [leftGaugeOpen, setLeftGaugeOpen] = useState(
+    width ? (width > 821 ? true : false) : false
+  );
   const [compositeGraphOpen, setCompositeGraphOpen] = useState(false);
 
   useEffect(() => {
@@ -171,7 +175,7 @@ function Worker() {
                           graphData={localResources}
                           backgroundColor="rgba(0,0,0,0)"
                           showNavInfo={false}
-                          width={256}
+                          width={width ? (width > 821 ? 256 : width) : 0}
                           height={200}
                           nodeThreeObject={(node: any) => {
                             const sprite = new SpriteText(node.id?.toString());
@@ -239,10 +243,12 @@ function Worker() {
                           setRightGaugeOpen(false);
                         });
                       } else {
-                        unstable_batchedUpdates(() => {
-                          setLeftGaugeOpen(true);
-                          setRightGaugeOpen(true);
-                        });
+                        if (width && width > 812) {
+                          unstable_batchedUpdates(() => {
+                            setLeftGaugeOpen(true);
+                            setRightGaugeOpen(true);
+                          });
+                        }
                       }
 
                       return !open;
@@ -281,7 +287,7 @@ function Worker() {
                           graphData={network}
                           backgroundColor="rgba(0,0,0,0)"
                           showNavInfo={false}
-                          width={256}
+                          width={width ? (width > 821 ? 256 : width) : 0}
                           height={200}
                           nodeThreeObject={(node: any) => {
                             const sprite = new SpriteText(node.id?.toString());
