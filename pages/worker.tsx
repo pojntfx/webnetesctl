@@ -3,6 +3,7 @@ import {
   faAngleDoubleRight,
   faChevronDown,
   faChevronUp,
+  faCogs,
   faCompress,
   faCube,
   faExpand,
@@ -11,7 +12,7 @@ import {
   faMobile,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Card as CardTmpl, Space } from "antd";
+import { Button, Card as CardTmpl, Space, Tooltip } from "antd";
 import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
 import dynamic from "next/dynamic";
@@ -147,6 +148,12 @@ function Worker() {
 
       <HeaderBar>
         <LogoImage alt={t("webnetesLogo")} src="/logo.svg" />
+
+        <Tooltip title={t("advancedNodeConfig")} placement="left">
+          <Button type="text" shape="circle">
+            <FontAwesomeIcon icon={faCogs} />
+          </Button>
+        </Tooltip>
       </HeaderBar>
 
       <CompositeGraphAnimate
@@ -644,7 +651,7 @@ const TitleSpace = styled(Space)`
   }
 `;
 
-const HeaderBar = styled.div`
+const HeaderBar = styled(Space)`
   position: absolute;
   z-index: 100;
   left: 0;
@@ -653,6 +660,8 @@ const HeaderBar = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 
   &::after {
     position: absolute;
@@ -680,11 +689,18 @@ const HeaderBar = styled.div`
     position: relative;
     z-index: 110;
   }
+
+  > *:first-child {
+    margin-left: 1rem;
+  }
+
+  > *:last-child {
+    margin-right: 1rem;
+  }
 `;
 
 const LogoImage = styled.img`
   width: calc(256px - 2rem);
-  padding: 1rem;
 `;
 
 export default Worker;
