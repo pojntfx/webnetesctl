@@ -10,6 +10,8 @@ import {
   ContentWrapper as ContentWrapperTmpl,
   Wrapper,
 } from "./created";
+import data from "../data/miserables.json";
+import dynamic from "next/dynamic";
 
 const particlesConfig: typeof ParticlesTmpl["arguments"] = {
   particles: {
@@ -85,6 +87,8 @@ function Worker() {
         <Animate transitionName="fadeandzoom" transitionAppear>
           <ContentWrapper>
             <h1>{router.query.id}</h1>
+
+            <ForceGraph3D graphData={data} backgroundColor="rgba(0,0,0,0)" />
           </ContentWrapper>
         </Animate>
       </BlurWrapper>
@@ -111,5 +115,10 @@ const ContentWrapper = styled(ContentWrapperTmpl)`
 const BlurWrapper = styled(BlurWrapperTmpl)`
   margin-top: auto;
 `;
+
+const ForceGraph3D = dynamic(
+  (async () => (await import("react-force-graph")).ForceGraph3D)(),
+  { ssr: false }
+);
 
 export default Worker;
