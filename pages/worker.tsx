@@ -1,18 +1,19 @@
+import Title from "antd/lib/typography/Title";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import Animate from "rc-animate";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ParticlesTmpl from "react-particles-js";
 import styled from "styled-components";
+import SpriteText from "three-spritetext";
+import network from "../data/network.json";
 import { urldecodeYAMLAll } from "../utils/urltranscode";
 import {
   BlurWrapper as BlurWrapperTmpl,
   ContentWrapper as ContentWrapperTmpl,
   Wrapper,
 } from "./created";
-import network from "../data/network.json";
-import dynamic from "next/dynamic";
-import SpriteText from "three-spritetext";
 
 const particlesConfig: typeof ParticlesTmpl["arguments"] = {
   particles: {
@@ -87,12 +88,12 @@ function Worker() {
       <BlurWrapper>
         <Animate transitionName="fadeandzoom" transitionAppear>
           <ContentWrapper>
-            <h1>{router.query.id}</h1>
-
             <ForceGraph3D
               graphData={network}
               backgroundColor="rgba(0,0,0,0)"
               showNavInfo={false}
+              width={256}
+              height={256}
               nodeThreeObject={(node) => {
                 const sprite = new SpriteText(node.id?.toString());
 
@@ -104,6 +105,8 @@ function Worker() {
                 return sprite;
               }}
             />
+
+            <Title level={1}>{router.query.id}</Title>
           </ContentWrapper>
         </Animate>
       </BlurWrapper>
@@ -122,7 +125,12 @@ const ContentWrapper = styled(ContentWrapperTmpl)`
   padding-top: 3rem;
   padding-bottom: 3rem;
 
-  h1 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+
+  .ant-typography {
     margin-bottom: 0;
   }
 `;
