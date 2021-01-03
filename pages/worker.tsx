@@ -26,11 +26,12 @@ import ParticlesTmpl from "react-particles-js";
 import styled from "styled-components";
 import SpriteText from "three-spritetext";
 import { useWindowSize } from "use-window-size-hook";
+import EditNodeConfigModal from "../components/edit-node-config-modal";
 import composite from "../data/composite.json";
 import localResources from "../data/local-resources.json";
 import network from "../data/network.json";
 import glass from "../styles/glass";
-import { urldecodeYAMLAll } from "../utils/urltranscode";
+import { urldecodeYAMLAll, urlencodeYAMLAll } from "../utils/urltranscode";
 import {
   BlurWrapper as BlurWrapperTmpl,
   ContentWrapper as ContentWrapperTmpl,
@@ -107,6 +108,7 @@ function Worker() {
   const [compositeGraphOpen, setCompositeGraphOpen] = useState(false);
   const [rightGaugeMaximized, setRightGaugeMaximized] = useState(false);
   const [leftGaugeMaximized, setLeftGaugeMaximized] = useState(false);
+  const [editNodeConfigModalOpen, setEditNodeConfigModalOpen] = useState(false);
 
   useEffect(() => {
     const rawNodeConfig = router.query.nodeConfig;
@@ -146,11 +148,31 @@ function Worker() {
     <Wrapper>
       <Particles params={particlesConfig} />
 
+      <EditNodeConfigModal
+        open={editNodeConfigModalOpen}
+        onDone={(definition) => {
+          setEditNodeConfigModalOpen(false);
+
+          try {
+            router.push(
+              `/worker?id=127.0.2&nodeConfig=${urlencodeYAMLAll(definition)}`
+            );
+          } catch (e) {
+            console.error("could not parse definition", e);
+          }
+        }}
+        onCancel={() => setEditNodeConfigModalOpen(false)}
+      />
+
       <HeaderBar>
         <LogoImage alt={t("webnetesLogo")} src="/logo.svg" />
 
         <Tooltip title={t("advancedNodeConfig")} placement="left">
-          <Button type="text" shape="circle">
+          <Button
+            type="text"
+            shape="circle"
+            onClick={() => setEditNodeConfigModalOpen(true)}
+          >
             <FontAwesomeIcon icon={faCogs} />
           </Button>
         </Tooltip>
