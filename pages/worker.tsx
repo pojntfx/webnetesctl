@@ -2,7 +2,7 @@ import Title from "antd/lib/typography/Title";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import Animate from "rc-animate";
-import { useEffect, useState } from "react";
+import { forwardRef, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ParticlesTmpl from "react-particles-js";
 import styled from "styled-components";
@@ -81,6 +81,12 @@ function Worker() {
     nodeConfig && console.log(nodeConfig);
   }, [nodeConfig]);
 
+  const graphRef = useCallback((node) => {
+    if (node) {
+      setTimeout(() => node.zoomToFit(500, 0), 1000);
+    }
+  }, []);
+
   return (
     <Wrapper>
       <Particles params={particlesConfig} />
@@ -88,13 +94,13 @@ function Worker() {
       <BlurWrapper>
         <Animate transitionName="fadeandzoom" transitionAppear>
           <ContentWrapper>
-            <ForceGraph3D
+            <Graph
               graphData={network}
               backgroundColor="rgba(0,0,0,0)"
               showNavInfo={false}
               width={256}
               height={256}
-              nodeThreeObject={(node) => {
+              nodeThreeObject={(node: any) => {
                 const sprite = new SpriteText(node.id?.toString());
 
                 sprite.color = "#ffffff";
@@ -104,6 +110,7 @@ function Worker() {
 
                 return sprite;
               }}
+              ref={graphRef}
             />
 
             <Title level={1}>{router.query.id}</Title>
@@ -139,9 +146,11 @@ const BlurWrapper = styled(BlurWrapperTmpl)`
   margin-top: auto;
 `;
 
-const ForceGraph3D = dynamic(
-  (async () => (await import("react-force-graph")).ForceGraph3D)(),
-  { ssr: false }
-);
+const GraphTmpl = dynamic(() => import("../components/graph"), {
+  ssr: false,
+});
+const Graph = forwardRef((props: any, ref) => (
+  <GraphTmpl {...props} forwardRef={ref} />
+));
 
 export default Worker;
