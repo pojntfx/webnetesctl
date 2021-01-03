@@ -7,7 +7,7 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Space } from "antd";
+import { Button, Modal as ModalTmpl, Space } from "antd";
 import Animate from "rc-animate";
 import { useCallback, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
@@ -15,10 +15,7 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import node from "../data/node";
 import { ExternalLink } from "../pages/config";
-import {
-  ExternalExampleLink,
-  Modal as ModalTmpl,
-} from "./create-resource-modal";
+import { ExternalExampleLink } from "./create-resource-modal";
 import ResourceEditorTmpl from "./resource-editor";
 
 export interface IEditNodeConfigModalProps {
@@ -151,6 +148,27 @@ const EditNodeConfigModal: React.FC<IEditNodeConfigModalProps> = ({
 };
 
 const Modal = styled(ModalTmpl)`
+  min-width: 80vw;
+
+  .ant-modal-content {
+    border: 0;
+    box-shadow: none;
+  }
+
+  .ant-modal-header,
+  .ant-modal-content {
+    background: transparent;
+  }
+
+  .ant-modal-header {
+    padding-right: 16px;
+  }
+
+  .ant-modal-title {
+    display: flex;
+    justify-content: space-between;
+  }
+
   .ant-modal-body {
     padding-top: 0;
     padding-bottom: 0;

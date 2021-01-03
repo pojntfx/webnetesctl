@@ -7,6 +7,7 @@ import {
   faCompress,
   faCube,
   faExpand,
+  faHandPeace,
   faLocationArrow,
   faMapMarkerAlt,
   faMobile
@@ -166,6 +167,13 @@ function Worker() {
         onCancel={() => setEditNodeConfigModalOpen(false)}
         skipConfirmation
       />
+
+      <IntroTitle level={2}>
+        <FocusedTitle>
+          <FontAwesomeIcon icon={faHandPeace} fixedWidth /> {t("welcome")}
+        </FocusedTitle>{" "}
+        {t("youveJoinedTheCluster")}.
+      </IntroTitle>
 
       <HeaderBar>
         <LogoImage alt={t("webnetesLogo")} src="/logo.svg" />
@@ -511,6 +519,17 @@ function Worker() {
     </Wrapper>
   );
 }
+
+const FocusedTitle = styled.strong`
+  font-weight: 700;
+`;
+
+const IntroTitle = styled(Title)`
+  width: auto;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+`;
 
 const CardSpaceWrapper = styled.div<any>``;
 

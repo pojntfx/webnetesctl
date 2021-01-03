@@ -85,4 +85,6 @@ export default {
   done: "Done",
   advancedNodeConfig: "Advanced Node Config",
   useThis: "Use This",
+  welcome: "Welcome!",
+  youveJoinedTheCluster: "You've joined the cluster",
 };
