@@ -2,6 +2,7 @@ import {
   faChevronUp,
   faCube,
   faLocationArrow,
+  faMapMarkerAlt,
   faMobile,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -18,7 +19,6 @@ import ParticlesTmpl from "react-particles-js";
 import styled from "styled-components";
 import SpriteText from "three-spritetext";
 import { useWindowSize } from "use-window-size-hook";
-import composite from "../data/composite.json";
 import localResources from "../data/local-resources.json";
 import network from "../data/network.json";
 import glass from "../styles/glass";
@@ -122,7 +122,7 @@ function Worker() {
       <BlurWrapper>
         <Animate transitionName="fadeandzoom" transitionAppear>
           <ContentWrapper>
-            <Graph
+            {/* <Graph
               graphData={composite}
               backgroundColor="rgba(0,0,0,0)"
               showNavInfo={false}
@@ -139,7 +139,7 @@ function Worker() {
               }}
               nodeAutoColorBy="group"
               ref={compositeGraphRef}
-            />
+            /> */}
 
             <BottomBarWrapper ref={bottomBarRef}>
               <LeftGauge
@@ -178,14 +178,27 @@ function Worker() {
                 </CardSpace>
               </LeftGauge>
 
-              <Space align="center">
-                <LocationButton
-                  type="text"
-                  shape="circle"
-                  icon={<FontAwesomeIcon icon={faLocationArrow} fixedWidth />}
-                />
+              <Space direction="vertical" align="center">
+                <MainExpandButton type="text" shape="circle">
+                  <FontAwesomeIcon icon={faChevronUp} />
+                </MainExpandButton>
 
-                <Title level={1}>{router.query.id}</Title>
+                <TitleSpace align="center">
+                  <TransparentLocationButton
+                    type="text"
+                    shape="circle"
+                    icon={<FontAwesomeIcon icon={faLocationArrow} fixedWidth />}
+                  />
+
+                  <Title level={1}>{router.query.id}</Title>
+                </TitleSpace>
+
+                <Text>
+                  <Space>
+                    <FontAwesomeIcon icon={faMapMarkerAlt} />
+                    Stuttgart, Germany
+                  </Space>
+                </Text>
               </Space>
 
               <RightGauge
@@ -318,6 +331,24 @@ export const LocationButton = styled(Button)`
       margin-top: 0.35rem;
       width: 0.9rem !important;
     }
+  }
+`;
+
+const TransparentLocationButton = styled(LocationButton)`
+  background: transparent !important;
+  backdrop-filter: none !important;
+`;
+
+const MainExpandButton = styled(Button)`
+  background: transparent !important;
+  backdrop-filter: none !important;
+`;
+
+const TitleSpace = styled(Space)`
+  margin-left: -8px; // Visual centering to balance out the location button
+
+  > *:first-child {
+    margin-right: 4px !important;
   }
 `;
 
