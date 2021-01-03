@@ -9,7 +9,7 @@ import {
   faExpand,
   faLocationArrow,
   faMapMarkerAlt,
-  faMobile,
+  faMobile
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Card as CardTmpl, Space, Tooltip } from "antd";
@@ -35,7 +35,7 @@ import { urldecodeYAMLAll, urlencodeYAMLAll } from "../utils/urltranscode";
 import {
   BlurWrapper as BlurWrapperTmpl,
   ContentWrapper as ContentWrapperTmpl,
-  Wrapper,
+  Wrapper
 } from "./created";
 
 const particlesConfig: typeof ParticlesTmpl["arguments"] = {
@@ -155,13 +155,16 @@ function Worker() {
 
           try {
             router.push(
-              `/worker?id=127.0.2&nodeConfig=${urlencodeYAMLAll(definition)}`
+              `/worker?id=${router.query.id}&nodeConfig=${urlencodeYAMLAll(
+                definition
+              )}`
             );
           } catch (e) {
             console.error("could not parse definition", e);
           }
         }}
         onCancel={() => setEditNodeConfigModalOpen(false)}
+        skipConfirmation
       />
 
       <HeaderBar>
@@ -717,7 +720,7 @@ const HeaderBar = styled(Space)`
   }
 
   > *:last-child {
-    margin-right: 1rem;
+    margin-right: 24px; /* Matches the card's internal margins */
   }
 `;
 

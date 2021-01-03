@@ -1,10 +1,10 @@
 import {
-    faArrowLeft,
-    faCogs,
-    faExclamationCircle,
-    faExternalLinkAlt,
-    faTimes,
-    faTrash
+  faArrowLeft,
+  faCogs,
+  faExclamationCircle,
+  faExternalLinkAlt,
+  faTimes,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Space } from "antd";
@@ -16,8 +16,8 @@ import styled from "styled-components";
 import node from "../data/node";
 import { ExternalLink } from "../pages/config";
 import {
-    ExternalExampleLink,
-    Modal as ModalTmpl
+  ExternalExampleLink,
+  Modal as ModalTmpl,
 } from "./create-resource-modal";
 import ResourceEditorTmpl from "./resource-editor";
 
@@ -25,12 +25,14 @@ export interface IEditNodeConfigModalProps {
   open: boolean;
   onDone: (definition: string) => void;
   onCancel: () => void;
+  skipConfirmation?: boolean;
 }
 
 const EditNodeConfigModal: React.FC<IEditNodeConfigModalProps> = ({
   open,
   onDone,
   onCancel,
+  skipConfirmation,
   ...otherProps
 }) => {
   const { t } = useTranslation();
@@ -47,39 +49,41 @@ const EditNodeConfigModal: React.FC<IEditNodeConfigModalProps> = ({
 
   const cancel = useCallback(async () => {
     try {
-      await new Promise<void>((res, rej) =>
-        Modal.confirm({
-          centered: true,
-          icon: <> </>,
-          title: (
-            <Space>
-              <FontAwesomeIcon icon={faExclamationCircle} />
-              {t("discardChangesTitle")}
-            </Space>
-          ),
-          content: t("discardChangesDescription"),
-          cancelText: (
-            <Space>
-              <FontAwesomeIcon icon={faArrowLeft} />
-              {t("noKeepChanges")}
-            </Space>
-          ),
-          onCancel() {
-            rej();
-          },
-          okButtonProps: { type: "primary" },
-          okText: (
-            <Space>
-              <FontAwesomeIcon icon={faTrash} />
-              {t("yesDiscardChanges")}
-            </Space>
-          ),
-          okType: "danger",
-          onOk() {
-            res();
-          },
-        })
-      );
+      if (!skipConfirmation) {
+        await new Promise<void>((res, rej) =>
+          Modal.confirm({
+            centered: true,
+            icon: <> </>,
+            title: (
+              <Space>
+                <FontAwesomeIcon icon={faExclamationCircle} />
+                {t("discardChangesTitle")}
+              </Space>
+            ),
+            content: t("discardChangesDescription"),
+            cancelText: (
+              <Space>
+                <FontAwesomeIcon icon={faArrowLeft} />
+                {t("noKeepChanges")}
+              </Space>
+            ),
+            onCancel() {
+              rej();
+            },
+            okButtonProps: { type: "primary" },
+            okText: (
+              <Space>
+                <FontAwesomeIcon icon={faTrash} />
+                {t("yesDiscardChanges")}
+              </Space>
+            ),
+            okType: "danger",
+            onOk() {
+              res();
+            },
+          })
+        );
+      }
     } catch (e) {
       return false;
     }
@@ -87,7 +91,7 @@ const EditNodeConfigModal: React.FC<IEditNodeConfigModalProps> = ({
     clear();
 
     onCancel();
-  }, [definition]);
+  }, [definition, skipConfirmation]);
 
   return (
     <Modal
