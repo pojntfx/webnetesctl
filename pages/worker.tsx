@@ -133,7 +133,11 @@ function Worker() {
     <Wrapper>
       <Particles params={particlesConfig} />
 
-      <CompositeGraphAnimate transitionName="fadeandzoom" transitionAppear>
+      <CompositeGraphAnimate
+        transitionName="fadeandzoom"
+        transitionAppear
+        $active={compositeGraphOpen}
+      >
         {compositeGraphOpen && (
           <CompositeGraphWrapper>
             <Graph
@@ -204,12 +208,12 @@ function Worker() {
                       }
                     >
                       <CardSpace>
-                        <span>
+                        <div>
                           <Text strong>
                             <FontAwesomeIcon icon={faMobile} /> 16{" "}
                           </Text>
                           {t("resource", { count: 16 })}
-                        </span>
+                        </div>
 
                         <Space>
                           <Button type="text" shape="circle">
@@ -477,10 +481,11 @@ const Graph = forwardRef((props: any, ref) => (
   <GraphTmpl {...props} forwardRef={ref} />
 ));
 
-const CompositeGraphAnimate = styled(Animate)`
+const CompositeGraphAnimate = styled(Animate)<{ $active: boolean }>`
   width: 100%;
   height: 100%;
   position: absolute;
+  ${(props) => (props.$active ? "" : "pointer-events: none;")}
 `;
 
 const CompositeGraphWrapper = styled.div`
