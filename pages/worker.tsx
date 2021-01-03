@@ -5,7 +5,7 @@ import {
   faCube,
   faLocationArrow,
   faMapMarkerAlt,
-  faMobile
+  faMobile,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Card as CardTmpl, Space } from "antd";
@@ -28,7 +28,7 @@ import { urldecodeYAMLAll } from "../utils/urltranscode";
 import {
   BlurWrapper as BlurWrapperTmpl,
   ContentWrapper as ContentWrapperTmpl,
-  Wrapper
+  Wrapper,
 } from "./created";
 
 const particlesConfig: typeof ParticlesTmpl["arguments"] = {
@@ -80,8 +80,10 @@ function Worker() {
   const router = useRouter();
   const { height } = useWindowSize();
   const { ref: bottomBarRef, height: bottomBarHeight } = useDimensions();
+  const { ref: rightGaugeRef, height: rightGaugeHeight } = useDimensions();
 
   const [nodeConfig, setNodeConfig] = useState<string>();
+  const [rightGaugeOpen, setRightGaugeOpen] = useState(true);
 
   useEffect(() => {
     const rawNodeConfig = router.query.nodeConfig;
@@ -143,7 +145,7 @@ function Worker() {
               ref={compositeGraphRef}
             /> */}
 
-            <BottomBarWrapper ref={bottomBarRef}>
+            <BottomBarWrapper ref={bottomBarRef} $minHeight={rightGaugeHeight}>
               <LeftGauge
                 cover={
                   <Graph
@@ -209,47 +211,73 @@ function Worker() {
                 </Text>
               </Space>
 
-              <RightGauge
-                cover={
-                  <Graph
-                    graphData={network}
-                    backgroundColor="rgba(0,0,0,0)"
-                    showNavInfo={false}
-                    width={256}
-                    height={200}
-                    nodeThreeObject={(node: any) => {
-                      const sprite = new SpriteText(node.id?.toString());
+              <RightGaugeWrapper ref={rightGaugeRef}>
+                <Animate transitionName="fadeandslideright" transitionAppear>
+                  {rightGaugeOpen && (
+                    <RightGauge
+                      cover={
+                        <Graph
+                          graphData={network}
+                          backgroundColor="rgba(0,0,0,0)"
+                          showNavInfo={false}
+                          width={256}
+                          height={200}
+                          nodeThreeObject={(node: any) => {
+                            const sprite = new SpriteText(node.id?.toString());
 
-                      sprite.color = "#ffffff";
-                      sprite.textHeight = 6;
-                      sprite.backgroundColor = "rgba(0,0,0,0.5)";
-                      sprite.padding = 2;
+                            sprite.color = "#ffffff";
+                            sprite.textHeight = 6;
+                            sprite.backgroundColor = "rgba(0,0,0,0.5)";
+                            sprite.padding = 2;
 
-                      return sprite;
-                    }}
-                    ref={networkGraphRef}
-                  />
-                }
+                            return sprite;
+                          }}
+                          ref={networkGraphRef}
+                        />
+                      }
+                    >
+                      <CardSpace>
+                        <span>
+                          <Text strong>
+                            <FontAwesomeIcon icon={faMobile} /> 4{" "}
+                          </Text>
+                          {t("node", { count: 4 })}
+                        </span>
+
+                        <Space>
+                          <Button type="text" shape="circle">
+                            <FontAwesomeIcon icon={faChevronUp} />
+                          </Button>
+
+                          <Button
+                            type="text"
+                            shape="circle"
+                            onClick={() => setRightGaugeOpen(false)}
+                          >
+                            <FontAwesomeIcon icon={faAngleDoubleRight} />
+                          </Button>
+                        </Space>
+                      </CardSpace>
+                    </RightGauge>
+                  )}
+                </Animate>
+              </RightGaugeWrapper>
+
+              <RightGaugeAnimate
+                transitionName="fadeandslideright"
+                transitionAppear
               >
-                <CardSpace>
-                  <span>
+                {!rightGaugeOpen && (
+                  <RightGaugeButton
+                    type="text"
+                    onClick={() => setRightGaugeOpen(true)}
+                  >
                     <Text strong>
                       <FontAwesomeIcon icon={faMobile} /> 4{" "}
                     </Text>
-                    {t("node", { count: 4 })}
-                  </span>
-
-                  <Space>
-                    <Button type="text" shape="circle">
-                      <FontAwesomeIcon icon={faChevronUp} />
-                    </Button>
-
-                    <Button type="text" shape="circle">
-                      <FontAwesomeIcon icon={faAngleDoubleRight} />
-                    </Button>
-                  </Space>
-                </CardSpace>
-              </RightGauge>
+                  </RightGaugeButton>
+                )}
+              </RightGaugeAnimate>
             </BottomBarWrapper>
           </ContentWrapper>
         </Animate>
@@ -257,6 +285,11 @@ function Worker() {
     </Wrapper>
   );
 }
+
+const RightGaugeAnimate = styled(Animate)`
+  position: absolute;
+  right: 0;
+`;
 
 const CardSpace = styled(Space)`
   width: 100%;
@@ -284,6 +317,15 @@ const LeftGauge = styled(Card)`
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
   border-top-left-radius: 0;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+`;
+
+const RightGaugeWrapper = styled.div<any>`
+  position: absolute;
+  right: 0;
+  bottom: 0;
 `;
 
 const RightGauge = styled(Card)`
@@ -293,17 +335,6 @@ const RightGauge = styled(Card)`
   border-bottom-right-radius: 0;
   border-top-right-radius: 0;
   background: transparent !important;
-
-  .ant-card-cover {
-    border: 1px solid #303030;
-    ${glass}
-  }
-
-  .ant-card-body {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    background: #141414;
-  }
 `;
 
 const Particles = styled(ParticlesTmpl)`
@@ -319,12 +350,20 @@ const ContentWrapper = styled(ContentWrapperTmpl)`
   }
 `;
 
-const BottomBarWrapper = styled.div<any>`
+const BottomBarWrapper = styled.div<{
+  $minHeight: number | undefined;
+  ref: any;
+}>`
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   flex-direction: row;
+
+  ${(props) => (props.$minHeight ? `min-height: ${props.$minHeight}px;` : "")}
+
+  padding-bottom: 2rem;
+  padding-top: 2rem;
 `;
 
 const BlurWrapper = styled(BlurWrapperTmpl)`
@@ -364,6 +403,11 @@ const TitleSpace = styled(Space)`
   > *:first-child {
     margin-right: 4px !important;
   }
+`;
+
+const RightGaugeButton = styled(Button)`
+  border: 1px solid #303030;
+  border-right: none;
 `;
 
 export default Worker;

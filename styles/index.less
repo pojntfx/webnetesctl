@@ -182,3 +182,64 @@
     transform: translateX(1rem);
   }
 }
+
+// Fade & slide left animation
+.fadeandslideleft-enter {
+  opacity: 0;
+  animation-duration: 0.2s;
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.55, 0, 0.55, 0.2);
+  animation-play-state: paused;
+}
+
+.fadeandslideleft-appear {
+  opacity: 0;
+  animation-duration: 0.2s;
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.55, 0, 0.55, 0.2);
+  animation-play-state: paused;
+}
+
+.fadeandslideleft-leave {
+  animation-duration: 0.2s;
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.55, 0, 0.55, 0.2);
+  animation-play-state: paused;
+}
+
+.fadeandslideleft-enter.fadeandslideleft-enter-active {
+  animation-name: fadeandslideleftIn;
+  animation-play-state: running;
+}
+
+.fadeandslideleft-appear.fadeandslideleft-appear-active {
+  animation-name: fadeandslideleftIn;
+  animation-play-state: running;
+}
+
+.fadeandslideleft-leave.fadeandslideleft-leave-active {
+  animation-name: fadeandslideleftOut;
+  animation-play-state: running;
+}
+
+@keyframes fadeandslideleftIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-1rem);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeandslideleftOut {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-1rem);
+  }
+}
