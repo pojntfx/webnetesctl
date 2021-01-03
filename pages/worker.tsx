@@ -197,6 +197,7 @@ function Worker() {
                 <Animate transitionName="fadeandslideleft" transitionAppear>
                   {leftGaugeOpen && (
                     <LeftGauge
+                      $maximized={leftGaugeMaximized}
                       cover={
                         <Graph
                           warmupTicks={500}
@@ -336,6 +337,7 @@ function Worker() {
                 <Animate transitionName="fadeandslideright" transitionAppear>
                   {rightGaugeOpen && (
                     <RightGauge
+                      $maximized={rightGaugeMaximized}
                       cover={
                         <Graph
                           warmupTicks={500}
@@ -464,12 +466,14 @@ const LeftGaugeWrapper = styled.div<any>`
   bottom: 0;
 `;
 
-const LeftGauge = styled(Card)`
+const LeftGauge = styled(Card)<{ $maximized: boolean }>`
   border-left: 0;
   border-bottom: 0;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
   border-top-left-radius: 0;
+
+  ${(props) => (props.$maximized ? "border-top: 0;" : "")}
 `;
 
 const RightGaugeWrapper = styled.div<any>`
@@ -479,13 +483,14 @@ const RightGaugeWrapper = styled.div<any>`
   bottom: 0;
 `;
 
-const RightGauge = styled(Card)`
+const RightGauge = styled(Card)<{ $maximized: boolean }>`
   border-right: 0;
   border-bottom: 0;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
   border-top-right-radius: 0;
-  background: transparent !important;
+
+  ${(props) => (props.$maximized ? "border-top: 0;" : "")}
 `;
 
 const LeftGaugeButton = styled(Button)`
