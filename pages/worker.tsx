@@ -187,13 +187,27 @@ function Worker() {
                 const rightHeight =
                   rightGaugeHeight && (rightGaugeHeight - bottomBarHeight) / 2;
 
-                return width
-                  ? width > 821
-                    ? leftHeight < rightHeight
+                if (width && width > 821) {
+                  if (rightGaugeMaximized) {
+                    if (leftHeight) {
+                      return leftHeight;
+                    } else {
+                      return 0;
+                    }
+                  } else if (leftGaugeMaximized) {
+                    if (rightHeight) {
+                      return rightHeight;
+                    } else {
+                      return 0;
+                    }
+                  } else {
+                    return leftHeight < rightHeight
                       ? leftHeight || rightHeight
-                      : rightHeight || leftHeight
-                    : 0
-                  : 0;
+                      : rightHeight || leftHeight;
+                  }
+                } else {
+                  return 0;
+                }
               })()}
             >
               <LeftGaugeWrapper ref={leftGaugeRef}>
@@ -242,9 +256,15 @@ function Worker() {
                             <Button
                               type="text"
                               shape="circle"
-                              onClick={() =>
-                                setLeftGaugeMaximized((maximized) => !maximized)
-                              }
+                              onClick={() => {
+                                setLeftGaugeMaximized((maximized) => {
+                                  if (!maximized) {
+                                    setRightGaugeMaximized(false); // Only one gauge can ever be maximized
+                                  }
+
+                                  return !maximized;
+                                });
+                              }}
                             >
                               <FontAwesomeIcon
                                 icon={
@@ -382,11 +402,15 @@ function Worker() {
                             <Button
                               type="text"
                               shape="circle"
-                              onClick={() =>
-                                setRightGaugeMaximized(
-                                  (maximized) => !maximized
-                                )
-                              }
+                              onClick={() => {
+                                setRightGaugeMaximized((maximized) => {
+                                  if (!maximized) {
+                                    setLeftGaugeMaximized(false); // Only one gauge can ever be maximized
+                                  }
+
+                                  return !maximized;
+                                });
+                              }}
                             >
                               <FontAwesomeIcon
                                 icon={
