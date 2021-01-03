@@ -1,4 +1,8 @@
-import { faChevronUp, faMobile } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChevronUp,
+  faCube,
+  faMobile,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Card as CardTmpl, Space } from "antd";
 import Text from "antd/lib/typography/Text";
@@ -137,28 +141,45 @@ function Worker() {
             />
 
             <BottomBarWrapper ref={bottomBarRef}>
-              <Graph
-                graphData={localResources}
-                backgroundColor="rgba(0,0,0,0)"
-                showNavInfo={false}
-                width={256}
-                height={200}
-                nodeThreeObject={(node: any) => {
-                  const sprite = new SpriteText(node.id?.toString());
+              <LeftGauge
+                cover={
+                  <Graph
+                    graphData={localResources}
+                    backgroundColor="rgba(0,0,0,0)"
+                    showNavInfo={false}
+                    width={256}
+                    height={200}
+                    nodeThreeObject={(node: any) => {
+                      const sprite = new SpriteText(node.id?.toString());
 
-                  sprite.color = "#ffffff";
-                  sprite.textHeight = 6; // TODO: Set by group
-                  sprite.backgroundColor = "rgba(0,0,0,0.5)"; // TODO: Set by group
-                  sprite.padding = 2;
+                      sprite.color = "#ffffff";
+                      sprite.textHeight = 6;
+                      sprite.backgroundColor = "rgba(0,0,0,0.5)";
+                      sprite.padding = 2;
 
-                  return sprite;
-                }}
-                ref={resourceGraphRef}
-              />
+                      return sprite;
+                    }}
+                    ref={resourceGraphRef}
+                  />
+                }
+              >
+                <CardSpace>
+                  <Button type="text" shape="circle">
+                    <FontAwesomeIcon icon={faChevronUp} />
+                  </Button>
+
+                  <span>
+                    <Text strong>
+                      <FontAwesomeIcon icon={faCube} /> 16{" "}
+                    </Text>
+                    {t("resource", { count: 16 })}
+                  </span>
+                </CardSpace>
+              </LeftGauge>
 
               <Title level={1}>{router.query.id}</Title>
 
-              <Card
+              <RightGauge
                 cover={
                   <Graph
                     graphData={network}
@@ -192,7 +213,7 @@ function Worker() {
                     <FontAwesomeIcon icon={faChevronUp} />
                   </Button>
                 </CardSpace>
-              </Card>
+              </RightGauge>
             </BottomBarWrapper>
           </ContentWrapper>
         </Animate>
@@ -207,6 +228,29 @@ const CardSpace = styled(Space)`
 `;
 
 const Card = styled(CardTmpl)`
+  background: transparent !important;
+
+  .ant-card-cover {
+    border: 1px solid #303030;
+    ${glass}
+  }
+
+  .ant-card-body {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    background: #141414;
+  }
+`;
+
+const LeftGauge = styled(Card)`
+  border-left: 0;
+  border-bottom: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-left-radius: 0;
+`;
+
+const RightGauge = styled(Card)`
   border-right: 0;
   border-bottom: 0;
   border-bottom-left-radius: 0;
