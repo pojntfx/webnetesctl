@@ -17,6 +17,7 @@ import {
   ContentWrapper as ContentWrapperTmpl,
   Wrapper,
 } from "./created";
+import useDimensions from "react-cool-dimensions";
 
 const particlesConfig: typeof ParticlesTmpl["arguments"] = {
   particles: {
@@ -66,6 +67,7 @@ function Worker() {
   const { t } = useTranslation();
   const router = useRouter();
   const { height } = useWindowSize();
+  const { ref: bottomBarRef, height: bottomBarHeight } = useDimensions();
 
   const [nodeConfig, setNodeConfig] = useState<string>();
 
@@ -114,7 +116,7 @@ function Worker() {
               graphData={composite}
               backgroundColor="rgba(0,0,0,0)"
               showNavInfo={false}
-              height={height ? height - 48 * 2 : 0}
+              height={height ? height - bottomBarHeight : 0}
               nodeThreeObject={(node: any) => {
                 const sprite = new SpriteText(node.id?.toString());
 
@@ -129,13 +131,13 @@ function Worker() {
               ref={compositeGraphRef}
             />
 
-            <BottomBarWrapper>
+            <BottomBarWrapper ref={bottomBarRef}>
               <Graph
                 graphData={localResources}
                 backgroundColor="rgba(0,0,0,0)"
                 showNavInfo={false}
                 width={256}
-                height={256}
+                height={200}
                 nodeThreeObject={(node: any) => {
                   const sprite = new SpriteText(node.id?.toString());
 
@@ -156,7 +158,7 @@ function Worker() {
                 backgroundColor="rgba(0,0,0,0)"
                 showNavInfo={false}
                 width={256}
-                height={256}
+                height={200}
                 nodeThreeObject={(node: any) => {
                   const sprite = new SpriteText(node.id?.toString());
 
@@ -185,15 +187,12 @@ const Particles = styled(ParticlesTmpl)`
 `;
 
 const ContentWrapper = styled(ContentWrapperTmpl)`
-  padding-top: 3rem;
-  padding-bottom: 3rem;
-
   .ant-typography {
     margin-bottom: 0;
   }
 `;
 
-const BottomBarWrapper = styled.div`
+const BottomBarWrapper = styled.div<any>`
   width: 100%;
   display: flex;
   justify-content: space-between;
