@@ -145,6 +145,10 @@ function Worker() {
     <Wrapper>
       <Particles params={particlesConfig} />
 
+      <HeaderBar>
+        <LogoImage alt={t("webnetesLogo")} src="/logo.svg" />
+      </HeaderBar>
+
       <CompositeGraphAnimate
         transitionName="fadeandzoom"
         transitionAppear
@@ -638,6 +642,49 @@ const TitleSpace = styled(Space)`
   > *:first-child {
     margin-right: 4px !important;
   }
+`;
+
+const HeaderBar = styled.div`
+  position: absolute;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  &::after {
+    position: absolute;
+    content: "";
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    ${glass}
+    pointer-events: none;
+    -webkit-mask-image: -webkit-gradient(
+      linear,
+      left 0%,
+      left 100%,
+      color-stop(100%, rgba(0, 0, 0, 0)),
+      color-stop(80%, rgba(0, 0, 0, 0.7)),
+      color-stop(50%, rgba(0, 0, 0, 1)),
+      color-stop(20%, rgba(0, 0, 0, 0.7)),
+      color-stop(0%, rgba(0, 0, 0, 0))
+    );
+    transform: scaleY(1.5);
+  }
+
+  * {
+    position: relative;
+    z-index: 110;
+  }
+`;
+
+const LogoImage = styled.img`
+  width: calc(256px - 2rem);
+  padding: 1rem;
 `;
 
 export default Worker;
