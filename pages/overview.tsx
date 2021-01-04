@@ -50,7 +50,9 @@ import earthElevation from "three-globe/example/img/earth-topology.png";
 import universeTexture from "three-globe/example/img/night-sky.png";
 import { useWindowSize } from "use-window-size-hook";
 import NodeChart from "../components/node-chart";
+import { InspectorPanel, StatsPanel } from "../components/panels";
 import { ResourceItem } from "../components/resources";
+import { OverviewTray } from "../components/trays";
 import computeStats from "../data/compute-stats.json";
 import connections from "../data/connections.json";
 import networkingStats from "../data/networking-stats.json";
@@ -253,7 +255,7 @@ function OverviewPage() {
 
       <Animate transitionName="fadeandslide" transitionAppear>
         {statsOpen && (
-          <Stats
+          <StatsPanel
             size="small"
             title={
               <Space>
@@ -364,13 +366,13 @@ function OverviewPage() {
                 />
               </Collapse.Panel>
             </Collapse>
-          </Stats>
+          </StatsPanel>
         )}
       </Animate>
 
       <Animate transitionName="fadeandslide" transitionAppear>
         {selectedNode && inspectorOpen && (
-          <Inspector
+          <InspectorPanel
             size="small"
             title={
               <Space>
@@ -583,12 +585,12 @@ function OverviewPage() {
                 })()}
               </List>
             </ResourceList>
-          </Inspector>
+          </InspectorPanel>
         )}
       </Animate>
 
       <Animate transitionName="fadeandzoom" transitionAppear>
-        <GlobeActions>
+        <OverviewTray>
           <Button
             type="text"
             onClick={getUserCoordinates}
@@ -611,7 +613,7 @@ function OverviewPage() {
               icon={<FontAwesomeIcon icon={faMobile} />}
             />
           )}
-        </GlobeActions>
+        </OverviewTray>
       </Animate>
     </>
   );
@@ -621,72 +623,6 @@ const GlobeWrapper = styled.div<{ $hoverable: boolean }>`
   ${(props) => (props.$hoverable ? "cursor: pointer;" : "")}
 `;
 
-const Inspector = styled(Card)`
-  position: absolute;
-  height: calc(100% - 64px - 64px); // Top & bottom menus
-  overflow-y: auto;
-  min-width: 20rem;
-  top: 64px;
-  border: 0;
-  left: 0;
-  right: 0;
-  margin: 0;
-  ${glass}
-
-  .ant-card-head {
-    border-bottom: 0;
-  }
-
-  .ant-card-body {
-    padding: 0;
-  }
-
-  @media screen and (min-width: 812px) {
-    height: calc(100% - 64px - 2rem); // Navbar & self-margins
-    border: 1px solid #303030;
-    left: auto;
-    right: 50px;
-    margin: 1rem;
-    margin-right: 0;
-  }
-`;
-
-const Stats = styled(Card)`
-  position: absolute;
-  // The last part is the bottom toolbar
-  max-height: calc(100% - 64px - 64px); // Top & bottom menus
-  min-width: calc(5rem * 3); // NavigationButton * 3
-  overflow-y: auto;
-  bottom: 64px;
-  border-bottom: 0;
-  border-left: 0;
-  border-right: 0;
-  left: 0;
-  right: 0;
-  margin: 0;
-
-  .ant-card-head {
-    border-bottom: 0;
-  }
-
-  .ant-card-body {
-    padding: 0;
-  }
-
-  ${glass}
-
-  @media screen and (min-width: 812px) {
-    top: 64px;
-    left: 50px;
-    right: auto;
-    bottom: auto;
-    border: 1px solid #303030;
-    max-height: calc(100% - 64px - 2rem - 32px - 1rem);
-    margin: 1rem;
-    margin-left: 0;
-  }
-`;
-
 const GlobeTmpl = dynamic(() => import("../components/globe"), {
   ssr: false,
 });
@@ -694,26 +630,6 @@ const Globe = forwardRef((props: any, ref) => (
   <GlobeTmpl {...props} forwardRef={ref} />
 ));
 const MemoGlobe = memo(Globe);
-
-const GlobeActions = styled.div`
-  position: absolute !important;
-  bottom: 64px;
-  border: 1px solid #303030;
-  margin: 1rem;
-  right: 0;
-  ${glass}
-
-  @media screen and (min-width: 812px) {
-    bottom: 0;
-    left: 50px;
-    right: auto;
-    margin-left: 0;
-  }
-
-  > *:first-child:not(:last-child) {
-    border-right: 1px solid #303030;
-  }
-`;
 
 const StatsWrapper = styled.div<{ $long?: boolean }>`
   display: grid;

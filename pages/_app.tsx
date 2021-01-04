@@ -46,6 +46,7 @@ import Navbar, {
 } from "../components/navbar";
 import SearchModal from "../components/search-modal";
 import TerminalModal from "../components/terminal-modal";
+import { AppTray } from "../components/trays";
 import composite from "../data/composite.json";
 import nodes from "../data/nodes.json";
 import resources from "../data/resources.json";
@@ -373,7 +374,7 @@ function MyApp({ Component, pageProps }: AppProps) {
               !createFileDialogMaximized ||
               !graphOpen ||
               !terminalsOpen) && (
-              <SideTray>
+              <AppTray>
                 {!createResourceDialogMaximized && (
                   <Button
                     type="text"
@@ -405,7 +406,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                     icon={<FontAwesomeIcon icon={faTerminal} />}
                   />
                 )}
-              </SideTray>
+              </AppTray>
             )}
 
             <MobileHeader>
@@ -583,25 +584,5 @@ function MyApp({ Component, pageProps }: AppProps) {
     </>
   );
 }
-
-const SideTray = styled.div`
-  z-index: 999;
-  position: absolute !important;
-  bottom: 64px;
-  border: 1px solid #303030;
-  margin: 1rem;
-  left: 0;
-  right: auto;
-  display: flex;
-  align-items: center;
-  ${glass}
-
-  @media screen and (min-width: 812px) {
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    margin-right: 0;
-  }
-`;
 
 export default MyApp;

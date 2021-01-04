@@ -17,7 +17,7 @@ import {
   faMobile,
   faRecordVinyl,
   faThumbsUp,
-  faTimes,
+  faTimes
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Card as CardTmpl, notification, Space, Tooltip } from "antd";
@@ -34,11 +34,12 @@ import ParticlesTmpl from "react-particles-js";
 import styled from "styled-components";
 import SpriteText from "three-spritetext";
 import { useWindowSize } from "use-window-size-hook";
+import { JoinFooterBar, JoinHeaderBar } from "../components/bars";
 import EditNodeConfigModal from "../components/edit-node-config-modal";
 import {
   AfterWrapper,
   BlurWrapper as BlurWrapperTmpl,
-  ContentWrapper as ContentWrapperTmpl,
+  ContentWrapper as ContentWrapperTmpl
 } from "../components/layout-wrapper";
 import { LocationButton } from "../components/resources";
 import composite from "../data/composite.json";
@@ -278,7 +279,7 @@ function JoinPage() {
         )}
       </IntroTitleWrapper>
 
-      <HeaderBar>
+      <JoinHeaderBar>
         <LogoImage alt={t("webnetesLogo")} src="/logo.svg" />
 
         <Tooltip title={t("advancedNodeConfig")} placement="left">
@@ -290,7 +291,7 @@ function JoinPage() {
             <FontAwesomeIcon icon={faCogs} />
           </Button>
         </Tooltip>
-      </HeaderBar>
+      </JoinHeaderBar>
 
       <CompositeGraphAnimate
         transitionName="fadeandzoom"
@@ -326,7 +327,7 @@ function JoinPage() {
       <BlurWrapper>
         <Animate transitionName="fadeandzoom" transitionAppear>
           <ContentWrapper>
-            <BottomBarWrapper
+            <JoinFooterBar
               ref={bottomBarRef}
               $padding={(() => {
                 const leftHeight =
@@ -615,7 +616,7 @@ function JoinPage() {
                   </RightGaugeButton>
                 )}
               </RightGaugeToggle>
-            </BottomBarWrapper>
+            </JoinFooterBar>
           </ContentWrapper>
         </Animate>
       </BlurWrapper>
@@ -731,25 +732,6 @@ const ContentWrapper = styled(ContentWrapperTmpl)`
   }
 `;
 
-const BottomBarWrapper = styled.div<{
-  $padding: number | undefined;
-  ref: any;
-}>`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: row;
-  padding-bottom: 2rem;
-  padding-top: 2rem;
-  transition: all 0.5s ease-out;
-
-  ${(props) =>
-    props.$padding
-      ? `padding-bottom: ${props.$padding}px; padding-top: ${props.$padding}px;`
-      : ""}
-`;
-
 const BlurWrapper = styled(BlurWrapperTmpl)`
   margin-top: auto;
 `;
@@ -789,54 +771,6 @@ const TitleSpace = styled(Space)`
 
   > *:first-child {
     margin-right: 4px !important;
-  }
-`;
-
-const HeaderBar = styled(Space)`
-  position: absolute;
-  z-index: 100;
-  left: 0;
-  top: 0;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-
-  &::after {
-    position: absolute;
-    content: "";
-    height: 100%;
-    width: 100%;
-    top: 0;
-    left: 0;
-    ${glass}
-    pointer-events: none;
-    -webkit-mask-image: -webkit-gradient(
-      linear,
-      left 0%,
-      left 100%,
-      color-stop(100%, rgba(0, 0, 0, 0)),
-      color-stop(80%, rgba(0, 0, 0, 0.7)),
-      color-stop(50%, rgba(0, 0, 0, 1)),
-      color-stop(20%, rgba(0, 0, 0, 0.7)),
-      color-stop(0%, rgba(0, 0, 0, 0))
-    );
-    transform: scaleY(1.5);
-  }
-
-  * {
-    position: relative;
-    z-index: 110;
-  }
-
-  > *:first-child {
-    margin-left: 1rem;
-  }
-
-  > *:last-child {
-    margin-right: 24px; /* Matches the card's internal margins */
   }
 `;
 
