@@ -14,21 +14,21 @@ import { Modal as ModalTmpl } from "./create-resource-modal";
 export interface ITerminalModalProps {
   open: boolean;
   onDone: () => void;
-  onWrite: (label: string, key: string) => void;
+  onStdin: (label: string, key: string) => void;
+  onTerminalCreated: (label: string, xterm: XTerm) => void;
 }
 
 const TerminalModal: React.FC<ITerminalModalProps> = ({
   open,
   onDone,
-  onWrite,
+  onStdin,
+  onTerminalCreated,
   ...otherProps
 }) => {
   const { t } = useTranslation();
 
   const ref = useCallback((xterm: XTerm) => {
-    if (xterm) {
-      setInterval(() => xterm.terminal.writeln("Hello, world!"), 1000);
-    }
+    xterm && onTerminalCreated("echo_server", xterm);
   }, []);
 
   return (
@@ -59,7 +59,17 @@ const TerminalModal: React.FC<ITerminalModalProps> = ({
       <Collapse ghost defaultActiveKey={["1"]}>
         <Collapse.Panel header="echo_server" key="1">
           <Terminal
-            onKey={(key) => onWrite("echo_server", key.key)}
+            onData={(key) => {
+              if (key.charCodeAt(0) === 13) {
+                // Return
+                onStdin("echo_server", "\n");
+              } else if (key.charCodeAt(0) === 127) {
+                // Backspace
+                onStdin("echo_server", "\b \b");
+              } else {
+                onStdin("echo_server", key);
+              }
+            }}
             ref={(ref as unknown) as React.RefObject<XTerm>}
           />
         </Collapse.Panel>

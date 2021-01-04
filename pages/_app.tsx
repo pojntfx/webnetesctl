@@ -326,7 +326,13 @@ function MyApp({ Component, pageProps }: AppProps) {
             <TerminalModal
               open={terminalsOpen}
               onDone={() => setTerminalsOpen(false)}
-              onWrite={(label, key) => console.log(label, key)}
+              onTerminalCreated={(label, xterm) =>
+                setInterval(
+                  () => xterm.terminal.writeln(`${label} Hello, world!`),
+                  1000
+                )
+              }
+              onStdin={(label, key) => console.log(label, key)}
             />
 
             <SearchModal
