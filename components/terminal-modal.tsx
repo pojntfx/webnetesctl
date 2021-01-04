@@ -13,14 +13,14 @@ import { Modal as ModalTmpl } from "./create-resource-modal";
 
 export interface ITerminalModalProps {
   open: boolean;
-  terminalName: string;
   onDone: () => void;
+  onWrite: (label: string, key: string) => void;
 }
 
 const TerminalModal: React.FC<ITerminalModalProps> = ({
   open,
-  terminalName,
   onDone,
+  onWrite,
   ...otherProps
 }) => {
   const { t } = useTranslation();
@@ -58,7 +58,10 @@ const TerminalModal: React.FC<ITerminalModalProps> = ({
     >
       <Collapse ghost defaultActiveKey={["1"]}>
         <Collapse.Panel header="echo_server" key="1">
-          <Terminal ref={(ref as unknown) as React.RefObject<XTerm>} />
+          <Terminal
+            onKey={(key) => onWrite("echo_server", key.key)}
+            ref={(ref as unknown) as React.RefObject<XTerm>}
+          />
         </Collapse.Panel>
       </Collapse>
     </Modal>

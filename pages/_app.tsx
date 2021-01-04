@@ -326,7 +326,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             <TerminalModal
               open={terminalsOpen}
               onDone={() => setTerminalsOpen(false)}
-              terminalName="1"
+              onWrite={(label, key) => console.log(label, key)}
             />
 
             <SearchModal
