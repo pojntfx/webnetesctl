@@ -45,10 +45,12 @@ import Navbar, {
 } from "../components/navbar";
 import composite from "../data/composite.json";
 import nodes from "../data/nodes.json";
+import resources from "../data/resources.json";
 import en from "../i18n/en";
 import frostedGlass from "../styles/frosted-glass";
 import glass from "../styles/glass";
 import "../styles/index.less";
+import { parseResourceKey, stringifyResourceKey } from "../utils/resource-key";
 
 i18n.use(initReactI18next).init({
   resources: {
@@ -231,16 +233,51 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, []);
 
   useEffect(() => {
-    const node = nodes.find(
-      (candidate) => candidate.privateIP === router.query.privateIP
-    );
+    if (router.query.privateIP) {
+      const node = nodes.find(
+        (candidate) => candidate.privateIP === router.query.privateIP
+      );
 
-    if (node) {
-      setSearchQuery(`${node.privateIP} (${node.location}, ${node.publicIP})`);
-    } else {
-      setSearchQuery(undefined);
+      if (node) {
+        setSearchQuery(
+          `${t("node")} ${node.privateIP} (${node.location}, ${node.publicIP})`
+        );
+      } else {
+        setSearchQuery(undefined);
+      }
     }
   }, [router.query.privateIP]);
+
+  useEffect(() => {
+    if (router.query.resource) {
+      const { kind, label, node } = parseResourceKey(
+        router.query.resource as string
+      );
+
+      const resource = resources.find(
+        (candidate) =>
+          candidate.kind === kind &&
+          candidate.label === label &&
+          candidate.node === node
+      );
+
+      if (resource) {
+        setSearchQuery(
+          `${t("resource")} ${resource.kind}/${resource.name} on ${
+            resource.node
+          }`
+        );
+      } else {
+        setSearchQuery(undefined);
+      }
+    }
+  }, [router.query.resource]);
+
+  useEffect(() => {
+    if (!router.query.privateIP && !router.query.resource) {
+      setSearchQuery(undefined);
+    }
+  }, [router.query.privateIP, router.query.resource]);
 
   return (
     <>
@@ -371,14 +408,27 @@ function MyApp({ Component, pageProps }: AppProps) {
                   if (e) {
                     setSearchQuery(e.toString());
 
-                    e.toString().startsWith("node=") &&
+                    if (e.toString().startsWith("node=")) {
+                      router.pathname === "/config"
+                        ? router.push(
+                            `/explorer?privateIP=${
+                              e.toString().split("node=")[1]
+                            }`
+                          )
+                        : router.push(
+                            `?privateIP=${e.toString().split("node=")[1]}`
+                          );
+                    } else {
                       router.push(
-                        `/explorer?privateIP=${e.toString().split("node=")[1]}`
+                        `/explorer?resource=${
+                          e.toString().split("resource=")[1]
+                        }`
                       );
+                    }
                   } else {
                     setSearchQuery(undefined);
 
-                    router.push("");
+                    router.push(router.pathname);
                   }
                 }}
                 value={searchQuery}
@@ -389,7 +439,25 @@ function MyApp({ Component, pageProps }: AppProps) {
                     value={`node=${node.privateIP}`}
                     key={`node=${node.privateIP}`}
                   >
-                    {node.privateIP} ({node.location}, {node.publicIP})
+                    {t("node")} {node.privateIP} ({node.location},{" "}
+                    {node.publicIP})
+                  </SearchInput.Option>
+                ))}
+                {resources.map((resource) => (
+                  <SearchInput.Option
+                    value={`resource=${stringifyResourceKey(
+                      resource.label,
+                      resource.kind,
+                      resource.node
+                    )}`}
+                    key={`resource=${stringifyResourceKey(
+                      resource.label,
+                      resource.kind,
+                      resource.node
+                    )}`}
+                  >
+                    {t("resource")} {resource.kind}/{resource.name} on{" "}
+                    {resource.node}
                   </SearchInput.Option>
                 ))}
               </SearchInput>
