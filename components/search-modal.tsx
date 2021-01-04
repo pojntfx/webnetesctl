@@ -43,7 +43,7 @@ const SearchModal: React.FC<ISearchModalProps> = ({
       onOk={() => {
         onDone();
       }}
-      onCancel={() => onDone}
+      onCancel={() => onDone()}
       okText={t("done")}
       closable={false}
       {...otherProps}

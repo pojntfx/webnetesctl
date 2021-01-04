@@ -10,6 +10,7 @@ import {
   faPlus,
   faProjectDiagram,
   faSearch,
+  faTerminal,
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -44,6 +45,7 @@ import Navbar, {
   TabsMobile,
 } from "../components/navbar";
 import SearchModal from "../components/search-modal";
+import TerminalModal from "../components/terminal-modal";
 import composite from "../data/composite.json";
 import nodes from "../data/nodes.json";
 import resources from "../data/resources.json";
@@ -114,6 +116,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
   const [graphOpen, setGraphOpen] = useState(false);
   const [searchModalOpen, setSearchModalOpen] = useState(false);
+  const [terminalOpen, setTerminalOpen] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState<string>();
 
@@ -320,6 +323,12 @@ function MyApp({ Component, pageProps }: AppProps) {
               graphData={composite}
             />
 
+            <TerminalModal
+              open={terminalOpen}
+              onDone={() => setTerminalOpen(false)}
+              terminalName="1"
+            />
+
             <SearchModal
               open={searchModalOpen}
               handleChange={(query) => {
@@ -353,7 +362,8 @@ function MyApp({ Component, pageProps }: AppProps) {
 
             {(!createResourceDialogMaximized ||
               !createFileDialogMaximized ||
-              !graphOpen) && (
+              !graphOpen ||
+              !terminalOpen) && (
               <SideTray>
                 {!createResourceDialogMaximized && (
                   <Button
@@ -378,6 +388,17 @@ function MyApp({ Component, pageProps }: AppProps) {
                     icon={<FontAwesomeIcon icon={faProjectDiagram} />}
                   />
                 )}
+
+                <TerminalWrapper>
+                  {!terminalOpen && (
+                    <Button type="text" onClick={() => setTerminalOpen(true)}>
+                      <Space>
+                        <FontAwesomeIcon icon={faTerminal} />
+                        <span>1</span>
+                      </Space>
+                    </Button>
+                  )}
+                </TerminalWrapper>
               </SideTray>
             )}
 
@@ -565,6 +586,8 @@ const SideTray = styled.div`
   margin: 1rem;
   left: 0;
   right: auto;
+  display: flex;
+  align-items: center;
   ${glass}
 
   @media screen and (min-width: 812px) {
@@ -572,6 +595,12 @@ const SideTray = styled.div`
     left: 50%;
     transform: translateX(-50%);
     margin-right: 0;
+  }
+`;
+
+const TerminalWrapper = styled.div`
+  > *:first-child {
+    border-left: 1px solid #303030;
   }
 `;
 

@@ -52,7 +52,7 @@ const InviteModal: React.FC<IInviteModalProps> = ({
       onOk={() => {
         onDone();
       }}
-      onCancel={() => onDone}
+      onCancel={() => onDone()}
       okText={t("done")}
       closable={false}
       {...otherProps}

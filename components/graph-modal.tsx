@@ -55,7 +55,7 @@ const GraphModal: React.FC<IGraphModalProps> = ({
       onOk={() => {
         onDone();
       }}
-      onCancel={() => onDone}
+      onCancel={() => onDone()}
       okText={t("done")}
       closable={false}
       {...otherProps}
