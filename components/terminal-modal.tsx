@@ -3,7 +3,7 @@ import {
   faWindowMinimize,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Space } from "antd";
+import { Button, Collapse, Space } from "antd";
 import dynamic from "next/dynamic";
 import { forwardRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
@@ -37,9 +37,7 @@ const TerminalModal: React.FC<ITerminalModalProps> = ({
         <>
           <Space>
             <FontAwesomeIcon fixedWidth icon={faTerminal} />
-            <span>
-              {t("terminal")} {terminalName}
-            </span>
+            <span>{t("terminal", { count: 2 })}</span>
           </Space>
 
           <Button type="text" shape="circle" onClick={() => onDone()}>
@@ -58,7 +56,11 @@ const TerminalModal: React.FC<ITerminalModalProps> = ({
       closable={false}
       {...otherProps}
     >
-      <Terminal ref={(ref as unknown) as React.RefObject<XTerm>} />
+      <Collapse ghost defaultActiveKey={["1"]}>
+        <Collapse.Panel header="echo_server" key="1">
+          <Terminal ref={(ref as unknown) as React.RefObject<XTerm>} />
+        </Collapse.Panel>
+      </Collapse>
     </Modal>
   );
 };
@@ -67,6 +69,11 @@ const Modal = styled(ModalTmpl)`
   /* We don't need the cancel button */
   .ant-modal-footer > *:first-child {
     display: none;
+  }
+
+  .ant-modal-body {
+    padding-left: 0;
+    padding-right: 0;
   }
 
   .xterm-viewport {
