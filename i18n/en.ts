@@ -87,4 +87,6 @@ export default {
   useThis: "Use This",
   welcome: "Welcome!",
   youveJoinedTheCluster: "You've joined the cluster",
+  thanksForSharingYourResources:
+    "Thanks for keeping this tab open. You're helping someone",
 };

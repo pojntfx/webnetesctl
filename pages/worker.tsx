@@ -11,6 +11,7 @@ import {
   faLocationArrow,
   faMapMarkerAlt,
   faMobile,
+  faThumbsUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Card as CardTmpl, Space, Tooltip } from "antd";
@@ -110,6 +111,23 @@ function Worker() {
   const [rightGaugeMaximized, setRightGaugeMaximized] = useState(false);
   const [leftGaugeMaximized, setLeftGaugeMaximized] = useState(false);
   const [editNodeConfigModalOpen, setEditNodeConfigModalOpen] = useState(false);
+  const [openTitle, setOpenTitle] = useState(-1);
+
+  useEffect(() => {
+    (async () => {
+      await new Promise<void>((res) => setTimeout(() => res(), 1000));
+
+      for (let i = -1; i < 4; i++) {
+        setOpenTitle((curr) => curr + 1);
+
+        await new Promise<void>((res) => setTimeout(() => res(), 5000));
+
+        setOpenTitle((curr) => curr + 1);
+
+        await new Promise<void>((res) => setTimeout(() => res(), 500));
+      }
+    })();
+  }, []);
 
   useEffect(() => {
     const rawNodeConfig = router.query.nodeConfig;
@@ -168,12 +186,23 @@ function Worker() {
         skipConfirmation
       />
 
-      <IntroTitle level={2}>
-        <FocusedTitle>
-          <FontAwesomeIcon icon={faHandPeace} fixedWidth /> {t("welcome")}
-        </FocusedTitle>{" "}
-        {t("youveJoinedTheCluster")}.
-      </IntroTitle>
+      <IntroTitleWrapper transitionName="fadeandzoom" transitionAppear>
+        {openTitle === 0 && (
+          <IntroTitle level={2} key="0">
+            <FocusedTitle>
+              <FontAwesomeIcon icon={faHandPeace} fixedWidth /> {t("welcome")}
+            </FocusedTitle>{" "}
+            {t("youveJoinedTheCluster")}.
+          </IntroTitle>
+        )}
+
+        {openTitle === 2 && (
+          <IntroTitle level={2} key="1">
+            <FontAwesomeIcon icon={faThumbsUp} fixedWidth />{" "}
+            {t("thanksForSharingYourResources")}!
+          </IntroTitle>
+        )}
+      </IntroTitleWrapper>
 
       <HeaderBar>
         <LogoImage alt={t("webnetesLogo")} src="/logo.svg" />
@@ -524,11 +553,14 @@ const FocusedTitle = styled.strong`
   font-weight: 700;
 `;
 
-const IntroTitle = styled(Title)`
+const IntroTitleWrapper = styled(Animate)`
   width: auto;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+`;
+
+const IntroTitle = styled(Title)`
   text-align: center;
 `;
 
