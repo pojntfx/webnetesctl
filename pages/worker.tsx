@@ -243,7 +243,7 @@ function Worker() {
 
       <IntroTitleWrapper transitionName="fadeandzoom" transitionAppear>
         {openTitle === 0 && (
-          <IntroTitle level={2} key="0">
+          <IntroTitle level={3} key="0">
             <FocusedTitle>
               <FontAwesomeIcon icon={faHandPeace} fixedWidth /> {t("welcome")}
             </FocusedTitle>{" "}
@@ -252,7 +252,7 @@ function Worker() {
         )}
 
         {openTitle === 2 && (
-          <IntroTitle level={2} key="2">
+          <IntroTitle level={3} key="2">
             <FocusedTitle>
               <FontAwesomeIcon icon={faThumbsUp} fixedWidth />{" "}
               {t("thanksForKeepingThisTabOpen")}
@@ -262,14 +262,14 @@ function Worker() {
         )}
 
         {openTitle === 4 && (
-          <IntroTitle level={2} key="4">
+          <IntroTitle level={3} key="4">
             <FontAwesomeIcon icon={faCubes} fixedWidth />{" "}
             {t("theGraphsBelowShowWhatYoureHosting")}
           </IntroTitle>
         )}
 
         {openTitle === 6 && (
-          <IntroTitle level={2} key="6">
+          <IntroTitle level={3} key="6">
             <FontAwesomeIcon icon={faCampground} fixedWidth />{" "}
             {t("enjoyYourStay")}
           </IntroTitle>
@@ -374,7 +374,7 @@ function Worker() {
                               ? leftGaugeMaximized
                                 ? width
                                 : width > 821
-                                ? 256
+                                ? 300
                                 : width
                               : 0
                           }
@@ -531,7 +531,7 @@ function Worker() {
                               ? rightGaugeMaximized
                                 ? width
                                 : width > 821
-                                ? 256
+                                ? 300
                                 : width
                               : 0
                           }
@@ -849,7 +849,7 @@ const HeaderBar = styled(Space)`
 `;
 
 const LogoImage = styled.img`
-  width: calc(256px - 2rem);
+  width: calc(200px - 2rem);
 `;
 
 export default Worker;
