@@ -44,6 +44,7 @@ import Navbar, {
   TabsMobile,
 } from "../components/navbar";
 import composite from "../data/composite.json";
+import nodes from "../data/nodes.json";
 import en from "../i18n/en";
 import frostedGlass from "../styles/frosted-glass";
 import glass from "../styles/glass";
@@ -109,6 +110,8 @@ function MyApp({ Component, pageProps }: AppProps) {
   const [createFileDialogOpen, setCreateFileDialogOpen] = useState(false);
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
   const [graphOpen, setGraphOpen] = useState(false);
+
+  const [searchQuery, setSearchQuery] = useState<string>();
 
   const [
     createResourceDialogMaximized,
@@ -226,6 +229,18 @@ function MyApp({ Component, pageProps }: AppProps) {
       wb.register();
     }
   }, []);
+
+  useEffect(() => {
+    const node = nodes.find(
+      (candidate) => candidate.privateIP === router.query.privateIP
+    );
+
+    if (node) {
+      setSearchQuery(`${node.privateIP} (${node.location}, ${node.publicIP})`);
+    } else {
+      setSearchQuery(undefined);
+    }
+  }, [router.query.privateIP]);
 
   return (
     <>
@@ -346,7 +361,38 @@ function MyApp({ Component, pageProps }: AppProps) {
             <DesktopHeader>
               <Navbar path={router.pathname} />
 
-              <SearchInput placeholder={t("findNodeOrResource")} />
+              <SearchInput
+                showSearch
+                suffixIcon={<FontAwesomeIcon icon={faSearch} />}
+                placeholder={t("findNodeOrResource")}
+                optionFilterProp="children"
+                notFoundContent={t("noMatchingNodesOrResourcesFound")}
+                onChange={(e) => {
+                  if (e) {
+                    setSearchQuery(e.toString());
+
+                    e.toString().startsWith("node=") &&
+                      router.push(
+                        `/explorer?privateIP=${e.toString().split("node=")[1]}`
+                      );
+                  } else {
+                    setSearchQuery(undefined);
+
+                    router.push("");
+                  }
+                }}
+                value={searchQuery}
+                allowClear
+              >
+                {nodes.map((node) => (
+                  <SearchInput.Option
+                    value={`node=${node.privateIP}`}
+                    key={`node=${node.privateIP}`}
+                  >
+                    {node.privateIP} ({node.location}, {node.publicIP})
+                  </SearchInput.Option>
+                ))}
+              </SearchInput>
 
               <Space>
                 <Popover

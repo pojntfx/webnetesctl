@@ -29,6 +29,7 @@ export default {
   noMatchingResourcesFound: "No matching resources found",
   noMatchingNodesFound: "No matching nodes found",
   noMatchingReposFound: "No matching repos found",
+  noMatchingNodesOrResourcesFound: "No matching nodes or resources found",
   privateIp: "Private IP",
   location: "Location",
   publicIp: "Public IP",

@@ -4,12 +4,12 @@ import {
   faGlobe,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Input } from "antd";
+import { Button, Select } from "antd";
+import { Header as HeaderTmpl } from "antd/lib/layout/layout";
+import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import Link from "next/link";
 import glass from "../styles/glass";
-import { Header as HeaderTmpl } from "antd/lib/layout/layout";
 
 export interface INavbarProps {
   path: string;
@@ -105,7 +105,8 @@ export const TabsMobile = styled(HeaderTmpl)`
   }
 `;
 
-export const SearchInput = styled(Input.Search)`
+export const SearchInput = styled(Select)`
+  width: 100%;
   max-width: 22.5rem;
   margin-left: 8px;
   margin-right: 8px;
