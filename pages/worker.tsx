@@ -6,6 +6,7 @@ import {
   faCogs,
   faCompress,
   faCube,
+  faCubes,
   faExpand,
   faHandPeace,
   faLocationArrow,
@@ -117,7 +118,7 @@ function Worker() {
     (async () => {
       await new Promise<void>((res) => setTimeout(() => res(), 1000));
 
-      for (let i = -1; i < 4; i++) {
+      for (let i = -1; i < 6; i++) {
         setOpenTitle((curr) => curr + 1);
 
         await new Promise<void>((res) => setTimeout(() => res(), 5000));
@@ -192,14 +193,24 @@ function Worker() {
             <FocusedTitle>
               <FontAwesomeIcon icon={faHandPeace} fixedWidth /> {t("welcome")}
             </FocusedTitle>{" "}
-            {t("youveJoinedTheCluster")}.
+            {t("youveJoinedTheCluster")}
           </IntroTitle>
         )}
 
         {openTitle === 2 && (
-          <IntroTitle level={2} key="1">
-            <FontAwesomeIcon icon={faThumbsUp} fixedWidth />{" "}
-            {t("thanksForSharingYourResources")}!
+          <IntroTitle level={2} key="2">
+            <FocusedTitle>
+              <FontAwesomeIcon icon={faThumbsUp} fixedWidth />{" "}
+              {t("thanksForKeepingThisTabOpen")}
+            </FocusedTitle>{" "}
+            {t("youreHelpingSomeone")}
+          </IntroTitle>
+        )}
+
+        {openTitle === 4 && (
+          <IntroTitle level={2} key="4">
+            <FontAwesomeIcon icon={faCubes} fixedWidth />{" "}
+            {t("theGraphsBelowShowWhatYoureHosting")}
           </IntroTitle>
         )}
       </IntroTitleWrapper>
@@ -550,7 +561,7 @@ function Worker() {
 }
 
 const FocusedTitle = styled.strong`
-  font-weight: 700;
+  font-weight: 700 !important;
 `;
 
 const IntroTitleWrapper = styled(Animate)`

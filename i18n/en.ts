@@ -86,7 +86,9 @@ export default {
   advancedNodeConfig: "Advanced Node Config",
   useThis: "Use This",
   welcome: "Welcome!",
-  youveJoinedTheCluster: "You've joined the cluster",
-  thanksForSharingYourResources:
-    "Thanks for keeping this tab open. You're helping someone",
+  youveJoinedTheCluster: "You've joined the cluster.",
+  thanksForKeepingThisTabOpen: "Thanks for keeping this tab open.",
+  youreHelpingSomeone: "You're helping someone!",
+  theGraphsBelowShowWhatYoureHosting:
+    "The graphs below show what you're hosting.",
 };
