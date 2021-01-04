@@ -97,4 +97,5 @@ export default {
   sure: "Sure!",
   iLovePhonk: "I ❤️ Phonk",
   nope: "Nope",
+  enjoyYourStay: "Enjoy your stay!",
 };

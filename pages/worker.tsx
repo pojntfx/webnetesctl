@@ -2,6 +2,7 @@ import {
   faAngleDoubleLeft,
   faAngleDoubleRight,
   faBan,
+  faCampground,
   faChevronDown,
   faChevronUp,
   faCity,
@@ -122,8 +123,18 @@ function Worker() {
     (async () => {
       await new Promise<void>((res) => setTimeout(() => res(), 1000));
 
-      for (let i = 1; i <= 4; i++) {
-        if (i === 4) {
+      for (let i = 1; i <= 6; i++) {
+        setOpenTitle((curr) => curr + 1);
+
+        await new Promise<void>((res) => setTimeout(() => res(), 5000));
+
+        setOpenTitle((curr) => curr + 1);
+
+        await new Promise<void>((res) => setTimeout(() => res(), 500));
+
+        if (i === 6) {
+          await new Promise<void>((res) => setTimeout(() => res(), 2000));
+
           const key = "update";
 
           notification.open({
@@ -169,14 +180,6 @@ function Worker() {
             key,
           });
         }
-
-        setOpenTitle((curr) => curr + 1);
-
-        await new Promise<void>((res) => setTimeout(() => res(), 5000));
-
-        setOpenTitle((curr) => curr + 1);
-
-        await new Promise<void>((res) => setTimeout(() => res(), 500));
       }
     })();
   }, []);
@@ -262,6 +265,13 @@ function Worker() {
           <IntroTitle level={2} key="4">
             <FontAwesomeIcon icon={faCubes} fixedWidth />{" "}
             {t("theGraphsBelowShowWhatYoureHosting")}
+          </IntroTitle>
+        )}
+
+        {openTitle === 6 && (
+          <IntroTitle level={2} key="6">
+            <FontAwesomeIcon icon={faCampground} fixedWidth />{" "}
+            {t("enjoyYourStay")}
           </IntroTitle>
         )}
       </IntroTitleWrapper>
