@@ -34,21 +34,20 @@ import TitleTmpl from "antd/lib/typography/Title";
 import yaml from "js-yaml";
 import { useRouter } from "next/router";
 import Animate from "rc-animate";
-import { createRef, useEffect, useState } from "react";
+import React, { createRef, useEffect, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { Wrapper } from "../components/layout-wrapper";
+import { TitleSpace, WideSpace, Wrapper } from "../components/layout-wrapper";
 import ResourceEditorTmpl from "../components/resource-editor";
+import { ResourceItem as ResourceItemTmpl } from "../components/resources";
 import Table from "../components/table";
 import computeStats from "../data/compute-stats.json";
 import networkingStats from "../data/networking-stats.json";
 import nodes from "../data/nodes.json";
 import resources from "../data/resources.json";
-import glass from "../styles/glass";
 import { filterKeys } from "../utils/filter-keys";
 import { parseResourceKey, stringifyResourceKey } from "../utils/resource-key";
-import { ResourceItem as ResourceItemTmpl } from "./index";
 
 function Explorer() {
   const { t } = useTranslation();
@@ -660,15 +659,6 @@ function Explorer() {
   );
 }
 
-const WideSpace = styled(Space)`
-  width: 100%;
-
-  .ant-input-group-wrapper,
-  .ant-pagination > * {
-    ${glass}
-  }
-`;
-
 const ResourceList = styled(List)``;
 
 const ResourceItem = styled(ResourceItemTmpl)`
@@ -700,23 +690,6 @@ const Action = styled(Button)`
 
 const Title = styled(TitleTmpl)`
   margin-bottom: 0 !important;
-`;
-
-export const TitleSpace = styled(WideSpace)<any>`
-  justify-content: space-between;
-  margin-bottom: 1rem;
-  cursor: pointer;
-
-  > * {
-    > h1,
-    > h2,
-    > h3,
-    > h4,
-    > h5,
-    > h6 {
-      margin-bottom: 0;
-    }
-  }
 `;
 
 const ResourceEditor = styled(ResourceEditorTmpl)`

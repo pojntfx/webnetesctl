@@ -99,4 +99,8 @@ const ResourceDisplay = styled.div`
   }
 `;
 
+export const ExternalLink = styled.a`
+  color: unset !important;
+`;
+
 export default ResourceEditor;

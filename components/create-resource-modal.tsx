@@ -1,5 +1,4 @@
 import {
-  faWindowMinimize,
   faArrowLeft,
   faChevronDown,
   faChevronRight,
@@ -10,6 +9,7 @@ import {
   faPlus,
   faTimes,
   faTrash,
+  faWindowMinimize,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Modal as ModalTmpl, Select as SelectTmpl, Space } from "antd";
@@ -22,12 +22,8 @@ import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import nodes from "../data/nodes.json";
-import {
-  ExternalExampleLink as ExternalExampleLinkTmpl,
-  ExternalLink,
-} from "../pages/config";
-import { TitleSpace } from "../pages/explorer";
-import ResourceEditorTmpl from "./resource-editor";
+import { TitleSpace } from "./layout-wrapper";
+import ResourceEditorTmpl, { ExternalLink } from "./resource-editor";
 
 export interface ICreateResourceModalProps {
   open: boolean;
@@ -258,7 +254,7 @@ export const Modal = styled(ModalTmpl)`
   }
 `;
 
-export const ExternalExampleLink = styled(ExternalExampleLinkTmpl)`
+const ExternalExampleLink = styled.div`
   padding-bottom: 1rem;
 `;
 

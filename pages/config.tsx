@@ -19,13 +19,14 @@ import { useCallback, useEffect, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { Wrapper } from "../components/layout-wrapper";
-import ResourceEditorTmpl from "../components/resource-editor";
+import { TitleSpace, Wrapper } from "../components/layout-wrapper";
+import ResourceEditorTmpl, {
+  ExternalLink,
+} from "../components/resource-editor";
+import { LocationButton } from "../components/resources";
 import nodeResource, { nodeId } from "../data/node";
 import packageJSON from "../package.json";
 import glass from "../styles/glass";
-import { TitleSpace } from "./explorer";
-import { LocationButton } from "./worker";
 
 function Config() {
   const { t } = useTranslation();
@@ -222,11 +223,7 @@ const Overview = styled.div`
   }
 `;
 
-export const ExternalLink = styled.a`
-  color: unset !important;
-`;
-
-export const ExternalExampleLink = styled.div`
+const ExternalExampleLink = styled.div`
   padding-top: 1rem;
 `;
 

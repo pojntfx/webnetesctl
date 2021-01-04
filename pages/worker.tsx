@@ -35,17 +35,18 @@ import styled from "styled-components";
 import SpriteText from "three-spritetext";
 import { useWindowSize } from "use-window-size-hook";
 import EditNodeConfigModal from "../components/edit-node-config-modal";
+import {
+  AfterWrapper,
+  BlurWrapper as BlurWrapperTmpl,
+  ContentWrapper as ContentWrapperTmpl,
+} from "../components/layout-wrapper";
+import { LocationButton } from "../components/resources";
 import composite from "../data/composite.json";
 import localResources from "../data/local-resources.json";
 import network from "../data/network.json";
 import glass from "../styles/glass";
 import { graphGroupColor } from "../styles/graph-group-color";
 import { urldecodeYAMLAll, urlencodeYAMLAll } from "../utils/urltranscode";
-import {
-  BlurWrapper as BlurWrapperTmpl,
-  ContentWrapper as ContentWrapperTmpl,
-  Wrapper,
-} from "./created";
 
 const particlesConfig: typeof ParticlesTmpl["arguments"] = {
   particles: {
@@ -220,7 +221,7 @@ function Worker() {
   }, []);
 
   return (
-    <Wrapper>
+    <AfterWrapper>
       <Particles params={particlesConfig} />
 
       <EditNodeConfigModal
@@ -618,7 +619,7 @@ function Worker() {
           </ContentWrapper>
         </Animate>
       </BlurWrapper>
-    </Wrapper>
+    </AfterWrapper>
   );
 }
 
@@ -771,16 +772,6 @@ const CompositeGraphWrapper = styled.div`
   width: 100%;
   height: 100%;
   ${glass}
-`;
-
-export const LocationButton = styled(Button)`
-  &:not(.ant-btn-loading) {
-    > *:first-child {
-      /* Visual centering of location arrow */
-      margin-top: 0.35rem;
-      width: 0.9rem !important;
-    }
-  }
 `;
 
 const TransparentLocationButton = styled(LocationButton)`

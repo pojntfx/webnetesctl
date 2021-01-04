@@ -14,9 +14,7 @@ import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import node from "../data/node";
-import { ExternalLink } from "../pages/config";
-import { ExternalExampleLink } from "./create-resource-modal";
-import ResourceEditorTmpl from "./resource-editor";
+import ResourceEditorTmpl, { ExternalLink } from "./resource-editor";
 
 export interface IEditNodeConfigModalProps {
   open: boolean;
@@ -179,6 +177,10 @@ const ResourceEditor = styled(ResourceEditorTmpl)`
   margin-left: -24px;
   margin-right: -24px;
   min-height: 60vh;
+`;
+
+const ExternalExampleLink = styled.div`
+  padding-bottom: 1rem;
 `;
 
 export default EditNodeConfigModal;

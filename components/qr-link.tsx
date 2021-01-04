@@ -8,7 +8,7 @@ import CopyToClipboard from "react-copy-to-clipboard";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import icon from "../img/icon-512x512.png";
-import { ExternalLink } from "../pages/config";
+import { ExternalLink } from "./resource-editor";
 
 export interface IQRCodeProps {
   link: string;

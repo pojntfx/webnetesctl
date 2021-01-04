@@ -50,6 +50,7 @@ import earthElevation from "three-globe/example/img/earth-topology.png";
 import universeTexture from "three-globe/example/img/night-sky.png";
 import { useWindowSize } from "use-window-size-hook";
 import NodeChart from "../components/node-chart";
+import { ResourceItem } from "../components/resources";
 import computeStats from "../data/compute-stats.json";
 import connections from "../data/connections.json";
 import networkingStats from "../data/networking-stats.json";
@@ -732,35 +733,6 @@ const StatsDivider = styled(Divider)`
 const ResourceList = styled(Space)`
   padding: 12px 16px;
   width: 100%;
-`;
-
-export const ResourceItem = styled(List.Item)`
-  transition: background 0.3s;
-  padding-left: 16px;
-  padding-right: 16px;
-  margin-left: -16px;
-  margin-right: -16px;
-  border-bottom: none !important;
-  position: relative;
-
-  & :after {
-    /* Polyfill border with margin */
-    content: "";
-    position: absolute;
-    width: calc(100% - 32px);
-    background: #303030;
-    height: 1px;
-    bottom: 0;
-  }
-
-  :hover {
-    background: #262626;
-    cursor: pointer;
-  }
-
-  .ant-list-item-action {
-    margin-left: 1rem;
-  }
 `;
 
 export default HomePage;
