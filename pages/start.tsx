@@ -112,6 +112,15 @@ function Start() {
                       placeholder={t("clusterId")}
                       value={clusterId}
                       onChange={(e) => setClusterId(e.target.value)}
+                      onKeyDown={(e) =>
+                        e.key === "Enter" &&
+                        clusterId &&
+                        router.push(
+                          `/worker?id=${clusterId}&nodeConfig=${urlencodeYAMLAll(
+                            node
+                          )}`
+                        )
+                      }
                     />
 
                     <Dropdown.Button
