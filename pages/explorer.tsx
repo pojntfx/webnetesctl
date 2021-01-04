@@ -30,18 +30,18 @@ import {
   Tooltip,
 } from "antd";
 import Text from "antd/lib/typography/Text";
-import TitleTmpl from "antd/lib/typography/Title";
 import yaml from "js-yaml";
 import { useRouter } from "next/router";
 import Animate from "rc-animate";
-import React, { createRef, useEffect, useState } from "react";
+import React, { createRef, useCallback, useEffect, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { TitleSpace, WideSpace, Wrapper } from "../components/layout-wrapper";
-import ResourceEditorTmpl from "../components/resource-editor";
 import { ResourceItem as ResourceItemTmpl } from "../components/lists";
+import ResourceEditorTmpl from "../components/resource-editor";
 import Table from "../components/table";
+import { BareTitle } from "../components/typography";
 import computeStats from "../data/compute-stats.json";
 import networkingStats from "../data/networking-stats.json";
 import nodes from "../data/nodes.json";
@@ -49,23 +49,31 @@ import resources from "../data/resources.json";
 import { filterKeys } from "../utils/filter-keys";
 import { parseResourceKey, stringifyResourceKey } from "../utils/resource-key";
 
+/**
+ * ExplorerPage is a way for the user to quickly find & manage a node or resource.
+ * If a visual aid is of use, it links to the overview page.
+ */
 function ExplorerPage() {
+  // Hooks
   const { t } = useTranslation();
   const router = useRouter();
+  const ref = createRef<HTMLElement>();
 
+  // State
   const [nodesFilter, setNodesFilter] = useState("");
   const [resourcesFilter, setResourcesFilter] = useState("");
 
-  const [selectedNodeRow, _setSelectedNodeRow] = useState<string>();
-  const [selectedResourceRow, _setSelectedResourceRow] = useState<string[]>();
+  const [selectedNode, _setSelectedNode] = useState<string>();
+  const [selectedResource, _setSelectedResource] = useState<string[]>();
 
-  const [nodesOpen, setNodesOpen] = useState(true);
-  const [resourcesOpen, setResourcesOpen] = useState(true);
+  const [nodesTableOpen, setNodesTableOpen] = useState(true);
+  const [resourcesTableOpen, setResourcesTableOpen] = useState(true);
 
-  const refInView = createRef<HTMLElement>();
-  const [handleRef, setHandleRef] = useState(true);
+  const [refActive, setRefActive] = useState(true);
 
+  // Effects
   useEffect(() => {
+    // Map privateIP query parameter to selected node
     const privateIP = router.query.privateIP;
 
     if (privateIP) {
@@ -74,15 +82,16 @@ function ExplorerPage() {
       );
 
       unstable_batchedUpdates(() => {
-        setNodesOpen(true);
-        _setSelectedNodeRow(foundNode?.privateIP);
+        setNodesTableOpen(true);
+        _setSelectedNode(foundNode?.privateIP);
       });
     } else {
-      _setSelectedNodeRow(undefined);
+      _setSelectedNode(undefined);
     }
   }, [router.query.privateIP]);
 
   useEffect(() => {
+    // Map resource query parameter to selected resource
     const resource = router.query.resource as string;
 
     if (resource) {
@@ -97,67 +106,73 @@ function ExplorerPage() {
 
       if (foundResource) {
         unstable_batchedUpdates(() => {
-          setResourcesOpen(true);
-          _setSelectedResourceRow([
+          setResourcesTableOpen(true);
+          _setSelectedResource([
             foundResource.label,
             foundResource.kind,
             foundResource.node,
           ]);
         });
       } else {
-        _setSelectedResourceRow(undefined);
+        _setSelectedResource(undefined);
       }
     } else {
-      _setSelectedResourceRow(undefined);
+      _setSelectedResource(undefined);
     }
   }, [router.query.resource]);
 
   useEffect(() => {
-    if (handleRef && refInView.current) {
-      refInView.current.scrollIntoView({
+    // Scroll the selected node/resource into view
+    if (refActive && ref.current) {
+      ref.current.scrollIntoView({
         behavior: "smooth",
         block: "center",
         inline: "center",
       });
 
-      setHandleRef(false);
+      setRefActive(false);
     }
-  }, [refInView, handleRef]);
+  }, [ref, refActive]);
 
-  const setSelectedNodeRow = (privateIP?: string) => {
+  // Focused node/resource setters
+  const setSelectedNode = useCallback((privateIP?: string) => {
     if (privateIP) {
-      setHandleRef(true);
+      setRefActive(true);
 
       router.push(`/explorer?privateIP=${privateIP}`);
     } else {
       router.push("/explorer");
     }
-  };
+  }, []);
 
-  const setSelectedResourceRow = (
-    resource:
-      | {
-          label: string;
-          kind: string;
-          node: string;
-        }
-      | undefined
-  ) => {
-    if (resource?.label && resource?.kind && resource?.node) {
-      setHandleRef(true);
+  const setSelectedResource = useCallback(
+    (
+      resource:
+        | {
+            label: string;
+            kind: string;
+            node: string;
+          }
+        | undefined
+    ) => {
+      if (resource?.label && resource?.kind && resource?.node) {
+        setRefActive(true);
 
-      router.push(
-        `/explorer?resource=${stringifyResourceKey(
-          resource?.label,
-          resource?.kind,
-          resource?.node
-        )}`
-      );
-    } else {
-      router.push("/explorer");
-    }
-  };
+        router.push(
+          `/explorer?resource=${stringifyResourceKey(
+            resource?.label,
+            resource?.kind,
+            resource?.node
+          )}`
+        );
+      } else {
+        router.push("/explorer");
+      }
+    },
+    []
+  );
 
+  // Data sources
   const nodesDataSource = nodes.map((node) => {
     const computeScore = computeStats.find(
       (candidate) => candidate.ip === node.privateIP
@@ -183,6 +198,7 @@ function ExplorerPage() {
     key: stringifyResourceKey(resource.label, resource.kind, resource.node),
   }));
 
+  // Columns
   const nodeColumns = [
     {
       title: (
@@ -316,7 +332,7 @@ function ExplorerPage() {
               onClick={(e) => {
                 e.stopPropagation();
 
-                setSelectedNodeRow(node);
+                setSelectedNode(node);
               }}
             >
               <FontAwesomeIcon fixedWidth icon={faAngleDoubleUp} />
@@ -368,27 +384,31 @@ function ExplorerPage() {
     <Wrapper>
       <Animate transitionName="fadeandzoom" transitionAppear>
         <div>
+          {/* Nodes */}
+
+          {/* Nodes title */}
           <TitleSpace
             align="center"
-            onClick={() => setNodesOpen((nodesOpen) => !nodesOpen)}
+            onClick={() => setNodesTableOpen((nodesOpen) => !nodesOpen)}
           >
-            <Title level={2}>
+            <BareTitle level={2}>
               <FontAwesomeIcon icon={faMobile} /> {t("node", { count: 2 })}
-            </Title>
+            </BareTitle>
 
             <Button
               type="text"
               shape="circle"
-              onClick={() => setNodesOpen((nodesOpen) => !nodesOpen)}
+              onClick={() => setNodesTableOpen((nodesOpen) => !nodesOpen)}
             >
               <FontAwesomeIcon
-                icon={nodesOpen ? faChevronDown : faChevronRight}
+                icon={nodesTableOpen ? faChevronDown : faChevronRight}
               />
             </Button>
           </TitleSpace>
 
+          {/* Nodes table */}
           <Animate transitionName="fadeandslide" transitionAppear>
-            {nodesOpen && (
+            {nodesTableOpen && (
               <WideSpace direction="vertical" size="middle">
                 <Input.Search
                   placeholder={t("filterNodes")}
@@ -413,7 +433,7 @@ function ExplorerPage() {
 
                       if (matchingResources.length === 0) {
                         return (
-                          <div ref={refInView as any}>
+                          <div ref={ref as any}>
                             <Empty
                               description={t("noResourcesDeployed")}
                               image={Empty.PRESENTED_IMAGE_SIMPLE}
@@ -422,14 +442,14 @@ function ExplorerPage() {
                         );
                       } else {
                         return (
-                          <div ref={refInView as any}>
+                          <div ref={ref as any}>
                             <ResourceList>
                               {matchingResources.map((resource, index) => (
                                 <ResourceItem
                                   onClick={(e) => {
                                     e.stopPropagation();
 
-                                    setSelectedResourceRow(resource);
+                                    setSelectedResource(resource);
                                   }}
                                   actions={[
                                     resource.kind === "Workload" && (
@@ -446,7 +466,7 @@ function ExplorerPage() {
                                         onClick={(e) => {
                                           e.stopPropagation();
 
-                                          setSelectedResourceRow(resource);
+                                          setSelectedResource(resource);
                                         }}
                                       >
                                         <FontAwesomeIcon
@@ -492,7 +512,7 @@ function ExplorerPage() {
                       }
                     },
                     expandedRowKeys: (() => {
-                      const keys = [selectedNodeRow].filter((s) => s);
+                      const keys = [selectedNode].filter((s) => s);
 
                       if (keys.length > 0) {
                         return keys;
@@ -509,8 +529,8 @@ function ExplorerPage() {
                             e.stopPropagation();
 
                             expanded
-                              ? setSelectedNodeRow(undefined)
-                              : setSelectedNodeRow(
+                              ? setSelectedNode(undefined)
+                              : setSelectedNode(
                                   (record as typeof nodesDataSource[0])
                                     .privateIP
                                 );
@@ -537,10 +557,10 @@ function ExplorerPage() {
 
                     return {
                       onClick: () => {
-                        if (selectedNodeRow === record.privateIP) {
-                          setSelectedNodeRow(undefined);
+                        if (selectedNode === record.privateIP) {
+                          setSelectedNode(undefined);
                         } else {
-                          setSelectedNodeRow(record.privateIP);
+                          setSelectedNode(record.privateIP);
                         }
                       },
                     };
@@ -550,22 +570,28 @@ function ExplorerPage() {
             )}
           </Animate>
 
+          {/* Resources */}
+
+          {/* Resources title */}
           <TitleSpace
             align="center"
-            onClick={() => setResourcesOpen((resourcesOpen) => !resourcesOpen)}
+            onClick={() =>
+              setResourcesTableOpen((resourcesOpen) => !resourcesOpen)
+            }
           >
-            <Title level={2}>
+            <BareTitle level={2}>
               <FontAwesomeIcon icon={faCube} /> {t("resource", { count: 2 })}
-            </Title>
+            </BareTitle>
             <Button type="text" shape="circle">
               <FontAwesomeIcon
-                icon={resourcesOpen ? faChevronDown : faChevronRight}
+                icon={resourcesTableOpen ? faChevronDown : faChevronRight}
               />
             </Button>
           </TitleSpace>
 
+          {/* Resources table */}
           <Animate transitionName="fadeandslide" transitionAppear>
-            {resourcesOpen && (
+            {resourcesTableOpen && (
               <WideSpace direction="vertical" size="middle">
                 <Input.Search
                   placeholder={t("filterResources")}
@@ -586,14 +612,14 @@ function ExplorerPage() {
                         const record = rawRecord as typeof resourcesDataSource[0];
 
                         if (
-                          selectedResourceRow &&
-                          selectedResourceRow[0] === record.label &&
-                          selectedResourceRow[1] === record.kind &&
-                          selectedResourceRow[2] === record.node
+                          selectedResource &&
+                          selectedResource[0] === record.label &&
+                          selectedResource[1] === record.kind &&
+                          selectedResource[2] === record.node
                         ) {
-                          setSelectedResourceRow(undefined);
+                          setSelectedResource(undefined);
                         } else {
-                          setSelectedResourceRow(record);
+                          setSelectedResource(record);
                         }
                       },
                     };
@@ -607,12 +633,12 @@ function ExplorerPage() {
                       );
                     },
                     expandedRowKeys: (() => {
-                      if (selectedResourceRow) {
+                      if (selectedResource) {
                         const keys = [
                           stringifyResourceKey(
-                            selectedResourceRow[0],
-                            selectedResourceRow[1],
-                            selectedResourceRow[2]
+                            selectedResource[0],
+                            selectedResource[1],
+                            selectedResource[2]
                           ),
                         ].filter((s) => s);
 
@@ -636,8 +662,8 @@ function ExplorerPage() {
                             const record = rawRecord as typeof resourcesDataSource[0];
 
                             expanded
-                              ? setSelectedResourceRow(undefined)
-                              : setSelectedResourceRow(record);
+                              ? setSelectedResource(undefined)
+                              : setSelectedResource(record);
                           }}
                         >
                           <FontAwesomeIcon
@@ -659,6 +685,7 @@ function ExplorerPage() {
   );
 }
 
+// Resource components
 const ResourceList = styled(List)``;
 
 const ResourceItem = styled(ResourceItemTmpl)`
@@ -674,6 +701,12 @@ const ResourceTable = styled(Table)`
   }
 `;
 
+const ResourceEditor = styled(ResourceEditorTmpl)`
+  margin-top: -16px;
+  margin-bottom: -16px;
+`;
+
+// Action components
 const ActionSplit = styled.em`
   width: 1px;
   height: 14px;
@@ -686,15 +719,6 @@ const Action = styled(Button)`
   :not(:last-child) {
     margin-right: 8px;
   }
-`;
-
-const Title = styled(TitleTmpl)`
-  margin-bottom: 0 !important;
-`;
-
-const ResourceEditor = styled(ResourceEditorTmpl)`
-  margin-top: -16px;
-  margin-bottom: -16px;
 `;
 
 export default ExplorerPage;
