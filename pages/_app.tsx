@@ -43,6 +43,7 @@ import Navbar, {
   SearchInput,
   TabsMobile,
 } from "../components/navbar";
+import SearchModal from "../components/search-modal";
 import composite from "../data/composite.json";
 import nodes from "../data/nodes.json";
 import resources from "../data/resources.json";
@@ -112,6 +113,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   const [createFileDialogOpen, setCreateFileDialogOpen] = useState(false);
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
   const [graphOpen, setGraphOpen] = useState(false);
+  const [searchModalOpen, setSearchModalOpen] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState<string>();
 
@@ -318,6 +320,11 @@ function MyApp({ Component, pageProps }: AppProps) {
               graphData={composite}
             />
 
+            <SearchModal
+              open={searchModalOpen}
+              onDone={() => setSearchModalOpen(false)}
+            />
+
             {(!createResourceDialogMaximized ||
               !createFileDialogMaximized ||
               !graphOpen) && (
@@ -350,7 +357,11 @@ function MyApp({ Component, pageProps }: AppProps) {
 
             <MobileHeader>
               <Tooltip title={t("findNodeOrResource")}>
-                <Button type="text" shape="circle">
+                <Button
+                  type="text"
+                  shape="circle"
+                  onClick={() => setSearchModalOpen(true)}
+                >
                   <FontAwesomeIcon icon={faSearch} />
                 </Button>
               </Tooltip>

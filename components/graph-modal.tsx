@@ -13,13 +13,13 @@ import { useWindowSize } from "use-window-size-hook";
 import { graphGroupColor } from "../styles/graph-group-color";
 import { Modal as ModalTmpl } from "./create-resource-modal";
 
-export interface IInviteModalProps {
+export interface IGraphModalProps {
   open: boolean;
   graphData: any;
   onDone: () => void;
 }
 
-const GraphModal: React.FC<IInviteModalProps> = ({
+const GraphModal: React.FC<IGraphModalProps> = ({
   open,
   graphData,
   onDone,
