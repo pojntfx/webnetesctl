@@ -333,6 +333,9 @@ function MyApp({ Component, pageProps }: AppProps) {
                 )
               }
               onStdin={(label, key) => console.log(label, key)}
+              labels={resources
+                .filter((resource) => resource.kind === "Workload")
+                .map((resource) => resource.label)}
             />
 
             <SearchModal

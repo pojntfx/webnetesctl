@@ -100,6 +100,5 @@ export default {
   nope: "Nope",
   enjoyYourStay: "Enjoy your stay!",
   clusterGraph: "Cluster Graph",
-  terminal: "Terminal",
-  terminal_plural: "Terminals",
+  terminals: "Terminals",
 };

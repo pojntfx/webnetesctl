@@ -16,6 +16,7 @@ export interface ITerminalModalProps {
   onDone: () => void;
   onStdin: (label: string, key: string) => void;
   onTerminalCreated: (label: string, xterm: XTerm) => void;
+  labels: string[];
 }
 
 const TerminalModal: React.FC<ITerminalModalProps> = ({
@@ -23,6 +24,7 @@ const TerminalModal: React.FC<ITerminalModalProps> = ({
   onDone,
   onStdin,
   onTerminalCreated,
+  labels,
   ...otherProps
 }) => {
   const { t } = useTranslation();
@@ -37,7 +39,7 @@ const TerminalModal: React.FC<ITerminalModalProps> = ({
         <>
           <Space>
             <FontAwesomeIcon fixedWidth icon={faTerminal} />
-            <span>{t("terminal", { count: 2 })}</span>
+            <span>{t("terminals")}</span>
           </Space>
 
           <Button type="text" shape="circle" onClick={() => onDone()}>
@@ -56,23 +58,25 @@ const TerminalModal: React.FC<ITerminalModalProps> = ({
       closable={false}
       {...otherProps}
     >
-      <Collapse ghost defaultActiveKey={["1"]}>
-        <Collapse.Panel header="echo_server" key="1">
-          <Terminal
-            onData={(key) => {
-              if (key.charCodeAt(0) === 13) {
-                // Return
-                onStdin("echo_server", "\n");
-              } else if (key.charCodeAt(0) === 127) {
-                // Backspace
-                onStdin("echo_server", "\b \b");
-              } else {
-                onStdin("echo_server", key);
-              }
-            }}
-            ref={(ref as unknown) as React.RefObject<XTerm>}
-          />
-        </Collapse.Panel>
+      <Collapse ghost defaultActiveKey={labels}>
+        {labels.map((label) => (
+          <Collapse.Panel header={label} key={label}>
+            <Terminal
+              onData={(key) => {
+                if (key.charCodeAt(0) === 13) {
+                  // Return
+                  onStdin(label, "\n");
+                } else if (key.charCodeAt(0) === 127) {
+                  // Backspace
+                  onStdin(label, "\b \b");
+                } else {
+                  onStdin(label, key);
+                }
+              }}
+              ref={(ref as unknown) as React.RefObject<XTerm>}
+            />
+          </Collapse.Panel>
+        ))}
       </Collapse>
     </Modal>
   );
