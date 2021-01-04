@@ -322,6 +322,32 @@ function MyApp({ Component, pageProps }: AppProps) {
 
             <SearchModal
               open={searchModalOpen}
+              handleChange={(query) => {
+                if (query) {
+                  setSearchQuery(query);
+
+                  if (query.startsWith("node=")) {
+                    router.pathname === "/config"
+                      ? router.push(
+                          `/explorer?privateIP=${query.split("node=")[1]}`
+                        )
+                      : router.push(`?privateIP=${query.split("node=")[1]}`);
+                  } else {
+                    router.push(
+                      `/explorer?resource=${query.split("resource=")[1]}`
+                    );
+                  }
+
+                  setSearchModalOpen(false);
+                } else {
+                  setSearchQuery(undefined);
+
+                  router.push(router.pathname);
+                }
+              }}
+              query={searchQuery as string}
+              nodes={nodes}
+              resources={resources}
               onDone={() => setSearchModalOpen(false)}
             />
 
