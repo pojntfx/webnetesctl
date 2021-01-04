@@ -573,10 +573,6 @@ const SideTray = styled.div`
     transform: translateX(-50%);
     margin-right: 0;
   }
-
-  > *:first-child:not(:last-child) {
-    border-right: 1px solid #303030;
-  }
 `;
 
 export default MyApp;
