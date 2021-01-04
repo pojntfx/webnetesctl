@@ -1,4 +1,7 @@
-import { faProjectDiagram, faTimes } from "@fortawesome/free-solid-svg-icons";
+import {
+  faProjectDiagram,
+  faWindowMinimize,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Space } from "antd";
 import dynamic from "next/dynamic";
@@ -6,9 +9,9 @@ import { forwardRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import SpriteText from "three-spritetext";
+import { useWindowSize } from "use-window-size-hook";
 import { graphGroupColor } from "../styles/graph-group-color";
 import { Modal as ModalTmpl } from "./create-resource-modal";
-import { useWindowSize } from "use-window-size-hook";
 
 export interface IInviteModalProps {
   open: boolean;
@@ -42,12 +45,12 @@ const GraphModal: React.FC<IInviteModalProps> = ({
           </Space>
 
           <Button type="text" shape="circle" onClick={() => onDone()}>
-            <FontAwesomeIcon icon={faTimes} />
+            <FontAwesomeIcon icon={faWindowMinimize} />
           </Button>
         </>
       }
       centered
-      transitionName={"fadeandzoom"}
+      transitionName="fadeandslide"
       visible={open}
       onOk={() => {
         onDone();

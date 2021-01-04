@@ -43,11 +43,11 @@ import Navbar, {
   SearchInput,
   TabsMobile,
 } from "../components/navbar";
+import composite from "../data/composite.json";
 import en from "../i18n/en";
 import frostedGlass from "../styles/frosted-glass";
 import glass from "../styles/glass";
 import "../styles/index.less";
-import composite from "../data/composite.json";
 
 i18n.use(initReactI18next).init({
   resources: {
@@ -409,17 +409,22 @@ function MyApp({ Component, pageProps }: AppProps) {
 const SideTray = styled.div`
   z-index: 999;
   position: absolute !important;
-  top: 50%;
-  transform: translateY(-50%);
+  bottom: 64px;
   border: 1px solid #303030;
   margin: 1rem;
-  right: 0;
-  display: flex;
-  flex-direction: column;
+  left: 0;
+  right: auto;
   ${glass}
 
+  @media screen and (min-width: 812px) {
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-right: 0;
+  }
+
   > *:first-child:not(:last-child) {
-    border-bottom: 1px solid #303030;
+    border-right: 1px solid #303030;
   }
 `;
 

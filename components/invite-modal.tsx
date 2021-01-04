@@ -47,7 +47,7 @@ const InviteModal: React.FC<IInviteModalProps> = ({
         </>
       }
       centered
-      transitionName={"fadeandzoom"}
+      transitionName="fadeandzoom"
       visible={open}
       onOk={() => {
         onDone();

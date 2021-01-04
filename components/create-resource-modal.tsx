@@ -1,5 +1,5 @@
 import {
-  faAngleDoubleRight,
+  faWindowMinimize,
   faArrowLeft,
   faChevronDown,
   faChevronRight,
@@ -128,7 +128,7 @@ const CreateResourceModal: React.FC<ICreateResourceModalProps> = ({
                 onMinimize();
               }}
             >
-              <FontAwesomeIcon icon={faAngleDoubleRight} />
+              <FontAwesomeIcon icon={faWindowMinimize} />
             </Button>
 
             <Button type="text" shape="circle" onClick={() => cancel()}>
@@ -138,7 +138,7 @@ const CreateResourceModal: React.FC<ICreateResourceModalProps> = ({
         </>
       }
       centered
-      transitionName={maximized ? "fadeandzoom" : "fadeandslideright"}
+      transitionName={maximized ? "fadeandzoom" : "fadeandslide"}
       visible={open}
       onOk={() => {
         clear();

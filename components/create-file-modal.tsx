@@ -1,5 +1,4 @@
 import {
-  faAngleDoubleRight,
   faArrowLeft,
   faExclamationCircle,
   faFile,
@@ -7,6 +6,7 @@ import {
   faQuestionCircle,
   faTimes,
   faTrash,
+  faWindowMinimize,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Form, Input, Select, Space, Upload } from "antd";
@@ -120,7 +120,7 @@ const CreateFileModal: React.FC<ICreateFileModalProps> = ({
                 onMinimize();
               }}
             >
-              <FontAwesomeIcon icon={faAngleDoubleRight} />
+              <FontAwesomeIcon icon={faWindowMinimize} />
             </Button>
 
             <Button type="text" shape="circle" onClick={() => cancel()}>
@@ -130,7 +130,7 @@ const CreateFileModal: React.FC<ICreateFileModalProps> = ({
         </>
       }
       centered
-      transitionName={maximized ? "fadeandzoom" : "fadeandslideright"}
+      transitionName={maximized ? "fadeandzoom" : "fadeandslide"}
       visible={open}
       onOk={() => {
         clear();

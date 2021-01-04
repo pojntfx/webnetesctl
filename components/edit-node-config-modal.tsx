@@ -105,7 +105,7 @@ const EditNodeConfigModal: React.FC<IEditNodeConfigModalProps> = ({
         </>
       }
       centered
-      transitionName={"fadeandzoom"}
+      transitionName="fadeandzoom"
       visible={open}
       onOk={() => {
         clear();
