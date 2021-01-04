@@ -17,10 +17,10 @@ import {
   faMobile,
   faRecordVinyl,
   faThumbsUp,
-  faTimes
+  faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Card as CardTmpl, notification, Space, Tooltip } from "antd";
+import { Button, notification, Space, Tooltip } from "antd";
 import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
 import dynamic from "next/dynamic";
@@ -37,9 +37,19 @@ import { useWindowSize } from "use-window-size-hook";
 import { JoinFooterBar, JoinHeaderBar } from "../components/bars";
 import EditNodeConfigModal from "../components/edit-node-config-modal";
 import {
+  LeftGaugeButton,
+  LeftGaugeContent,
+  LeftGaugeToggler,
+  LeftGaugeWrapper,
+  RightGaugeButton,
+  RightGaugeContent,
+  RightGaugeToggler,
+  RightGaugeWrapper,
+} from "../components/gauges";
+import {
   AfterWrapper,
   BlurWrapper as BlurWrapperTmpl,
-  ContentWrapper as ContentWrapperTmpl
+  ContentWrapper as ContentWrapperTmpl,
 } from "../components/layout-wrapper";
 import { LocationButton } from "../components/resources";
 import composite from "../data/composite.json";
@@ -364,7 +374,7 @@ function JoinPage() {
               >
                 <Animate transitionName="fadeandslideleft" transitionAppear>
                   {leftGaugeOpen && (
-                    <LeftGauge
+                    <LeftGaugeContent
                       $maximized={leftGaugeMaximized}
                       cover={
                         <Graph
@@ -442,12 +452,12 @@ function JoinPage() {
                           </Space>
                         </CardSpace>
                       </CardSpaceWrapper>
-                    </LeftGauge>
+                    </LeftGaugeContent>
                   )}
                 </Animate>
               </LeftGaugeWrapper>
 
-              <LeftGaugeToggle>
+              <LeftGaugeToggler>
                 {!leftGaugeOpen && (
                   <LeftGaugeButton
                     type="text"
@@ -458,7 +468,7 @@ function JoinPage() {
                     </Text>
                   </LeftGaugeButton>
                 )}
-              </LeftGaugeToggle>
+              </LeftGaugeToggler>
 
               <Space direction="vertical" align="center">
                 <MainExpandButton
@@ -521,7 +531,7 @@ function JoinPage() {
               >
                 <Animate transitionName="fadeandslideright" transitionAppear>
                   {rightGaugeOpen && (
-                    <RightGauge
+                    <RightGaugeContent
                       $maximized={rightGaugeMaximized}
                       cover={
                         <Graph
@@ -599,12 +609,12 @@ function JoinPage() {
                           </Space>
                         </CardSpace>
                       </CardSpaceWrapper>
-                    </RightGauge>
+                    </RightGaugeContent>
                   )}
                 </Animate>
               </RightGaugeWrapper>
 
-              <RightGaugeToggle>
+              <RightGaugeToggler>
                 {!rightGaugeOpen && (
                   <RightGaugeButton
                     type="text"
@@ -615,7 +625,7 @@ function JoinPage() {
                     </Text>
                   </RightGaugeButton>
                 )}
-              </RightGaugeToggle>
+              </RightGaugeToggler>
             </JoinFooterBar>
           </ContentWrapper>
         </Animate>
@@ -644,79 +654,6 @@ const CardSpaceWrapper = styled.div<any>``;
 const CardSpace = styled(Space)`
   width: 100%;
   justify-content: space-between;
-`;
-
-const Card = styled(CardTmpl)`
-  background: transparent !important;
-
-  .ant-card-cover {
-    border: 1px solid #303030;
-    ${glass}
-  }
-
-  .ant-card-body {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    background: #141414;
-  }
-`;
-
-const LeftGaugeToggle = styled.div`
-  position: absolute;
-  left: 0;
-`;
-
-const RightGaugeToggle = styled.div`
-  position: absolute;
-  right: 0;
-`;
-
-const LeftGaugeWrapper = styled.div<{ ref: any; $maximized: boolean }>`
-  position: absolute;
-  z-index: 100;
-  left: 0;
-  bottom: 0;
-
-  ${(props) => (props.$maximized ? "z-index: 110;" : "")}
-`;
-
-const LeftGauge = styled(Card)<{ $maximized: boolean }>`
-  border-left: 0;
-  border-bottom: 0;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  border-top-left-radius: 0;
-
-  ${(props) => (props.$maximized ? "border-top: 0;" : "")}
-`;
-
-const RightGaugeWrapper = styled.div<{ ref: any; $maximized: boolean }>`
-  position: absolute;
-  z-index: 100;
-  right: 0;
-  bottom: 0;
-
-  ${(props) => (props.$maximized ? "z-index: 110;" : "")}
-`;
-
-const RightGauge = styled(Card)<{ $maximized: boolean }>`
-  border-right: 0;
-  border-bottom: 0;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-  border-top-right-radius: 0;
-
-  ${(props) => (props.$maximized ? "border-top: 0;" : "")}
-`;
-
-const LeftGaugeButton = styled(Button)`
-  border: 1px solid #303030;
-  border-left: none;
-`;
-
-const RightGaugeButton = styled(Button)`
-  border: 1px solid #303030;
-  border-right: none;
 `;
 
 const Particles = styled(ParticlesTmpl)`
