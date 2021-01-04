@@ -98,4 +98,5 @@ export default {
   iLovePhonk: "I ❤️ Phonk",
   nope: "Nope",
   enjoyYourStay: "Enjoy your stay!",
+  clusterGraph: "Cluster Graph",
 };

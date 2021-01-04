@@ -8,6 +8,7 @@ import {
   faHandshake,
   faNetworkWired,
   faPlus,
+  faProjectDiagram,
   faSearch,
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
@@ -33,6 +34,7 @@ import { initReactI18next, useTranslation } from "react-i18next";
 import styled, { createGlobalStyle, ThemeProvider } from "styled-components";
 import CreateFileModal from "../components/create-file-modal";
 import CreateResourceModal from "../components/create-resource-modal";
+import GraphModal from "../components/graph-modal";
 import InviteModal from "../components/invite-modal";
 import { Layout } from "../components/layout-wrapper";
 import Navbar, {
@@ -45,6 +47,7 @@ import en from "../i18n/en";
 import frostedGlass from "../styles/frosted-glass";
 import glass from "../styles/glass";
 import "../styles/index.less";
+import composite from "../data/composite.json";
 
 i18n.use(initReactI18next).init({
   resources: {
@@ -105,6 +108,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   );
   const [createFileDialogOpen, setCreateFileDialogOpen] = useState(false);
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
+  const [graphOpen, setGraphOpen] = useState(false);
 
   const [
     createResourceDialogMaximized,
@@ -256,7 +260,15 @@ function MyApp({ Component, pageProps }: AppProps) {
               onDone={() => setInviteDialogOpen(false)}
             />
 
-            {(!createResourceDialogMaximized || !createFileDialogMaximized) && (
+            <GraphModal
+              open={graphOpen}
+              onDone={() => setGraphOpen(false)}
+              graphData={composite}
+            />
+
+            {(!createResourceDialogMaximized ||
+              !createFileDialogMaximized ||
+              !graphOpen) && (
               <SideTray>
                 {!createResourceDialogMaximized && (
                   <Button
@@ -271,6 +283,14 @@ function MyApp({ Component, pageProps }: AppProps) {
                     type="text"
                     onClick={() => setCreateFileDialogMaximized(true)}
                     icon={<FontAwesomeIcon icon={faFile} />}
+                  />
+                )}
+
+                {!graphOpen && (
+                  <Button
+                    type="text"
+                    onClick={() => setGraphOpen(true)}
+                    icon={<FontAwesomeIcon icon={faProjectDiagram} />}
                   />
                 )}
               </SideTray>
