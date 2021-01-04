@@ -1,8 +1,10 @@
 import {
   faAngleDoubleLeft,
   faAngleDoubleRight,
+  faBan,
   faChevronDown,
   faChevronUp,
+  faCity,
   faCogs,
   faCompress,
   faCube,
@@ -12,10 +14,12 @@ import {
   faLocationArrow,
   faMapMarkerAlt,
   faMobile,
+  faRecordVinyl,
   faThumbsUp,
+  faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Card as CardTmpl, Space, Tooltip } from "antd";
+import { Button, Card as CardTmpl, notification, Space, Tooltip } from "antd";
 import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
 import dynamic from "next/dynamic";
@@ -118,7 +122,54 @@ function Worker() {
     (async () => {
       await new Promise<void>((res) => setTimeout(() => res(), 1000));
 
-      for (let i = -1; i < 6; i++) {
+      for (let i = 1; i <= 4; i++) {
+        if (i === 4) {
+          const key = "update";
+
+          notification.open({
+            message: t("lifeIsBetterWithMusic"),
+            description: t("askForMusicDuringSharing"),
+            btn: (
+              <Space>
+                <a href="https://lofimusic.app/" target="_blank">
+                  <Button
+                    onClick={async () => notification.close(key)}
+                    type="primary"
+                  >
+                    <Space>
+                      <FontAwesomeIcon icon={faRecordVinyl} />
+                      {t("sure")}
+                    </Space>
+                  </Button>
+                </a>
+
+                <a
+                  href="https://www.youtube.com/watch?v=qJIfavKyYvU"
+                  target="_blank"
+                >
+                  <Button onClick={async () => notification.close(key)}>
+                    <Space>
+                      <FontAwesomeIcon icon={faCity} />
+                      {t("iLovePhonk")}
+                    </Space>
+                  </Button>
+                </a>
+
+                <Button onClick={() => notification.close(key)}>
+                  <Space>
+                    <FontAwesomeIcon icon={faBan} />
+                    {t("nope")}
+                  </Space>
+                </Button>
+              </Space>
+            ),
+            duration: 0,
+            onClose: () => notification.close(key),
+            closeIcon: <FontAwesomeIcon icon={faTimes} />,
+            key,
+          });
+        }
+
         setOpenTitle((curr) => curr + 1);
 
         await new Promise<void>((res) => setTimeout(() => res(), 5000));

@@ -91,4 +91,10 @@ export default {
   youreHelpingSomeone: "You're helping someone!",
   theGraphsBelowShowWhatYoureHosting:
     "The graphs below show what you're hosting.",
+  lifeIsBetterWithMusic: "Life is better with Music",
+  askForMusicDuringSharing:
+    "While you're sharing your resources, would you like to listen to some Lofi?",
+  sure: "Sure!",
+  iLovePhonk: "I ❤️ Phonk",
+  nope: "Nope",
 };
