@@ -39,6 +39,7 @@ import composite from "../data/composite.json";
 import localResources from "../data/local-resources.json";
 import network from "../data/network.json";
 import glass from "../styles/glass";
+import { graphGroupColor } from "../styles/graph-group-color";
 import { urldecodeYAMLAll, urlencodeYAMLAll } from "../utils/urltranscode";
 import {
   BlurWrapper as BlurWrapperTmpl,
@@ -309,7 +310,7 @@ function Worker() {
 
                 sprite.color = "#ffffff";
                 sprite.textHeight = 2;
-                sprite.backgroundColor = node.color + "F0";
+                sprite.backgroundColor = graphGroupColor(node.group) + "F0";
                 sprite.padding = 2;
 
                 return sprite;
