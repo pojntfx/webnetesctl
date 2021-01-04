@@ -5,7 +5,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Space } from "antd";
 import dynamic from "next/dynamic";
-import { forwardRef } from "react";
+import { forwardRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { XTerm } from "xterm-for-react";
@@ -24,6 +24,12 @@ const TerminalModal: React.FC<ITerminalModalProps> = ({
   ...otherProps
 }) => {
   const { t } = useTranslation();
+
+  const ref = useCallback((xterm: XTerm) => {
+    if (xterm) {
+      setInterval(() => xterm.terminal.writeln("Hello, world!"), 1000);
+    }
+  }, []);
 
   return (
     <Modal
@@ -50,10 +56,9 @@ const TerminalModal: React.FC<ITerminalModalProps> = ({
       onCancel={() => onDone()}
       okText={t("done")}
       closable={false}
-      forceRender
       {...otherProps}
     >
-      <Terminal />
+      <Terminal ref={(ref as unknown) as React.RefObject<XTerm>} />
     </Modal>
   );
 };
@@ -62,10 +67,6 @@ const Modal = styled(ModalTmpl)`
   /* We don't need the cancel button */
   .ant-modal-footer > *:first-child {
     display: none;
-  }
-
-  .ant-modal-body {
-    padding: 0;
   }
 
   .xterm-viewport {
