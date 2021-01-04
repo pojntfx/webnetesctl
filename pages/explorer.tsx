@@ -40,7 +40,7 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { TitleSpace, WideSpace, Wrapper } from "../components/layout-wrapper";
 import ResourceEditorTmpl from "../components/resource-editor";
-import { ResourceItem as ResourceItemTmpl } from "../components/resources";
+import { ResourceItem as ResourceItemTmpl } from "../components/lists";
 import Table from "../components/table";
 import computeStats from "../data/compute-stats.json";
 import networkingStats from "../data/networking-stats.json";

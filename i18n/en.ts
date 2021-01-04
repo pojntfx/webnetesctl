@@ -101,4 +101,6 @@ export default {
   enjoyYourStay: "Enjoy your stay!",
   clusterGraph: "Cluster Graph",
   terminals: "Terminals",
+  management: "Management",
+  application: "Application",
 };

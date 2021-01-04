@@ -1,5 +1,10 @@
-import { Button, List } from "antd";
+import { Button, List, Space } from "antd";
 import styled from "styled-components";
+
+export const ResourceList = styled(Space)`
+  padding: 12px 16px;
+  width: 100%;
+`;
 
 export const ResourceItem = styled(List.Item)`
   transition: background 0.3s;

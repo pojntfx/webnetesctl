@@ -51,7 +51,7 @@ import {
   BlurWrapper as BlurWrapperTmpl,
   ContentWrapper as ContentWrapperTmpl,
 } from "../components/layout-wrapper";
-import { LocationButton } from "../components/resources";
+import { LocationButton } from "../components/lists";
 import composite from "../data/composite.json";
 import localResources from "../data/local-resources.json";
 import network from "../data/network.json";

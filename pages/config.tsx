@@ -23,7 +23,7 @@ import { TitleSpace, Wrapper } from "../components/layout-wrapper";
 import ResourceEditorTmpl, {
   ExternalLink,
 } from "../components/resource-editor";
-import { LocationButton } from "../components/resources";
+import { LocationButton } from "../components/lists";
 import nodeResource, { nodeId } from "../data/node";
 import packageJSON from "../package.json";
 import glass from "../styles/glass";

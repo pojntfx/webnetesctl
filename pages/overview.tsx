@@ -17,7 +17,6 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Button,
-  Card,
   Collapse,
   Divider,
   Dropdown,
@@ -34,14 +33,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Animate from "rc-animate";
-import {
-  createRef,
-  forwardRef,
-  memo,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { createRef, forwardRef, useCallback, useEffect, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
@@ -49,44 +41,56 @@ import earthTexture from "three-globe/example/img/earth-night.jpg";
 import earthElevation from "three-globe/example/img/earth-topology.png";
 import universeTexture from "three-globe/example/img/night-sky.png";
 import { useWindowSize } from "use-window-size-hook";
+import { ResourceItem, ResourceList } from "../components/lists";
 import NodeChart from "../components/node-chart";
 import { InspectorPanel, StatsPanel } from "../components/panels";
-import { ResourceItem } from "../components/resources";
 import { OverviewTray } from "../components/trays";
 import computeStats from "../data/compute-stats.json";
 import connections from "../data/connections.json";
 import networkingStats from "../data/networking-stats.json";
 import nodes from "../data/nodes.json";
 import resources from "../data/resources.json";
-import glass from "../styles/glass";
 import { stringifyResourceKey } from "../utils/resource-key";
 
+/**
+ * OverviewPage shows a central globe for a quick topological cluster overview.
+ * Using the inspector and stats panels, it is possible to quickly and visually get insights.
+ * For complex resources, it links to the explorer page.
+ */
 function OverviewPage() {
+  // Hooks
   const { t } = useTranslation();
-  const globeRef = createRef();
+  const ref = createRef();
   const { width, height } = useWindowSize();
   const router = useRouter();
 
-  const [statsOpen, setStatsOpen] = useState(true);
-  const [inspectorOpen, setInspectorOpen] = useState(true);
-  const [connectionPaths, setConnectionPaths] = useState<any[]>([]);
-  const [selectedNode, _setSelectedNode] = useState<any>();
-  const [globeHoverable, setGlobeHoverable] = useState(false);
-  const [handleCameraChange, setHandleCameraChange] = useState(false);
-  const [userCoordinates, setUserCoordinates] = useState<number[]>([0, 0]);
-  const [loadingUserCoordinates, setLoadingUserCoordinates] = useState(false);
-  const [clusterId, setClusterId] = useState<string>();
-  const [resourceNameFilter, setResourceNameFilter] = useState("");
+  // State
+  const [statsPanelOpen, setStatsPanelOpen] = useState(true);
+  const [inspectorPanelOpen, setInspectorPanelOpen] = useState(true);
 
+  const [selectedNode, _setSelectedNode] = useState<any>();
+  const [globeInteractive, setGlobeInteractive] = useState(false);
+  const [cameraActive, setCameraActive] = useState(false);
+
+  const [userCoordinates, setUserCoordinates] = useState<number[]>([0, 0]);
+  const [userCoordinatesLoading, setUserCoordinatesLoading] = useState(false);
+
+  const [resourcesFilter, setResourcesFilter] = useState("");
+
+  const [clusterId, setClusterId] = useState<string>();
+  const [connectionPaths, setConnectionPaths] = useState<any[]>([]);
+
+  // Effects
   useEffect(() => {
+    // Transform connections into paths
     setConnectionPaths([
       ...connections.management.map((conn) => ({
         coords: conn,
-        properties: { name: "Management", color: "#fa8c16" },
+        properties: { name: t("management"), color: "#fa8c16" },
       })),
       ...connections.application.map((conn) => ({
         coords: conn,
-        properties: { name: "Application", color: "#1890ff" },
+        properties: { name: t("application"), color: "#1890ff" },
       })),
     ]);
 
@@ -94,13 +98,14 @@ function OverviewPage() {
   }, []);
 
   useEffect(() => {
-    if (!globeRef.current) {
-      setTimeout(() => setHandleCameraChange(true), 1000); // Retry if globe hasn't rendered yet
+    // Map coordinates to globe position
+    if (!ref.current) {
+      setTimeout(() => setCameraActive(true), 1000); // Retry if globe hasn't rendered yet
     }
 
-    if (globeRef.current && handleCameraChange) {
+    if (ref.current && cameraActive) {
       if (selectedNode) {
-        (globeRef.current as any).pointOfView(
+        (ref.current as any).pointOfView(
           {
             lat: selectedNode.latitude,
             lng: selectedNode.longitude,
@@ -109,7 +114,7 @@ function OverviewPage() {
           1000
         );
       } else {
-        (globeRef.current as any).pointOfView(
+        (ref.current as any).pointOfView(
           {
             lat: userCoordinates[0],
             lng: userCoordinates[1],
@@ -119,18 +124,13 @@ function OverviewPage() {
         );
       }
 
-      setHandleCameraChange(false);
+      setCameraActive(false);
     }
-  }, [
-    globeRef.current,
-    handleCameraChange,
-    selectedNode,
-    userCoordinates,
-    globeRef.current,
-  ]);
+  }, [ref.current, cameraActive, selectedNode, userCoordinates]);
 
   useEffect(() => {
-    if (globeRef.current) {
+    // Map privateIP query parameter to globe position
+    if (ref.current) {
       const privateIP = router.query.privateIP;
 
       if (privateIP) {
@@ -139,32 +139,33 @@ function OverviewPage() {
         );
 
         unstable_batchedUpdates(() => {
-          setHandleCameraChange(true);
+          setCameraActive(true);
           _setSelectedNode(foundNode);
         });
       } else {
         unstable_batchedUpdates(() => {
-          setHandleCameraChange(true);
+          setCameraActive(true);
           _setSelectedNode(undefined);
         });
       }
     }
-  }, [globeRef, router.query.privateIP]);
+  }, [ref, router.query.privateIP]);
 
-  const getUserCoordinates = useCallback(() => {
-    setLoadingUserCoordinates(true);
+  const refreshUserCoordinates = useCallback(() => {
+    // Get a user's coordinates and set the globe position accordingly
+    setUserCoordinatesLoading(true);
 
     typeof window !== "undefined" &&
       navigator.geolocation.getCurrentPosition(
         (position) => {
           unstable_batchedUpdates(() => {
-            setHandleCameraChange(true);
+            setCameraActive(true);
             setSelectedNode(undefined);
             setUserCoordinates([
               position.coords.latitude,
               position.coords.longitude,
             ]);
-            setLoadingUserCoordinates(false);
+            setUserCoordinatesLoading(false);
           });
         },
         (e) => {
@@ -173,12 +174,13 @@ function OverviewPage() {
             e
           );
 
-          setLoadingUserCoordinates(false);
+          setUserCoordinatesLoading(false);
         }
       );
   }, []);
 
   useEffect(() => {
+    // When the escape key is pressed, clear the selected node
     if (typeof window !== "undefined") {
       const handleEscape = (e: KeyboardEvent) =>
         e.code === "Escape" && setSelectedNode(undefined);
@@ -191,22 +193,24 @@ function OverviewPage() {
     }
   }, []);
 
-  const setSelectedNode = (newNode: any) => {
+  const setSelectedNode = useCallback((newNode: any) => {
+    // Set the selected node
     if (newNode?.privateIP) {
-      setInspectorOpen(true);
+      setInspectorPanelOpen(true);
 
       router.push(`/overview?privateIP=${newNode.privateIP}`);
     } else {
-      setInspectorOpen(false);
+      setInspectorPanelOpen(false);
 
       router.push("/overview");
     }
-  };
+  }, []);
 
   return (
     <>
-      <GlobeWrapper $hoverable={globeHoverable}>
-        <MemoGlobe
+      {/* Globe */}
+      <GlobeWrapper $hoverable={globeInteractive}>
+        <Globe
           labelsData={nodes}
           labelLat={(d: any) => (d as typeof nodes[0]).latitude}
           labelLng={(d: any) => (d as typeof nodes[0]).longitude}
@@ -222,8 +226,8 @@ function OverviewPage() {
           labelColor={() => "#faad14"}
           onLabelClick={(node: any) =>
             selectedNode?.privateIP === node.privateIP
-              ? !inspectorOpen
-                ? setInspectorOpen(true)
+              ? !inspectorPanelOpen
+                ? setInspectorPanelOpen(true)
                 : setSelectedNode(undefined)
               : setSelectedNode(
                   nodes.find(
@@ -232,7 +236,7 @@ function OverviewPage() {
                 )
           }
           onLabelHover={(label: any) =>
-            label ? setGlobeHoverable(true) : setGlobeHoverable(false)
+            label ? setGlobeInteractive(true) : setGlobeInteractive(false)
           }
           pathsData={connectionPaths}
           pathPoints="coords"
@@ -249,12 +253,13 @@ function OverviewPage() {
           waitForGlobeReady
           width={width}
           height={height}
-          ref={globeRef}
+          ref={ref}
         />
       </GlobeWrapper>
 
+      {/* Stats panel */}
       <Animate transitionName="fadeandslide" transitionAppear>
-        {statsOpen && (
+        {statsPanelOpen && (
           <StatsPanel
             size="small"
             title={
@@ -267,13 +272,13 @@ function OverviewPage() {
               <Button
                 type="text"
                 shape="circle"
-                onClick={() => setStatsOpen(false)}
+                onClick={() => setStatsPanelOpen(false)}
               >
                 <FontAwesomeIcon icon={faWindowMinimize} />
               </Button>
             }
           >
-            <StatsWrapper>
+            <StatsPanelWrapper>
               <Statistic
                 title={t("node", { count: 4 })}
                 value={4}
@@ -284,11 +289,11 @@ function OverviewPage() {
                 value={16}
                 prefix={<FontAwesomeIcon fixedWidth icon={faCube} />}
               />
-            </StatsWrapper>
+            </StatsPanelWrapper>
 
-            <StatsDivider />
+            <StatsPanelDivider />
 
-            <StatsWrapper $long>
+            <StatsPanelWrapper $long>
               <Statistic
                 title={
                   <Space>
@@ -309,7 +314,7 @@ function OverviewPage() {
                 value={920}
                 suffix={t("mbps", { count: 920 })}
               />
-            </StatsWrapper>
+            </StatsPanelWrapper>
 
             <Collapse defaultActiveKey={[]} ghost destroyInactivePanel>
               <Collapse.Panel
@@ -370,8 +375,9 @@ function OverviewPage() {
         )}
       </Animate>
 
+      {/* Inspector panel */}
       <Animate transitionName="fadeandslide" transitionAppear>
-        {selectedNode && inspectorOpen && (
+        {selectedNode && inspectorPanelOpen && (
           <InspectorPanel
             size="small"
             title={
@@ -393,7 +399,7 @@ function OverviewPage() {
                 <Button
                   type="text"
                   shape="circle"
-                  onClick={() => setInspectorOpen(false)}
+                  onClick={() => setInspectorPanelOpen(false)}
                 >
                   <FontAwesomeIcon icon={faWindowMinimize} />
                 </Button>
@@ -408,7 +414,7 @@ function OverviewPage() {
               </Space>
             }
           >
-            <StatsWrapper $long>
+            <StatsPanelWrapper $long>
               <Space>
                 <FontAwesomeIcon icon={faMapMarkerAlt} size="lg" />
                 {selectedNode.location}
@@ -417,11 +423,11 @@ function OverviewPage() {
                 <FontAwesomeIcon icon={faGlobe} size="lg" />
                 {selectedNode.publicIP}
               </Space>
-            </StatsWrapper>
+            </StatsPanelWrapper>
 
-            <StatsDivider />
+            <StatsPanelDivider />
 
-            <StatsWrapper $long>
+            <StatsPanelWrapper $long>
               <Statistic
                 title={
                   <Space>
@@ -458,15 +464,15 @@ function OverviewPage() {
                   )?.score,
                 })}
               />
-            </StatsWrapper>
+            </StatsPanelWrapper>
 
-            <StatsDivider />
+            <StatsPanelDivider />
 
             <ResourceList direction="vertical">
               <Input.Search
                 placeholder={t("filterResources")}
-                onChange={(e) => setResourceNameFilter(e.target.value)}
-                value={resourceNameFilter}
+                onChange={(e) => setResourcesFilter(e.target.value)}
+                value={resourcesFilter}
               />
 
               <List>
@@ -484,16 +490,16 @@ function OverviewPage() {
                     );
                   } else {
                     const filteredResources =
-                      resourceNameFilter.length === 0
+                      resourcesFilter.length === 0
                         ? matchingResources
                         : matchingResources.filter(
                             (resource) =>
                               resource.name
                                 .toLowerCase()
-                                .includes(resourceNameFilter.toLowerCase()) ||
+                                .includes(resourcesFilter.toLowerCase()) ||
                               resource.kind
                                 .toLowerCase()
-                                .includes(resourceNameFilter.toLowerCase())
+                                .includes(resourcesFilter.toLowerCase())
                           );
 
                     if (filteredResources.length === 0) {
@@ -589,27 +595,28 @@ function OverviewPage() {
         )}
       </Animate>
 
+      {/* Overview tray */}
       <Animate transitionName="fadeandzoom" transitionAppear>
         <OverviewTray>
           <Button
             type="text"
-            onClick={getUserCoordinates}
-            loading={loadingUserCoordinates}
+            onClick={refreshUserCoordinates}
+            loading={userCoordinatesLoading}
             icon={<FontAwesomeIcon icon={faLocationArrow} />}
           />
 
-          {!statsOpen && (
+          {!statsPanelOpen && (
             <Button
               type="text"
-              onClick={() => setStatsOpen(true)}
+              onClick={() => setStatsPanelOpen(true)}
               icon={<FontAwesomeIcon icon={faNetworkWired} />}
             />
           )}
 
-          {!inspectorOpen && selectedNode && (
+          {!inspectorPanelOpen && selectedNode && (
             <Button
               type="text"
-              onClick={() => setInspectorOpen(true)}
+              onClick={() => setInspectorPanelOpen(true)}
               icon={<FontAwesomeIcon icon={faMobile} />}
             />
           )}
@@ -619,19 +626,21 @@ function OverviewPage() {
   );
 }
 
+// Globe components
+const GlobeTmpl = dynamic(() => import("../components/globe"), {
+  ssr: false,
+});
+
+const Globe = forwardRef((props: any, ref) => (
+  <GlobeTmpl {...props} forwardRef={ref} />
+));
+
 const GlobeWrapper = styled.div<{ $hoverable: boolean }>`
   ${(props) => (props.$hoverable ? "cursor: pointer;" : "")}
 `;
 
-const GlobeTmpl = dynamic(() => import("../components/globe"), {
-  ssr: false,
-});
-const Globe = forwardRef((props: any, ref) => (
-  <GlobeTmpl {...props} forwardRef={ref} />
-));
-const MemoGlobe = memo(Globe);
-
-const StatsWrapper = styled.div<{ $long?: boolean }>`
+// Stats panel components
+const StatsPanelWrapper = styled.div<{ $long?: boolean }>`
   display: grid;
   grid-template-columns: 1fr 1fr;
   padding: 12px 16px;
@@ -642,13 +651,8 @@ const StatsWrapper = styled.div<{ $long?: boolean }>`
       : "padding-bottom: 6px;"}
 `;
 
-const StatsDivider = styled(Divider)`
+const StatsPanelDivider = styled(Divider)`
   margin: 0.25rem 0;
-`;
-
-const ResourceList = styled(Space)`
-  padding: 12px 16px;
-  width: 100%;
 `;
 
 export default OverviewPage;
