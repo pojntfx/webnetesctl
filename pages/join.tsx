@@ -92,7 +92,7 @@ const particlesConfig: typeof ParticlesTmpl["arguments"] = {
   retina_detect: true,
 };
 
-function Worker() {
+function JoinPage() {
   const { t } = useTranslation();
   const router = useRouter();
   const { width, height } = useWindowSize();
@@ -231,7 +231,7 @@ function Worker() {
 
           try {
             router.push(
-              `/worker?id=${router.query.id}&nodeConfig=${urlencodeYAMLAll(
+              `/join?id=${router.query.id}&nodeConfig=${urlencodeYAMLAll(
                 definition
               )}`
             );
@@ -844,4 +844,4 @@ const LogoImage = styled.img`
   width: calc(200px - 2rem);
 `;
 
-export default Worker;
+export default JoinPage;

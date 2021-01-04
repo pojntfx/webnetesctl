@@ -28,7 +28,7 @@ const InviteModal: React.FC<IInviteModalProps> = ({
     setLink(
       `${
         typeof window !== "undefined" && window.location.origin
-      }/worker?id=127.0.2&nodeConfig=${urlencodeYAMLAll(node)}`
+      }/join?id=127.0.2&nodeConfig=${urlencodeYAMLAll(node)}`
     );
   }, []);
 

@@ -1,738 +1,341 @@
-import {
-  faBinoculars,
-  faCube,
-  faEllipsisV,
-  faGlobe,
-  faLocationArrow,
-  faMapMarkerAlt,
-  faMicrochip,
-  faMobile,
-  faNetworkWired,
-  faTerminal,
-  faTimes,
-  faTrash,
-  faWifi,
-  faWindowMinimize,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCogs, faHandshake, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  Button,
-  Card,
-  Collapse,
-  Divider,
-  Dropdown,
-  Empty,
-  Input,
-  List,
-  Menu,
-  Space,
-  Statistic,
-  Tooltip,
-} from "antd";
+import { Dropdown, Input, Menu, Space } from "antd";
 import Text from "antd/lib/typography/Text";
-import dynamic from "next/dynamic";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import Animate from "rc-animate";
-import {
-  createRef,
-  forwardRef,
-  memo,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import earthTexture from "three-globe/example/img/earth-night.jpg";
-import earthElevation from "three-globe/example/img/earth-topology.png";
-import universeTexture from "three-globe/example/img/night-sky.png";
-import { useWindowSize } from "use-window-size-hook";
-import NodeChart from "../components/node-chart";
-import { ResourceItem } from "../components/resources";
-import computeStats from "../data/compute-stats.json";
-import connections from "../data/connections.json";
-import networkingStats from "../data/networking-stats.json";
-import nodes from "../data/nodes.json";
-import resources from "../data/resources.json";
+import EditNodeConfigModal from "../components/edit-node-config-modal";
+import node from "../data/node";
+import bg from "../img/fernando-rodrigues-sGJUb5HJBqs-unsplash.jpg";
 import glass from "../styles/glass";
-import { stringifyResourceKey } from "../utils/resource-key";
+import { urlencodeYAMLAll } from "../utils/urltranscode";
 
 function HomePage() {
   const { t } = useTranslation();
-  const globeRef = createRef();
-  const { width, height } = useWindowSize();
   const router = useRouter();
 
-  const [statsOpen, setStatsOpen] = useState(true);
-  const [inspectorOpen, setInspectorOpen] = useState(true);
-  const [connectionPaths, setConnectionPaths] = useState<any[]>([]);
-  const [selectedNode, _setSelectedNode] = useState<any>();
-  const [globeHoverable, setGlobeHoverable] = useState(false);
-  const [handleCameraChange, setHandleCameraChange] = useState(false);
-  const [userCoordinates, setUserCoordinates] = useState<number[]>([0, 0]);
-  const [loadingUserCoordinates, setLoadingUserCoordinates] = useState(false);
   const [clusterId, setClusterId] = useState<string>();
-  const [resourceNameFilter, setResourceNameFilter] = useState("");
-
-  useEffect(() => {
-    setConnectionPaths([
-      ...connections.management.map((conn) => ({
-        coords: conn,
-        properties: { name: "Management", color: "#fa8c16" },
-      })),
-      ...connections.application.map((conn) => ({
-        coords: conn,
-        properties: { name: "Application", color: "#1890ff" },
-      })),
-    ]);
-
-    setClusterId("127.0.2");
-  }, []);
-
-  useEffect(() => {
-    if (!globeRef.current) {
-      setTimeout(() => setHandleCameraChange(true), 1000); // Retry if globe hasn't rendered yet
-    }
-
-    if (globeRef.current && handleCameraChange) {
-      if (selectedNode) {
-        (globeRef.current as any).pointOfView(
-          {
-            lat: selectedNode.latitude,
-            lng: selectedNode.longitude,
-            altitude: 1,
-          },
-          1000
-        );
-      } else {
-        (globeRef.current as any).pointOfView(
-          {
-            lat: userCoordinates[0],
-            lng: userCoordinates[1],
-            altitude: 2.5,
-          },
-          1000
-        );
-      }
-
-      setHandleCameraChange(false);
-    }
-  }, [
-    globeRef.current,
-    handleCameraChange,
-    selectedNode,
-    userCoordinates,
-    globeRef.current,
-  ]);
-
-  useEffect(() => {
-    if (globeRef.current) {
-      const privateIP = router.query.privateIP;
-
-      if (privateIP) {
-        const foundNode: any = nodes.find(
-          (candidate) => candidate.privateIP === privateIP
-        );
-
-        unstable_batchedUpdates(() => {
-          setHandleCameraChange(true);
-          _setSelectedNode(foundNode);
-        });
-      } else {
-        unstable_batchedUpdates(() => {
-          setHandleCameraChange(true);
-          _setSelectedNode(undefined);
-        });
-      }
-    }
-  }, [globeRef, router.query.privateIP]);
-
-  const getUserCoordinates = useCallback(() => {
-    setLoadingUserCoordinates(true);
-
-    typeof window !== "undefined" &&
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          unstable_batchedUpdates(() => {
-            setHandleCameraChange(true);
-            setSelectedNode(undefined);
-            setUserCoordinates([
-              position.coords.latitude,
-              position.coords.longitude,
-            ]);
-            setLoadingUserCoordinates(false);
-          });
-        },
-        (e) => {
-          console.error(
-            "could not get user location, falling back to [0,0]",
-            e
-          );
-
-          setLoadingUserCoordinates(false);
-        }
-      );
-  }, []);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const handleEscape = (e: KeyboardEvent) =>
-        e.code === "Escape" && setSelectedNode(undefined);
-
-      document.addEventListener("keydown", handleEscape, false);
-
-      return () => {
-        document.removeEventListener("keydown", handleEscape, false);
-      };
-    }
-  }, []);
-
-  const setSelectedNode = (newNode: any) => {
-    if (newNode?.privateIP) {
-      setInspectorOpen(true);
-
-      router.push(`/?privateIP=${newNode.privateIP}`);
-    } else {
-      setInspectorOpen(false);
-
-      router.push("/");
-    }
-  };
+  const [editNodeConfigModalOpen, setEditNodeConfigModalOpen] = useState(false);
+  const [editingWorker, setEditingWorker] = useState(false);
 
   return (
-    <>
-      <GlobeWrapper $hoverable={globeHoverable}>
-        <MemoGlobe
-          labelsData={nodes}
-          labelLat={(d: any) => (d as typeof nodes[0]).latitude}
-          labelLng={(d: any) => (d as typeof nodes[0]).longitude}
-          labelText={(d: any) => {
-            const node = d as typeof nodes[0];
+    <Wrapper>
+      <BlurWrapper>
+        <Animate transitionName="fadeandzoom" transitionAppear>
+          <div>
+            <EditNodeConfigModal
+              open={editNodeConfigModalOpen}
+              onDone={(definition) => {
+                setEditNodeConfigModalOpen(false);
 
-            return `${node.privateIP} (${node.location}, ${node.publicIP})`;
-          }}
-          labelSize={(d: any) => Math.sqrt((d as typeof nodes[0]).size) * 3e-4}
-          labelDotRadius={(d: any) =>
-            Math.sqrt((d as typeof nodes[0]).size) * 2e-4
-          }
-          labelColor={() => "#faad14"}
-          onLabelClick={(node: any) =>
-            selectedNode?.privateIP === node.privateIP
-              ? !inspectorOpen
-                ? setInspectorOpen(true)
-                : setSelectedNode(undefined)
-              : setSelectedNode(
-                  nodes.find(
-                    (candidate) => candidate.privateIP === node.privateIP
-                  )
-                )
-          }
-          onLabelHover={(label: any) =>
-            label ? setGlobeHoverable(true) : setGlobeHoverable(false)
-          }
-          pathsData={connectionPaths}
-          pathPoints="coords"
-          pathPointLat={(c: any) => c[1]}
-          pathPointLng={(c: any) => c[0]}
-          pathLabel={(c: any) => c.properties.name}
-          pathColor={(c: any) => c.properties.color}
-          pathDashLength={0.1}
-          pathDashGap={0.008}
-          pathDashAnimateTime={12000}
-          globeImageUrl={earthTexture as string}
-          bumpImageUrl={earthElevation as string}
-          backgroundImageUrl={universeTexture as string}
-          waitForGlobeReady
-          width={width}
-          height={height}
-          ref={globeRef}
-        />
-      </GlobeWrapper>
-
-      <Animate transitionName="fadeandslide" transitionAppear>
-        {statsOpen && (
-          <Stats
-            size="small"
-            title={
-              <Space>
-                <FontAwesomeIcon fixedWidth icon={faNetworkWired} />
-                {t("cluster") + " " + clusterId}
-              </Space>
-            }
-            extra={
-              <Button
-                type="text"
-                shape="circle"
-                onClick={() => setStatsOpen(false)}
-              >
-                <FontAwesomeIcon icon={faWindowMinimize} />
-              </Button>
-            }
-          >
-            <StatsWrapper>
-              <Statistic
-                title={t("node", { count: 4 })}
-                value={4}
-                prefix={<FontAwesomeIcon fixedWidth icon={faMobile} />}
-              />
-              <Statistic
-                title={t("resource", { count: 16 })}
-                value={16}
-                prefix={<FontAwesomeIcon fixedWidth icon={faCube} />}
-              />
-            </StatsWrapper>
-
-            <StatsDivider />
-
-            <StatsWrapper $long>
-              <Statistic
-                title={
-                  <Space>
-                    <FontAwesomeIcon icon={faMicrochip} />
-                    {t("compute")}
-                  </Space>
-                }
-                value={1560}
-                suffix={t("point", { count: 1560 })}
-              />
-              <Statistic
-                title={
-                  <Space>
-                    <FontAwesomeIcon icon={faWifi} />
-                    {t("network")}
-                  </Space>
-                }
-                value={920}
-                suffix={t("mbps", { count: 920 })}
-              />
-            </StatsWrapper>
-
-            <Collapse defaultActiveKey={[]} ghost destroyInactivePanel>
-              <Collapse.Panel
-                header={t("computeDistribution")}
-                key="computeDistribution"
-              >
-                <NodeChart
-                  data={computeStats}
-                  colors={[
-                    "#1890ff",
-                    "#096dd9",
-                    "#0050b3",
-                    "#003a8c",
-                    "#002766",
-                  ]}
-                  onClick={(ip) =>
-                    _setSelectedNode((selectedNode: any) =>
-                      setSelectedNode(
-                        selectedNode && selectedNode?.privateIP === ip
-                          ? undefined
-                          : nodes.find(
-                              (candidate) => candidate.privateIP === ip
-                            )
-                      )
-                    )
-                  }
-                />
-              </Collapse.Panel>
-
-              <Collapse.Panel
-                header={t("networkingDistribution")}
-                key="networkingDistribution"
-              >
-                <NodeChart
-                  data={networkingStats}
-                  colors={[
-                    "#faad14",
-                    "#d48806",
-                    "#ad6800",
-                    "#874d00",
-                    "#613400",
-                  ]}
-                  onClick={(ip) =>
-                    _setSelectedNode((selectedNode: any) =>
-                      setSelectedNode(
-                        selectedNode && selectedNode?.privateIP === ip
-                          ? undefined
-                          : nodes.find(
-                              (candidate) => candidate.privateIP === ip
-                            )
-                      )
-                    )
-                  }
-                />
-              </Collapse.Panel>
-            </Collapse>
-          </Stats>
-        )}
-      </Animate>
-
-      <Animate transitionName="fadeandslide" transitionAppear>
-        {selectedNode && inspectorOpen && (
-          <Inspector
-            size="small"
-            title={
-              <Space>
-                <FontAwesomeIcon fixedWidth icon={faMobile} />
-                {t("node") + " " + selectedNode.privateIP}
-              </Space>
-            }
-            extra={
-              <Space>
-                <Link href={`/explorer?privateIP=${selectedNode.privateIP}`}>
-                  <Tooltip title={t("openInExplorer")} placement="bottom">
-                    <Button type="text" shape="circle">
-                      <FontAwesomeIcon icon={faBinoculars} />
-                    </Button>
-                  </Tooltip>
-                </Link>
-
-                <Button
-                  type="text"
-                  shape="circle"
-                  onClick={() => setInspectorOpen(false)}
-                >
-                  <FontAwesomeIcon icon={faWindowMinimize} />
-                </Button>
-
-                <Button
-                  type="text"
-                  shape="circle"
-                  onClick={() => setSelectedNode(undefined)}
-                >
-                  <FontAwesomeIcon icon={faTimes} />
-                </Button>
-              </Space>
-            }
-          >
-            <StatsWrapper $long>
-              <Space>
-                <FontAwesomeIcon icon={faMapMarkerAlt} size="lg" />
-                {selectedNode.location}
-              </Space>
-              <Space>
-                <FontAwesomeIcon icon={faGlobe} size="lg" />
-                {selectedNode.publicIP}
-              </Space>
-            </StatsWrapper>
-
-            <StatsDivider />
-
-            <StatsWrapper $long>
-              <Statistic
-                title={
-                  <Space>
-                    <FontAwesomeIcon icon={faMicrochip} />
-                    {t("compute")}
-                  </Space>
-                }
-                value={
-                  computeStats.find(
-                    (candidate) => candidate.ip === selectedNode?.privateIP
-                  )?.score
-                }
-                suffix={t("point", {
-                  count: computeStats.find(
-                    (candidate) => candidate.ip === selectedNode?.privateIP
-                  )?.score,
-                })}
-              />
-              <Statistic
-                title={
-                  <Space>
-                    <FontAwesomeIcon icon={faWifi} />
-                    {t("network")}
-                  </Space>
-                }
-                value={
-                  networkingStats.find(
-                    (candidate) => candidate.ip === selectedNode?.privateIP
-                  )?.score
-                }
-                suffix={t("mbps", {
-                  count: networkingStats.find(
-                    (candidate) => candidate.ip === selectedNode?.privateIP
-                  )?.score,
-                })}
-              />
-            </StatsWrapper>
-
-            <StatsDivider />
-
-            <ResourceList direction="vertical">
-              <Input.Search
-                placeholder={t("filterResources")}
-                onChange={(e) => setResourceNameFilter(e.target.value)}
-                value={resourceNameFilter}
-              />
-
-              <List>
-                {(() => {
-                  const matchingResources = resources.filter(
-                    (resource) => resource.node === selectedNode?.privateIP
-                  );
-
-                  if (matchingResources.length === 0) {
-                    return (
-                      <Empty
-                        description={t("noResourcesDeployed")}
-                        image={Empty.PRESENTED_IMAGE_SIMPLE}
-                      />
+                try {
+                  if (editingWorker) {
+                    router.push(
+                      `/join?id=${clusterId}&nodeConfig=${urlencodeYAMLAll(
+                        definition
+                      )}`
                     );
                   } else {
-                    const filteredResources =
-                      resourceNameFilter.length === 0
-                        ? matchingResources
-                        : matchingResources.filter(
-                            (resource) =>
-                              resource.name
-                                .toLowerCase()
-                                .includes(resourceNameFilter.toLowerCase()) ||
-                              resource.kind
-                                .toLowerCase()
-                                .includes(resourceNameFilter.toLowerCase())
-                          );
-
-                    if (filteredResources.length === 0) {
-                      return (
-                        <Empty
-                          description={t("noMatchingResourcesFound")}
-                          image={Empty.PRESENTED_IMAGE_SIMPLE}
-                        />
-                      );
-                    } else {
-                      return filteredResources.map((resource, index) => (
-                        <ResourceItem
-                          onClick={(e) => {
-                            e.stopPropagation();
-
-                            router.push(
-                              `/explorer?resource=${stringifyResourceKey(
-                                resource.label,
-                                resource.kind,
-                                resource.node
-                              )}`
-                            );
-                          }}
-                          actions={[
-                            resource.kind === "Workload" && (
-                              <Tooltip title={t("openInTerminal")}>
-                                <Button type="text" shape="circle">
-                                  <FontAwesomeIcon icon={faTerminal} />
-                                </Button>
-                              </Tooltip>
-                            ),
-                            <Dropdown
-                              overlay={
-                                <Menu>
-                                  <Menu.Item
-                                    key="openInExplorer"
-                                    onClick={(e) => {
-                                      e.domEvent.stopPropagation();
-
-                                      router.push(
-                                        `/explorer?resource=${stringifyResourceKey(
-                                          resource.label,
-                                          resource.kind,
-                                          resource.node
-                                        )}`
-                                      );
-                                    }}
-                                  >
-                                    <Space>
-                                      <FontAwesomeIcon
-                                        fixedWidth
-                                        icon={faBinoculars}
-                                      />
-                                      {t("openInExplorer")}
-                                    </Space>
-                                  </Menu.Item>
-
-                                  <Menu.Item key="delete">
-                                    <Space>
-                                      <FontAwesomeIcon
-                                        fixedWidth
-                                        icon={faTrash}
-                                      />
-                                      {t("delete")}
-                                    </Space>
-                                  </Menu.Item>
-                                </Menu>
-                              }
-                            >
-                              <Button type="text" shape="circle">
-                                <FontAwesomeIcon icon={faEllipsisV} />
-                              </Button>
-                            </Dropdown>,
-                          ].filter((component) => component)}
-                          key={index}
-                        >
-                          <List.Item.Meta
-                            title={
-                              <>
-                                {resource.name}{" "}
-                                <Text code>{resource.kind}</Text>
-                              </>
-                            }
-                          />
-                        </ResourceItem>
-                      ));
-                    }
+                    router.push(
+                      `/created?nodeConfig=${urlencodeYAMLAll(definition)}`
+                    );
                   }
-                })()}
-              </List>
-            </ResourceList>
-          </Inspector>
-        )}
-      </Animate>
-
-      <Animate transitionName="fadeandzoom" transitionAppear>
-        <GlobeActions>
-          <Button
-            type="text"
-            onClick={getUserCoordinates}
-            loading={loadingUserCoordinates}
-            icon={<FontAwesomeIcon icon={faLocationArrow} />}
-          />
-
-          {!statsOpen && (
-            <Button
-              type="text"
-              onClick={() => setStatsOpen(true)}
-              icon={<FontAwesomeIcon icon={faNetworkWired} />}
+                } catch (e) {
+                  console.error("could not parse definition", e);
+                }
+              }}
+              onCancel={() => {
+                unstable_batchedUpdates(() => {
+                  setEditingWorker(false);
+                  setEditNodeConfigModalOpen(false);
+                });
+              }}
             />
-          )}
 
-          {!inspectorOpen && selectedNode && (
-            <Button
-              type="text"
-              onClick={() => setInspectorOpen(true)}
-              icon={<FontAwesomeIcon icon={faMobile} />}
-            />
-          )}
-        </GlobeActions>
-      </Animate>
-    </>
+            <Image alt={t("webnetesLogo")} src="/logo.svg" />
+
+            <ActionSplit>
+              <div>
+                <Action direction="vertical" align="center">
+                  <ActionIcon icon={faPlus} size="3x" />
+
+                  <Text strong>{t("createClusterIntro")}</Text>
+
+                  <Text>{t("createClusterDescription")}</Text>
+
+                  <Dropdown.Button
+                    onClick={() =>
+                      router.push(
+                        `/created?nodeConfig=${urlencodeYAMLAll(node)}`
+                      )
+                    }
+                    overlay={
+                      <Menu>
+                        <Menu.Item
+                          key="cluster"
+                          onClick={() => setEditNodeConfigModalOpen(true)}
+                        >
+                          <Space>
+                            <FontAwesomeIcon fixedWidth icon={faCogs} />
+                            {t("advancedNodeConfig")}
+                          </Space>
+                        </Menu.Item>
+                      </Menu>
+                    }
+                    type="primary"
+                  >
+                    {t("create")} {t("cluster")}
+                  </Dropdown.Button>
+                </Action>
+
+                <DividerWrapper>
+                  <Divider />
+
+                  <span>{t("or")}</span>
+
+                  <Divider />
+                </DividerWrapper>
+
+                <Action direction="vertical" align="center">
+                  <ActionIcon icon={faHandshake} size="3x" />
+
+                  <Text strong>{t("joinClusterIntro")}</Text>
+
+                  <Text>{t("joinClusterDescription")}</Text>
+
+                  <Space>
+                    <Input
+                      placeholder={t("clusterId")}
+                      value={clusterId}
+                      onChange={(e) => setClusterId(e.target.value)}
+                      onKeyDown={(e) =>
+                        e.key === "Enter" &&
+                        clusterId &&
+                        router.push(
+                          `/join?id=${clusterId}&nodeConfig=${urlencodeYAMLAll(
+                            node
+                          )}`
+                        )
+                      }
+                    />
+
+                    <Dropdown.Button
+                      onClick={() =>
+                        clusterId &&
+                        router.push(
+                          `/join?id=${clusterId}&nodeConfig=${urlencodeYAMLAll(
+                            node
+                          )}`
+                        )
+                      }
+                      overlay={
+                        <Menu>
+                          <Menu.Item
+                            key="cluster"
+                            onClick={() => {
+                              clusterId &&
+                                unstable_batchedUpdates(() => {
+                                  setEditingWorker(true);
+                                  setEditNodeConfigModalOpen(true);
+                                });
+                            }}
+                          >
+                            <Space>
+                              <FontAwesomeIcon fixedWidth icon={faCogs} />
+                              {t("advancedNodeConfig")}
+                            </Space>
+                          </Menu.Item>
+                        </Menu>
+                      }
+                      type="primary"
+                    >
+                      {t("joinCluster")}
+                    </Dropdown.Button>
+                  </Space>
+                </Action>
+              </div>
+            </ActionSplit>
+          </div>
+        </Animate>
+      </BlurWrapper>
+    </Wrapper>
   );
 }
 
-const GlobeWrapper = styled.div<{ $hoverable: boolean }>`
-  ${(props) => (props.$hoverable ? "cursor: pointer;" : "")}
-`;
+const Wrapper = styled.div`
+  background: url(${bg}) no-repeat center center fixed;
+  background-size: cover;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100%;
+  position: relative;
 
-const Inspector = styled(Card)`
-  position: absolute;
-  height: calc(100% - 64px - 64px); // Top & bottom menus
-  overflow-y: auto;
-  min-width: 20rem;
-  top: 64px;
-  border: 0;
-  left: 0;
-  right: 0;
-  margin: 0;
-  ${glass}
-
-  .ant-card-head {
-    border-bottom: 0;
+  &::after {
+    position: absolute;
+    content: "";
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: linear-gradient(
+      black,
+      transparent,
+      transparent,
+      transparent,
+      transparent,
+      transparent,
+      transparent,
+      black
+    );
+    pointer-events: none;
   }
 
-  .ant-card-body {
-    padding: 0;
-  }
-
-  @media screen and (min-width: 812px) {
-    height: calc(100% - 64px - 2rem); // Navbar & self-margins
-    border: 1px solid #303030;
-    left: auto;
-    right: 50px;
-    margin: 1rem;
-    margin-right: 0;
-  }
-`;
-
-const Stats = styled(Card)`
-  position: absolute;
-  // The last part is the bottom toolbar
-  max-height: calc(100% - 64px - 64px); // Top & bottom menus
-  min-width: calc(5rem * 3); // NavigationButton * 3
-  overflow-y: auto;
-  bottom: 64px;
-  border-bottom: 0;
-  border-left: 0;
-  border-right: 0;
-  left: 0;
-  right: 0;
-  margin: 0;
-
-  .ant-card-head {
-    border-bottom: 0;
-  }
-
-  .ant-card-body {
-    padding: 0;
-  }
-
-  ${glass}
-
-  @media screen and (min-width: 812px) {
-    top: 64px;
-    left: 50px;
-    right: auto;
-    bottom: auto;
-    border: 1px solid #303030;
-    max-height: calc(100% - 64px - 2rem - 32px - 1rem);
-    margin: 1rem;
-    margin-left: 0;
+  > * {
+    width: 100%;
   }
 `;
 
-const GlobeTmpl = dynamic(() => import("../components/globe"), {
-  ssr: false,
-});
-const Globe = forwardRef((props: any, ref) => (
-  <GlobeTmpl {...props} forwardRef={ref} />
-));
-const MemoGlobe = memo(Globe);
-
-const GlobeActions = styled.div`
-  position: absolute !important;
-  bottom: 64px;
-  border: 1px solid #303030;
-  margin: 1rem;
-  right: 0;
-  ${glass}
-
-  @media screen and (min-width: 812px) {
-    bottom: 0;
-    left: 50px;
-    right: auto;
-    margin-left: 0;
-  }
-
-  > *:first-child:not(:last-child) {
-    border-right: 1px solid #303030;
-  }
-`;
-
-const StatsWrapper = styled.div<{ $long?: boolean }>`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  padding: 12px 16px;
-
-  ${(props) =>
-    props.$long
-      ? ".ant-statistic-content { font-size: 20px !important; }"
-      : "padding-bottom: 6px;"}
-`;
-
-const StatsDivider = styled(Divider)`
-  margin: 0.25rem 0;
-`;
-
-const ResourceList = styled(Space)`
-  padding: 12px 16px;
+const BlurWrapper = styled.div`
   width: 100%;
+  position: relative;
+  padding-bottom: 4rem; // Visual centering offset for logo
+
+  .ant-input,
+  .ant-btn {
+    ${glass}
+  }
+
+  &::after {
+    position: absolute;
+    content: "";
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    ${glass}
+    pointer-events: none;
+    -webkit-mask-image: -webkit-gradient(
+      linear,
+      left 0%,
+      left 100%,
+      color-stop(100%, rgba(0, 0, 0, 0)),
+      color-stop(80%, rgba(0, 0, 0, 0.7)),
+      color-stop(50%, rgba(0, 0, 0, 1)),
+      color-stop(20%, rgba(0, 0, 0, 0.7)),
+      color-stop(0%, rgba(0, 0, 0, 0))
+    );
+    transform: scaleY(1.5);
+  }
+
+  * {
+    z-index: 10;
+  }
+`;
+
+const Image = styled.img`
+  position: relative;
+  width: 100%;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  padding-right: 1rem;
+  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.5));
+  max-height: 10rem;
+`;
+
+const ActionSplit = styled.div`
+  position: relative;
+  width: 100%;
+
+  > * {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin: 0 auto;
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: 1fr;
+    align-items: center;
+    justify-items: center;
+    max-width: 45rem;
+    margin-bottom: 2rem;
+
+    .ant-btn-primary {
+      box-shadow: none !important;
+
+      &:last-child:not(:first-child) {
+        border-color: rgb(67, 67, 67) !important;
+        border-left: 0;
+      }
+
+      &:first-child {
+        background: #177ddc94 !important;
+
+        &:hover {
+          background: #177ddc !important;
+        }
+      }
+    }
+
+    @media screen and (min-width: 812px) {
+      grid-template-columns: 6fr 1fr 6fr;
+    }
+  }
+`;
+
+const Action = styled(Space)`
+  text-align: center;
+
+  > *:last-child {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+  }
+`;
+
+const ActionIcon = styled(FontAwesomeIcon)`
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.5));
+`;
+
+const DividerWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  > *:not(:first-child):not(:last-child) {
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+
+  > *:first-child,
+  > *:last-child {
+    flex: 1;
+  }
+
+  @media screen and (min-width: 812px) {
+    height: 100%;
+    flex-direction: column;
+
+    > *:not(:first-child):not(:last-child) {
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+    }
+  }
+`;
+
+const Divider = styled.div`
+  border-bottom: 0.5px solid rgba(255, 255, 255, 0.85) !important;
+
+  @media screen and (min-width: 812px) {
+    border-right: 0.5px solid rgba(255, 255, 255, 0.85) !important;
+  }
 `;
 
 export default HomePage;

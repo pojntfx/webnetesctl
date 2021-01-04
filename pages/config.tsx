@@ -28,7 +28,7 @@ import nodeResource, { nodeId } from "../data/node";
 import packageJSON from "../package.json";
 import glass from "../styles/glass";
 
-function Config() {
+function ConfigPage() {
   const { t } = useTranslation();
 
   const [publicIP, setPublicIP] = useState("");
@@ -295,4 +295,4 @@ const ResourceEditor = styled(ResourceEditorTmpl)`
   }
 `;
 
-export default Config;
+export default ConfigPage;

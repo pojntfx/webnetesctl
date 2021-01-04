@@ -2,6 +2,7 @@ import { Space } from "antd";
 import LayoutTmpl from "antd/lib/layout/layout";
 import styled from "styled-components";
 import bg from "../img/night-sky.png";
+import afterWrapperBg from "../img/fernando-rodrigues-sGJUb5HJBqs-unsplash.jpg";
 import glass from "../styles/glass";
 
 export const Wrapper = styled.div`
@@ -70,7 +71,7 @@ export const BlurWrapper = styled.div`
 `;
 
 export const AfterWrapper = styled.div`
-  background: url(${bg}) no-repeat center center fixed;
+  background: url(${afterWrapperBg}) no-repeat center center fixed;
   background-size: cover;
   overflow: hidden;
   display: flex;

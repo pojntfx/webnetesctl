@@ -49,7 +49,7 @@ import resources from "../data/resources.json";
 import { filterKeys } from "../utils/filter-keys";
 import { parseResourceKey, stringifyResourceKey } from "../utils/resource-key";
 
-function Explorer() {
+function ExplorerPage() {
   const { t } = useTranslation();
   const router = useRouter();
 
@@ -254,7 +254,7 @@ function Explorer() {
             onClick={(e) => {
               e.stopPropagation();
 
-              router.push(`/?privateIP=${privateIP}`);
+              router.push(`/overview?privateIP=${privateIP}`);
             }}
           >
             <FontAwesomeIcon icon={faGlobe} />
@@ -697,4 +697,4 @@ const ResourceEditor = styled(ResourceEditorTmpl)`
   margin-bottom: -16px;
 `;
 
-export default Explorer;
+export default ExplorerPage;

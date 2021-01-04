@@ -20,8 +20,8 @@ const Navbar = ({ path, ...otherProps }: INavbarProps) => {
 
   return (
     <NavigationMenu {...otherProps}>
-      <Link href="/">
-        <NavigationButton type={path === "/" ? "primary" : "text"}>
+      <Link href="/overview">
+        <NavigationButton type={path === "/overview" ? "primary" : "text"}>
           <FontAwesomeIcon size="lg" icon={faGlobe} fixedWidth />
           {t("overview")}
         </NavigationButton>

@@ -16,8 +16,6 @@ import {
   ContentWrapper,
 } from "../components/layout-wrapper";
 import { QRLink } from "../components/qr-link";
-import bg from "../img/fernando-rodrigues-sGJUb5HJBqs-unsplash.jpg";
-import glass from "../styles/glass";
 
 const confettiConfig = {
   angle: 90,
@@ -33,7 +31,7 @@ const confettiConfig = {
   colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"],
 };
 
-function Created() {
+function CreatedPage() {
   const { t } = useTranslation();
 
   const [link, setLink] = useState<string>();
@@ -43,7 +41,7 @@ function Created() {
     setLink(
       `${
         typeof window !== "undefined" && window.location.origin
-      }/worker?id=127.0.2&nodeConfig=${router.query.nodeConfig as string}`
+      }/join?id=127.0.2&nodeConfig=${router.query.nodeConfig as string}`
     );
   }, []);
 
@@ -69,7 +67,7 @@ function Created() {
             </ShareNoteWrapper>
 
             <ActionBar>
-              <Link href="/">
+              <Link href="/overview">
                 <ActionButton type="primary">
                   <Space>
                     <FontAwesomeIcon icon={faArrowRight} />
@@ -131,4 +129,4 @@ const ShareNoteWrapper = styled.div`
   width: 100%;
 `;
 
-export default Created;
+export default CreatedPage;
