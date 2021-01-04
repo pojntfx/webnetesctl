@@ -29,8 +29,8 @@ const TerminalModal: React.FC<ITerminalModalProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const ref = useCallback((xterm: XTerm) => {
-    xterm && onTerminalCreated("echo_server", xterm);
+  const ref = useCallback((label: string, xterm: XTerm | null) => {
+    xterm && onTerminalCreated(label, xterm);
   }, []);
 
   return (
@@ -73,7 +73,7 @@ const TerminalModal: React.FC<ITerminalModalProps> = ({
                   onStdin(label, key);
                 }
               }}
-              ref={(ref as unknown) as React.RefObject<XTerm>}
+              ref={(xterm) => ref(label, xterm)}
             />
           </Collapse.Panel>
         ))}
@@ -91,6 +91,10 @@ const Modal = styled(ModalTmpl)`
   .ant-modal-body {
     padding-left: 0;
     padding-right: 0;
+  }
+
+  .ant-collapse-content-box {
+    overflow-x: auto;
   }
 
   .xterm-viewport {
