@@ -5,6 +5,7 @@ import Text from "antd/lib/typography/Text";
 import { useRouter } from "next/router";
 import Animate from "rc-animate";
 import { useState } from "react";
+import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import EditNodeConfigModal from "../components/edit-node-config-modal";
@@ -19,6 +20,7 @@ function Start() {
 
   const [clusterId, setClusterId] = useState<string>();
   const [editNodeConfigModalOpen, setEditNodeConfigModalOpen] = useState(false);
+  const [editingWorker, setEditingWorker] = useState(false);
 
   return (
     <Wrapper>
@@ -31,14 +33,27 @@ function Start() {
                 setEditNodeConfigModalOpen(false);
 
                 try {
-                  router.push(
-                    `/created?nodeConfig=${urlencodeYAMLAll(definition)}`
-                  );
+                  if (editingWorker) {
+                    router.push(
+                      `/worker?id=${clusterId}&nodeConfig=${urlencodeYAMLAll(
+                        definition
+                      )}`
+                    );
+                  } else {
+                    router.push(
+                      `/created?nodeConfig=${urlencodeYAMLAll(definition)}`
+                    );
+                  }
                 } catch (e) {
                   console.error("could not parse definition", e);
                 }
               }}
-              onCancel={() => setEditNodeConfigModalOpen(false)}
+              onCancel={() => {
+                unstable_batchedUpdates(() => {
+                  setEditingWorker(false);
+                  setEditNodeConfigModalOpen(false);
+                });
+              }}
             />
 
             <Image alt={t("webnetesLogo")} src="/logo.svg" />
@@ -92,15 +107,46 @@ function Start() {
 
                   <Text>{t("joinClusterDescription")}</Text>
 
-                  <Input.Search
-                    enterButton={t("joinCluster")}
-                    placeholder={t("clusterId")}
-                    value={clusterId}
-                    onChange={(e) => setClusterId(e.target.value)}
-                    onSearch={() =>
-                      clusterId && router.push(`/worker?id=${clusterId}`)
-                    }
-                  />
+                  <Space>
+                    <Input
+                      placeholder={t("clusterId")}
+                      value={clusterId}
+                      onChange={(e) => setClusterId(e.target.value)}
+                    />
+
+                    <Dropdown.Button
+                      onClick={() =>
+                        clusterId &&
+                        router.push(
+                          `/worker?id=${clusterId}&nodeConfig=${urlencodeYAMLAll(
+                            node
+                          )}`
+                        )
+                      }
+                      overlay={
+                        <Menu>
+                          <Menu.Item
+                            key="cluster"
+                            onClick={() => {
+                              clusterId &&
+                                unstable_batchedUpdates(() => {
+                                  setEditingWorker(true);
+                                  setEditNodeConfigModalOpen(true);
+                                });
+                            }}
+                          >
+                            <Space>
+                              <FontAwesomeIcon fixedWidth icon={faCogs} />
+                              {t("advancedNodeConfig")}
+                            </Space>
+                          </Menu.Item>
+                        </Menu>
+                      }
+                      type="primary"
+                    >
+                      {t("joinCluster")}
+                    </Dropdown.Button>
+                  </Space>
                 </Action>
               </div>
             </ActionSplit>

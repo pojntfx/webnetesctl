@@ -10,7 +10,7 @@ import {
   faHandPeace,
   faLocationArrow,
   faMapMarkerAlt,
-  faMobile
+  faMobile,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Card as CardTmpl, Space, Tooltip } from "antd";
@@ -36,7 +36,7 @@ import { urldecodeYAMLAll, urlencodeYAMLAll } from "../utils/urltranscode";
 import {
   BlurWrapper as BlurWrapperTmpl,
   ContentWrapper as ContentWrapperTmpl,
-  Wrapper
+  Wrapper,
 } from "./created";
 
 const particlesConfig: typeof ParticlesTmpl["arguments"] = {
@@ -529,6 +529,7 @@ const IntroTitle = styled(Title)`
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+  text-align: center;
 `;
 
 const CardSpaceWrapper = styled.div<any>``;
