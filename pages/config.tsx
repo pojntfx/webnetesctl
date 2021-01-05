@@ -19,13 +19,13 @@ import { useCallback, useEffect, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { TitleSpace, Wrapper } from "../components/layout-wrapper";
+import { LocationButton } from "../components/buttons";
+import { ManagerWrapper, TitleSpace } from "../components/layouts";
 import ResourceEditorTmpl from "../components/resource-editor";
-import { LocationButton } from "../components/lists";
+import { BareLink, MoreLink } from "../components/typography";
 import nodeResource, { nodeId } from "../data/node";
 import packageJSON from "../package.json";
 import glass from "../styles/glass";
-import { MoreLink, BareLink } from "../components/typography";
 
 /**
  * ConfigPage allows the user to get some info about their current node.
@@ -106,7 +106,7 @@ function ConfigPage() {
   }, []);
 
   return (
-    <Wrapper>
+    <ManagerWrapper>
       <Animate transitionName="fadeandzoom" transitionAppear>
         <div>
           {/* Node metadata */}
@@ -224,7 +224,7 @@ function ConfigPage() {
           </MoreLink>
         </div>
       </Animate>
-    </Wrapper>
+    </ManagerWrapper>
   );
 }
 

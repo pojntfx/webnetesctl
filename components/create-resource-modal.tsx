@@ -22,7 +22,7 @@ import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import nodes from "../data/nodes.json";
-import { TitleSpace } from "./layout-wrapper";
+import { TitleSpace } from "./layouts";
 import ResourceEditorTmpl from "./resource-editor";
 import { BareLink } from "./typography";
 

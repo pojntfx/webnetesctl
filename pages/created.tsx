@@ -9,14 +9,14 @@ import { useEffect, useState } from "react";
 import Confetti from "react-dom-confetti";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
+import { CreatedFooterBar, CreatedHeaderBar } from "../components/bars";
 import {
   AfterWrapper,
   BlurWrapper,
   ContentWrapper,
-} from "../components/layout-wrapper";
+} from "../components/layouts";
 import { QRLink } from "../components/qr-link";
 import { IlluminatedIcon, IlluminatedTitle } from "../components/typography";
-import { CreatedHeaderBar, CreatedFooterBar } from "../components/bars";
 
 const confettiConfig = {
   angle: 90,

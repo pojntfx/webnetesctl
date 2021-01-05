@@ -34,13 +34,3 @@ export const ResourceItem = styled(List.Item)`
     margin-left: 1rem;
   }
 `;
-
-export const LocationButton: any = styled(Button)`
-  &:not(.ant-btn-loading) {
-    > *:first-child {
-      /* Visual centering of location arrow */
-      margin-top: 0.35rem;
-      width: 0.9rem !important;
-    }
-  }
-`;

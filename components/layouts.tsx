@@ -5,7 +5,8 @@ import bg from "../img/night-sky.png";
 import afterWrapperBg from "../img/fernando-rodrigues-sGJUb5HJBqs-unsplash.jpg";
 import glass from "../styles/glass";
 
-export const Wrapper = styled.div`
+// Wrapper components
+export const ManagerWrapper = styled.div`
   background: url(${bg}) no-repeat center center fixed;
   background-size: cover;
   overflow: hidden;
@@ -21,10 +22,6 @@ export const Wrapper = styled.div`
     padding-right: 50px;
     padding-bottom: 1rem;
   }
-`;
-
-export const Layout = styled(LayoutTmpl)`
-  background: transparent;
 `;
 
 export const ContentWrapper = styled.div`
@@ -106,6 +103,12 @@ export const AfterWrapper = styled.div`
   }
 `;
 
+// Layout components
+export const Layout = styled(LayoutTmpl)`
+  background: transparent;
+`;
+
+// Space components
 export const WideSpace = styled(Space)`
   width: 100%;
 

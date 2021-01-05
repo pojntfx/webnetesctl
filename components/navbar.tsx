@@ -15,6 +15,11 @@ export interface INavbarProps {
   path: string;
 }
 
+/**
+ * Navbar is the main navigation component.
+ *
+ * @param param0 Props
+ */
 const Navbar = ({ path, ...otherProps }: INavbarProps) => {
   const { t } = useTranslation();
 
@@ -44,6 +49,7 @@ const Navbar = ({ path, ...otherProps }: INavbarProps) => {
   );
 };
 
+// Navigation components
 const NavigationMenu = styled.div`
   height: 100%;
   display: flex;
@@ -59,6 +65,7 @@ const NavigationButton = styled(Button)`
   flex-direction: column;
 `;
 
+// Header components
 export const DesktopHeader = styled(HeaderTmpl)`
   display: none;
   align-items: center;
@@ -89,7 +96,8 @@ export const MobileHeader = styled(HeaderTmpl)`
   }
 `;
 
-export const TabsMobile = styled(HeaderTmpl)`
+// Tab components
+export const MobileTabs = styled(HeaderTmpl)`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -105,6 +113,11 @@ export const TabsMobile = styled(HeaderTmpl)`
   }
 `;
 
+// Search components
+
+/**
+ * SearchInput is the global search menu's dropdown search menu.
+ */
 export const SearchInput = styled(Select)`
   width: 100%;
   max-width: 22.5rem;

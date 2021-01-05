@@ -6,6 +6,12 @@ export interface INodeChartProps {
   onClick: (ip: string) => void;
 }
 
+/**
+ * NodeChart is a visual display of the resources available on a node.
+ * It is used to display compute score and network throughput statistics.
+ *
+ * @param param0 Props
+ */
 const NodeChart: React.FC<INodeChartProps> = ({ data, colors, onClick }) => (
   <Pie
     appendPadding={0}

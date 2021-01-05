@@ -37,10 +37,10 @@ import React, { createRef, useCallback, useEffect, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { TitleSpace, WideSpace, Wrapper } from "../components/layout-wrapper";
+import { ManagerWrapper, TitleSpace, WideSpace } from "../components/layouts";
 import { ResourceItem as ResourceItemTmpl } from "../components/lists";
 import ResourceEditorTmpl from "../components/resource-editor";
-import Table from "../components/table";
+import Table from "../components/tables";
 import { BareTitle } from "../components/typography";
 import computeStats from "../data/compute-stats.json";
 import networkingStats from "../data/networking-stats.json";
@@ -381,7 +381,7 @@ function ExplorerPage() {
   ];
 
   return (
-    <Wrapper>
+    <ManagerWrapper>
       <Animate transitionName="fadeandzoom" transitionAppear>
         <div>
           {/* Nodes */}
@@ -681,7 +681,7 @@ function ExplorerPage() {
           </Animate>
         </div>
       </Animate>
-    </Wrapper>
+    </ManagerWrapper>
   );
 }
 

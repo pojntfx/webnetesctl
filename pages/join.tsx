@@ -17,7 +17,7 @@ import {
   faMobile,
   faRecordVinyl,
   faThumbsUp,
-  faTimes,
+  faTimes
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, notification, Space, Tooltip } from "antd";
@@ -35,6 +35,7 @@ import styled from "styled-components";
 import SpriteText from "three-spritetext";
 import { useWindowSize } from "use-window-size-hook";
 import { JoinFooterBar, JoinHeaderBar } from "../components/bars";
+import { LocationButton as LocationButtonTmpl } from "../components/buttons";
 import EditNodeConfigModal from "../components/edit-node-config-modal";
 import {
   LeftGaugeButton,
@@ -44,21 +45,20 @@ import {
   RightGaugeButton,
   RightGaugeContent,
   RightGaugeToggler,
-  RightGaugeWrapper,
+  RightGaugeWrapper
 } from "../components/gauges";
 import {
   AfterWrapper,
   BlurWrapper as BlurWrapperTmpl,
-  ContentWrapper as ContentWrapperTmpl,
-} from "../components/layout-wrapper";
-import { LocationButton as LocationButtonTmpl } from "../components/lists";
+  ContentWrapper as ContentWrapperTmpl
+} from "../components/layouts";
+import { FocusedTitle, MainTitle } from "../components/typography";
 import composite from "../data/composite.json";
 import localResources from "../data/local-resources.json";
 import network from "../data/network.json";
 import glass from "../styles/glass";
 import { graphGroupColor } from "../styles/graph-group-color";
 import { urldecodeYAMLAll, urlencodeYAMLAll } from "../utils/urltranscode";
-import { MainTitle, FocusedTitle } from "../components/typography";
 
 const particlesConfig: typeof ParticlesTmpl["arguments"] = {
   particles: {

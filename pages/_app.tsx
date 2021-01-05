@@ -11,7 +11,7 @@ import {
   faProjectDiagram,
   faSearch,
   faTerminal,
-  faTimes,
+  faTimes
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -22,7 +22,7 @@ import {
   notification,
   Popover,
   Space,
-  Tooltip,
+  Tooltip
 } from "antd";
 import { Content } from "antd/lib/layout/layout";
 import i18n from "i18next";
@@ -37,12 +37,12 @@ import CreateFileModal from "../components/create-file-modal";
 import CreateResourceModal from "../components/create-resource-modal";
 import GraphModal from "../components/graph-modal";
 import InviteModal from "../components/invite-modal";
-import { Layout } from "../components/layout-wrapper";
+import { Layout } from "../components/layouts";
 import Navbar, {
   DesktopHeader,
   MobileHeader,
-  SearchInput,
-  TabsMobile,
+
+  MobileTabs, SearchInput
 } from "../components/navbar";
 import SearchModal from "../components/search-modal";
 import TerminalModal from "../components/terminal-modal";
@@ -612,9 +612,9 @@ function MyApp({ Component, pageProps }: AppProps) {
             </Content>
 
             {/* Mobile-friendly main navigation */}
-            <TabsMobile>
+            <MobileTabs>
               <Navbar path={router.pathname} />
-            </TabsMobile>
+            </MobileTabs>
           </Layout>
         )}
       </ThemeProvider>

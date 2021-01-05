@@ -19,6 +19,11 @@ export interface ITerminalModalProps {
   labels: string[];
 }
 
+/**
+ * TerminalModal manages multiple label-referenced XTerm terminals.
+ *
+ * @param param0 Props
+ */
 const TerminalModal: React.FC<ITerminalModalProps> = ({
   open,
   onDone,
@@ -30,6 +35,7 @@ const TerminalModal: React.FC<ITerminalModalProps> = ({
   const { t } = useTranslation();
 
   const ref = useCallback((label: string, xterm: XTerm | null) => {
+    // Once the terminal is in the DOM, make it accessible from the outside
     xterm && onTerminalCreated(label, xterm);
   }, []);
 
