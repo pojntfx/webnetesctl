@@ -68,3 +68,14 @@ export const JoinFooterBar = styled.div<{
       ? `padding-bottom: ${props.$padding}px; padding-top: ${props.$padding}px;`
       : ""}
 `;
+
+export const CreatedHeaderBar = styled(Space)`
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+`;
+
+export const CreatedFooterBar = styled.div`
+  padding-bottom: 2rem;
+`;

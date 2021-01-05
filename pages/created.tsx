@@ -2,7 +2,6 @@ import { faArrowRight, faGlassCheers } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Space } from "antd";
 import Text from "antd/lib/typography/Text";
-import TitleTmpl from "antd/lib/typography/Title";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Animate from "rc-animate";
@@ -16,6 +15,8 @@ import {
   ContentWrapper,
 } from "../components/layout-wrapper";
 import { QRLink } from "../components/qr-link";
+import { IlluminatedIcon, IlluminatedTitle } from "../components/typography";
+import { CreatedHeaderBar, CreatedFooterBar } from "../components/bars";
 
 const confettiConfig = {
   angle: 90,
@@ -31,13 +32,22 @@ const confettiConfig = {
   colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"],
 };
 
+/**
+ * CreatedPage is a status page that shows initial sharing info for a newly created cluster.
+ *
+ * It shows the node join info as both a QR code and link, similar to the InviteModal.
+ */
 function CreatedPage() {
+  // Hooks
   const { t } = useTranslation();
-
-  const [link, setLink] = useState<string>();
   const router = useRouter();
 
+  // State
+  const [link, setLink] = useState<string>();
+
+  // Effects
   useEffect(() => {
+    // Link the nodeConfig query parameter to the link
     setLink(
       `${
         typeof window !== "undefined" && window.location.origin
@@ -50,23 +60,30 @@ function CreatedPage() {
       <BlurWrapper>
         <Animate transitionName="fadeandzoom" transitionAppear>
           <ContentWrapper>
+            {/* Confetti effect */}
             <Confetti active={link ? true : false} config={confettiConfig} />
 
-            <Header align="center" size="middle">
-              <Icon icon={faGlassCheers} size="4x" fixedWidth />
+            {/* Header */}
+            <CreatedHeaderBar align="center" size="middle">
+              <IlluminatedIcon icon={faGlassCheers} size="4x" fixedWidth />
 
-              <Title level={1}>{t("clusterCreatedSuccessfully")}</Title>
-            </Header>
+              <IlluminatedTitle level={1}>
+                {t("clusterCreatedSuccessfully")}
+              </IlluminatedTitle>
+            </CreatedHeaderBar>
 
+            {/* QR Code with link */}
             <QRLink link={link || ""} />
 
-            <ShareNoteWrapper>
+            {/* Sharing instructions */}
+            <ShareNotesWrapper>
               <Text strong>{t("scanQRCodeOrShareLinkToInvite")}</Text>
 
               <Text>{t("inviteNotesLaterNote")}</Text>
-            </ShareNoteWrapper>
+            </ShareNotesWrapper>
 
-            <ActionBar>
+            {/* Footer */}
+            <CreatedFooterBar>
               <Link href="/overview">
                 <ActionButton type="primary">
                   <Space>
@@ -75,7 +92,7 @@ function CreatedPage() {
                   </Space>
                 </ActionButton>
               </Link>
-            </ActionBar>
+            </CreatedFooterBar>
           </ContentWrapper>
         </Animate>
       </BlurWrapper>
@@ -83,14 +100,7 @@ function CreatedPage() {
   );
 }
 
-const Icon = styled(FontAwesomeIcon)`
-  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.5));
-`;
-
-const ActionBar = styled.div`
-  padding-bottom: 2rem;
-`;
-
+// Button components
 const ActionButton = styled(Button)`
   background: #177ddc94 !important;
 
@@ -99,25 +109,8 @@ const ActionButton = styled(Button)`
   }
 `;
 
-const Header = styled(Space)`
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
-  padding-top: 3rem;
-  padding-bottom: 3rem;
-`;
-
-const Title = styled(TitleTmpl)`
-  text-shadow: 0 0 3px rgba(255, 255, 255, 0.5);
-  text-align: center;
-  margin-bottom: 0 !important;
-  font-size: 34px !important;
-
-  @media screen and (min-width: 812px) {
-    font-size: 36px !important;
-  }
-`;
-
-const ShareNoteWrapper = styled.div`
+// Wrapper components
+const ShareNotesWrapper = styled.div`
   display: flex;
   flex-direction: column;
   text-align: center;
