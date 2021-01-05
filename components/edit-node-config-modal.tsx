@@ -13,7 +13,7 @@ import { useCallback, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import node from "../data/node";
+import node from "../data/node-config";
 import ResourceEditorTmpl from "./resource-editor";
 import { BareLink, MoreLink } from "./typography";
 

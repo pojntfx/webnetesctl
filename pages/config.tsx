@@ -23,7 +23,7 @@ import { LocationButton } from "../components/buttons";
 import { ManagerWrapper, TitleSpace } from "../components/layouts";
 import ResourceEditorTmpl from "../components/resource-editor";
 import { BareLink, MoreLink } from "../components/typography";
-import nodeResource, { nodeId } from "../data/node";
+import nodeResource, { nodeId } from "../data/node-config";
 import packageJSON from "../package.json";
 import glass from "../styles/glass";
 

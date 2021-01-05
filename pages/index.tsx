@@ -9,7 +9,7 @@ import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import EditNodeConfigModal from "../components/edit-node-config-modal";
-import node from "../data/node";
+import node from "../data/node-config";
 import bg from "../img/fernando-rodrigues-sGJUb5HJBqs-unsplash.jpg";
 import glass from "../styles/glass";
 import { urlencodeYAMLAll } from "../utils/urltranscode";
