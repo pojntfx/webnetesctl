@@ -34,7 +34,7 @@ import Animate from "rc-animate";
 import { createRef, forwardRef, useCallback, useEffect, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import earthTexture from "three-globe/example/img/earth-night.jpg";
 import earthElevation from "three-globe/example/img/earth-topology.png";
@@ -79,6 +79,7 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
   const ref = createRef();
   const { width, height } = useWindowSize();
   const router = useHistory();
+  const location = useLocation();
 
   // State
   const [statsPanelOpen, setStatsPanelOpen] = useState(true);
@@ -147,9 +148,7 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
   useEffect(() => {
     // Map privateIP query parameter to globe position
     if (ref.current) {
-      const privateIP = new URLSearchParams(router.location.search).get(
-        "privateIP"
-      );
+      const privateIP = new URLSearchParams(location.search).get("privateIP");
 
       if (privateIP) {
         const foundNode: any = nodes.find(
@@ -158,6 +157,7 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
 
         unstable_batchedUpdates(() => {
           setCameraActive(true);
+          setInspectorPanelOpen(true);
           _setSelectedNode(foundNode);
         });
       } else {
@@ -167,7 +167,7 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
         });
       }
     }
-  }, [ref, new URLSearchParams(router.location.search).get("privateIP")]);
+  }, [ref, location.search]);
 
   const refreshUserCoordinates = useCallback(() => {
     // Get a user's coordinates and set the globe position accordingly

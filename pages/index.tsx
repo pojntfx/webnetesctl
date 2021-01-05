@@ -174,7 +174,7 @@ function RoutesPage() {
         setSearchQuery(undefined);
       }
     }
-  }, [new URLSearchParams(location.search).get("privateIP"), cluster.nodes]);
+  }, [location.search, cluster.nodes]);
 
   useEffect(() => {
     // Map the resource query parameter to state
@@ -203,7 +203,7 @@ function RoutesPage() {
         setSearchQuery(undefined);
       }
     }
-  }, [new URLSearchParams(location.search).get("resource"), cluster.resources]);
+  }, [location.search, cluster.resources]);
 
   useEffect(() => {
     // Map the privateIP and resource query parameters to state
@@ -213,10 +213,7 @@ function RoutesPage() {
     ) {
       setSearchQuery(undefined);
     }
-  }, [
-    new URLSearchParams(location.search).get("privateIP"),
-    new URLSearchParams(location.search).get("resource"),
-  ]);
+  }, [location.search]);
 
   // Inline components
   const createMenus = (

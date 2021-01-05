@@ -30,7 +30,7 @@ import useDimensions from "react-cool-dimensions";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import ParticlesTmpl from "react-particles-js";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import SpriteText from "three-spritetext";
 import { useWindowSize } from "use-window-size-hook";
@@ -130,6 +130,7 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
   // Hooks
   const { t } = useTranslation();
   const router = useHistory();
+  const location = useLocation();
   const { width, height } = useWindowSize();
   const { ref: bottomBarRef, height: bottomBarHeight } = useDimensions();
   const { ref: rightGaugeRef, height: rightGaugeHeight } = useDimensions();
@@ -231,7 +232,7 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
 
   useEffect(() => {
     // Map the nodeConfig query parameter to state
-    const rawNodeConfig = new URLSearchParams(router.location.search).get(
+    const rawNodeConfig = new URLSearchParams(location.search).get(
       "nodeConfig"
     );
 
@@ -242,7 +243,7 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
         console.log("could not decode node config", e);
       }
     }
-  }, [new URLSearchParams(router.location.search).get("nodeConfig")]);
+  }, [location.search]);
 
   const graphRef = useCallback((graph) => {
     // Zoom graph into view center
@@ -264,7 +265,7 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
 
           try {
             router.push(
-              `/join?id=${new URLSearchParams(router.location.search).get(
+              `/join?id=${new URLSearchParams(location.search).get(
                 "id"
               )}&nodeConfig=${urlencodeYAMLAll(definition)}`
             );
@@ -549,7 +550,7 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
                   />
 
                   <Title level={1}>
-                    {new URLSearchParams(router.location.search).get("id")}
+                    {new URLSearchParams(location.search).get("id")}
                   </Title>
                 </TitleWrapper>
 

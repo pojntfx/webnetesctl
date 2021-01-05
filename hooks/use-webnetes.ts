@@ -8,12 +8,12 @@ import {
 import { IGraph } from "../components/pages/join";
 import { IConnections } from "../components/pages/overview";
 import graphClusterData from "../data/cluster.json";
-import graphNetworkData from "../data/network-local.json";
-import graphResourcesData from "../data/resources-local.json";
 import clusterNodesData from "../data/network-cluster.json";
 import clusterConnectionsData from "../data/network-connections.json";
+import graphNetworkData from "../data/network-local.json";
 import nodeConfigData, { nodeId as nodeIdData } from "../data/node-config";
 import clusterResourcesData from "../data/resources-cluster.json";
+import graphResourcesData from "../data/resources-local.json";
 import statsComputeData from "../data/stats-compute.json";
 import statsNetworkingData from "../data/stats-networking.json";
 

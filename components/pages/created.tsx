@@ -6,7 +6,7 @@ import Animate from "rc-animate";
 import { useEffect, useState } from "react";
 import Confetti from "react-dom-confetti";
 import { useTranslation } from "react-i18next";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { CreatedFooterBar, CreatedHeaderBar } from "../bars";
 import { AfterWrapper, BlurWrapper, ContentWrapper } from "../layouts";
@@ -35,7 +35,7 @@ const confettiConfig = {
 function CreatedPage() {
   // Hooks
   const { t } = useTranslation();
-  const router = useHistory();
+  const location = useLocation();
 
   // State
   const [link, setLink] = useState<string>();
@@ -46,9 +46,9 @@ function CreatedPage() {
     setLink(
       `${
         typeof window !== "undefined" && window.location.origin
-      }/join?id=127.0.2&nodeConfig=${new URLSearchParams(
-        router.location.search
-      ).get("nodeConfig")}`
+      }/join?id=127.0.2&nodeConfig=${new URLSearchParams(location.search).get(
+        "nodeConfig"
+      )}`
     );
   }, []);
 

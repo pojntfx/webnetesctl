@@ -35,7 +35,7 @@ import Animate from "rc-animate";
 import React, { createRef, useCallback, useEffect, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { filterKeys } from "../../utils/filter-keys";
 import {
@@ -92,6 +92,7 @@ export const ExplorerPage: React.FC<IExplorerPageProps> = ({
   // Hooks
   const { t } = useTranslation();
   const router = useHistory();
+  const location = useLocation();
   const ref = createRef<HTMLElement>();
 
   // State
@@ -109,9 +110,7 @@ export const ExplorerPage: React.FC<IExplorerPageProps> = ({
   // Effects
   useEffect(() => {
     // Map privateIP query parameter to selected node
-    const privateIP = new URLSearchParams(router.location.search).get(
-      "privateIP"
-    );
+    const privateIP = new URLSearchParams(location.search).get("privateIP");
 
     if (privateIP) {
       const foundNode: any = nodes.find(
@@ -125,13 +124,11 @@ export const ExplorerPage: React.FC<IExplorerPageProps> = ({
     } else {
       _setSelectedNode(undefined);
     }
-  }, [new URLSearchParams(router.location.search).get("privateIP")]);
+  }, [location.search]);
 
   useEffect(() => {
     // Map resource query parameter to selected resource
-    const resource = new URLSearchParams(router.location.search).get(
-      "resource"
-    );
+    const resource = new URLSearchParams(location.search).get("resource");
 
     if (resource) {
       const { kind, label, node } = parseResourceKey(resource);
@@ -158,7 +155,7 @@ export const ExplorerPage: React.FC<IExplorerPageProps> = ({
     } else {
       _setSelectedResource(undefined);
     }
-  }, [new URLSearchParams(router.location.search).get("resource")]);
+  }, [location.search]);
 
   useEffect(() => {
     // Scroll the selected node/resource into view
