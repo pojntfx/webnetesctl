@@ -1,9 +1,10 @@
+import getPublicIp from "public-ip";
 import { useEffect, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import {
   IClusterNode,
   IClusterResource,
-  INodeScore,
+  INodeScore
 } from "../components/pages/explorer";
 import { IGraph } from "../components/pages/join";
 import { IConnections } from "../components/pages/overview";
@@ -33,6 +34,7 @@ export const useWebnetes = () => {
 
   const [nodeConfig, setNodeConfig] = useState<string>();
   const [nodeId, setNodeId] = useState<string>();
+  const [nodePublicIPv6, setNodePublicIPv6] = useState<string>();
 
   useEffect(() => {
     unstable_batchedUpdates(() => {
@@ -50,6 +52,14 @@ export const useWebnetes = () => {
       setNodeConfig(nodeConfigData);
       setNodeId(nodeIdData);
     });
+  }, []);
+
+  useEffect(() => {
+    // Get the public IPv6 address
+    getPublicIp
+      .v6()
+      .then((ip) => setNodePublicIPv6(ip))
+      .catch((e) => console.log("could not get public IPv6", e));
   }, []);
 
   return {
@@ -71,6 +81,7 @@ export const useWebnetes = () => {
       nodeConfig,
       setNodeConfig,
       nodeId,
+      nodePublicIPv6,
     },
   };
 };

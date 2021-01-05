@@ -103,4 +103,5 @@ export default {
   terminals: "Terminals",
   management: "Management",
   application: "Application",
+  loading: "Loading ...",
 };

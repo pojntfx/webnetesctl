@@ -622,6 +622,7 @@ function RoutesPage() {
                     nodeConfig={local.nodeConfig}
                     setNodeConfig={local.setNodeConfig}
                     nodeId={local.nodeId}
+                    nodePublicIPv6={local.nodePublicIPv6}
                   />
                 )}
               </Route>

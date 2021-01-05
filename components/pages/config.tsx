@@ -29,6 +29,7 @@ import { BareLink, MoreLink } from "../typography";
 export interface IConfigPageProps {
   nodeId: string;
   nodeConfig: string;
+  nodePublicIPv6?: string;
   setNodeConfig: (newNodeConfig: string) => void;
 }
 
@@ -40,14 +41,13 @@ export const ConfigPage: React.FC<IConfigPageProps> = ({
   nodeId,
   nodeConfig,
   setNodeConfig,
+  nodePublicIPv6,
   ...otherProps
 }) => {
   // Hooks
   const { t } = useTranslation();
 
   // State
-  const [publicIP, setPublicIP] = useState("");
-
   const [userCoordinates, setUserCoordinates] = useState<number[]>([
     2.2770202,
     48.8589507,
@@ -58,14 +58,6 @@ export const ConfigPage: React.FC<IConfigPageProps> = ({
   const [userLocationEmoji, setUserLocationEmoji] = useState("");
 
   // Effects
-  useEffect(() => {
-    // Get the public IPv6 address
-    getPublicIp
-      .v6()
-      .then((ip) => setPublicIP(ip))
-      .catch((e) => console.log("could not get public IPv6", e));
-  }, []);
-
   useEffect(() => {
     // Map an address to the user's coordinates
     Nominatim.reverseGeocode({
@@ -183,7 +175,7 @@ export const ConfigPage: React.FC<IConfigPageProps> = ({
                 <dt>
                   <FontAwesomeIcon icon={faGlobe} /> {t("publicIp")}
                 </dt>
-                <dd>{publicIP}</dd>
+                <dd>{nodePublicIPv6 || t("loading")}</dd>
 
                 <dt>
                   <FontAwesomeIcon icon={faMapMarkerAlt} /> {t("location")}
