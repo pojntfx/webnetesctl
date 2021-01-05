@@ -623,6 +623,12 @@ function RoutesPage() {
                     setNodeConfig={local.setNodeConfig}
                     nodeId={local.nodeId}
                     nodePublicIPv6={local.nodePublicIPv6}
+                    latitude={local.location.latitude}
+                    longitude={local.location.longitude}
+                    nodeAddress={local.location.address || ""}
+                    nodeCoordinatesLoading={local.location.loading}
+                    nodeFlag={local.location.flag || ""}
+                    refreshNodeLocation={local.location.refreshLocation}
                   />
                 )}
               </Route>

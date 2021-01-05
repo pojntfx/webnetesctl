@@ -104,4 +104,5 @@ export default {
   management: "Management",
   application: "Application",
   loading: "Loading ...",
+  notSet: "Not set.",
 };

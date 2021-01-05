@@ -31,6 +31,12 @@ export interface IConfigPageProps {
   nodeConfig: string;
   nodePublicIPv6?: string;
   setNodeConfig: (newNodeConfig: string) => void;
+  refreshNodeLocation: () => void;
+  nodeCoordinatesLoading: boolean;
+  latitude: number;
+  longitude: number;
+  nodeAddress: string;
+  nodeFlag: string;
 }
 
 /**
@@ -42,68 +48,16 @@ export const ConfigPage: React.FC<IConfigPageProps> = ({
   nodeConfig,
   setNodeConfig,
   nodePublicIPv6,
+  refreshNodeLocation,
+  nodeCoordinatesLoading,
+  latitude,
+  longitude,
+  nodeAddress,
+  nodeFlag,
   ...otherProps
 }) => {
   // Hooks
   const { t } = useTranslation();
-
-  // State
-  const [userCoordinates, setUserCoordinates] = useState<number[]>([
-    2.2770202,
-    48.8589507,
-  ]);
-  const [userCoordinatesLoading, setUserCoordinatesLoading] = useState(false);
-
-  const [userLocationAddress, setUserLocationAddress] = useState("");
-  const [userLocationEmoji, setUserLocationEmoji] = useState("");
-
-  // Effects
-  useEffect(() => {
-    // Map an address to the user's coordinates
-    Nominatim.reverseGeocode({
-      lat: userCoordinates[1].toString(),
-      lon: userCoordinates[0].toString(),
-      addressdetails: true,
-    }).then((res: any) => {
-      if (res.address?.country_code) {
-        const feat = feature(res.address?.country_code as string);
-
-        if (feat) {
-          unstable_batchedUpdates(() => {
-            setUserLocationAddress(res.display_name);
-            setUserLocationEmoji(feat.properties.emojiFlag!);
-          });
-        }
-      }
-    });
-  }, [userCoordinates]);
-
-  const refreshUserCoordinates = useCallback(() => {
-    // Get a user's coordinates and set them
-    setUserCoordinatesLoading(true);
-
-    typeof window !== "undefined" &&
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          unstable_batchedUpdates(() => {
-            setUserCoordinates([
-              position.coords.longitude,
-              position.coords.latitude,
-            ]);
-            setUserCoordinatesLoading(false);
-          });
-        },
-        (e) => {
-          console.error(
-            "could not get user location, falling back to [0,0]",
-            e
-          );
-
-          setUserCoordinates([0, 0]);
-          setUserCoordinatesLoading(false);
-        }
-      );
-  }, []);
 
   return (
     <ManagerWrapper {...otherProps}>
@@ -126,8 +80,8 @@ export const ConfigPage: React.FC<IConfigPageProps> = ({
                   <LocationButton
                     type="text"
                     shape="circle"
-                    onClick={refreshUserCoordinates}
-                    loading={userCoordinatesLoading}
+                    onClick={refreshNodeLocation}
+                    loading={nodeCoordinatesLoading}
                     icon={<FontAwesomeIcon icon={faLocationArrow} fixedWidth />}
                   />
 
@@ -181,15 +135,17 @@ export const ConfigPage: React.FC<IConfigPageProps> = ({
                   <FontAwesomeIcon icon={faMapMarkerAlt} /> {t("location")}
                 </dt>
                 <dd>
-                  {userLocationAddress}
-                  {`${userLocationEmoji ? " " + userLocationEmoji : ""}`}
+                  {nodeAddress ? nodeAddress : t("notSet")}
+                  {`${nodeFlag ? " " + nodeFlag : ""}`}
                 </dd>
 
                 <dt>
                   <FontAwesomeIcon icon={faThumbtack} /> {t("coordinates")}
                 </dt>
                 <dd>
-                  {userCoordinates[0]}, {userCoordinates[1]}
+                  {latitude === 0 && longitude === 0
+                    ? t("notSet")
+                    : `${latitude}, ${longitude}`}
                 </dd>
               </dl>
             </PhysicialNodeDisplay>
