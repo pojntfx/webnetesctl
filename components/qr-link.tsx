@@ -14,13 +14,18 @@ export interface IQRCodeProps {
   link: string;
 }
 
+/**
+ * QRLink is a QR code with a copyable link.
+ *
+ * @param param0 Props
+ */
 export const QRLink: React.FC<IQRCodeProps> = ({ link, ...otherProps }) => {
   const { t } = useTranslation();
 
   const [copied, setCopied] = useState(false);
 
   return (
-    <Card {...otherProps}>
+    <QRCodeWrapper {...otherProps}>
       <Space direction="vertical" align="center">
         <QRCode
           value={link}
@@ -37,7 +42,7 @@ export const QRLink: React.FC<IQRCodeProps> = ({ link, ...otherProps }) => {
           }}
         />
 
-        <NestedSpace>
+        <LinkWrapper>
           <Text code>
             <BareLink href={link} target="_blank">
               {link}
@@ -69,13 +74,19 @@ export const QRLink: React.FC<IQRCodeProps> = ({ link, ...otherProps }) => {
               </Button>
             </CopyToClipboard>
           </Tooltip>
-        </NestedSpace>
+        </LinkWrapper>
       </Space>
-    </Card>
+    </QRCodeWrapper>
   );
 };
 
-const Card = styled(CardTmpl)`
+const QRCode = styled(dynamic(import("qrcode.react"), { ssr: false }))`
+  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+`;
+
+const QRCodeWrapper = styled(CardTmpl)`
   margin-left: 1rem;
   margin-right: 1rem;
   max-width: calc(100% - 1rem - 1rem);
@@ -94,13 +105,7 @@ const Card = styled(CardTmpl)`
   }
 `;
 
-const QRCode = styled(dynamic(import("qrcode.react"), { ssr: false }))`
-  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.5);
-  width: 100%;
-  height: 100%;
-`;
-
-const NestedSpace = styled(Space)`
+const LinkWrapper = styled(Space)`
   .ant-space-item {
     width: auto;
   }

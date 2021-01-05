@@ -18,6 +18,11 @@ export interface ISearchModalProps {
   onDone: () => void;
 }
 
+/**
+ * SearchModal is a mobile-friendly alternative to an inline search field.
+ *
+ * @param param0 Props
+ */
 const SearchModal: React.FC<ISearchModalProps> = ({
   open,
   nodes,

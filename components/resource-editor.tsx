@@ -12,6 +12,11 @@ export interface IResourceEditorProps {
   one?: boolean;
 }
 
+/**
+ * ResourceEditor is a YAML editor and JSON renderer to edit resources with.
+ *
+ * @param param0 Props
+ */
 const ResourceEditor: React.FC<IResourceEditorProps> = ({
   data,
   onEdit,
@@ -21,6 +26,7 @@ const ResourceEditor: React.FC<IResourceEditorProps> = ({
   const [parsedData, setParsedData] = useState<any>({});
 
   useEffect(() => {
+    // Parse YAML safely for the JSON tree
     try {
       const parsedData = one ? yaml.safeLoad(data) : yaml.safeLoadAll(data);
 
@@ -33,6 +39,7 @@ const ResourceEditor: React.FC<IResourceEditorProps> = ({
   }, [data, one]);
 
   useEffect(() => {
+    // Init the monaco editor with the solarized theme to match the JSON tree
     typeof window !== "undefined" &&
       monaco
         .init()

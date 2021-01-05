@@ -1,7 +1,11 @@
 import Document, { Head, Html, Main, NextScript } from "next/document";
 import { ServerStyleSheet } from "styled-components";
 
+/**
+ * MyDocument enhances Document by adding styled-components SSR support and PWA integration.
+ */
 export default class MyDocument extends Document {
+  // styled-components SSR integration
   static async getInitialProps(ctx: any) {
     const sheet = new ServerStyleSheet();
     const originalRenderPage = ctx.renderPage;
@@ -31,6 +35,7 @@ export default class MyDocument extends Document {
   render() {
     return (
       <Html>
+        {/* PWA configuration */}
         <Head>
           <meta name="theme-color" content="#141414" />
           <link rel="manifest" href="/manifest.json" />
@@ -67,8 +72,10 @@ export default class MyDocument extends Document {
             content="https://webnetesctl.vercel.app/icons/apple-touch-icon.png"
           />
         </Head>
+
         <body>
           <Main />
+
           <NextScript />
         </body>
       </Html>
