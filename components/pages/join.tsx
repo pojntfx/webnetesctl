@@ -17,7 +17,7 @@ import {
   faMobile,
   faRecordVinyl,
   faThumbsUp,
-  faTimes,
+  faTimes
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, notification, Space, Tooltip } from "antd";
@@ -48,12 +48,12 @@ import {
   RightGaugeButton,
   RightGaugeContent,
   RightGaugeToggler,
-  RightGaugeWrapper,
+  RightGaugeWrapper
 } from "../gauges";
 import {
   AfterWrapper,
   BlurWrapper as BlurWrapperTmpl,
-  ContentWrapper as ContentWrapperTmpl,
+  ContentWrapper as ContentWrapperTmpl
 } from "../layouts";
 import { FocusedTitle, MainTitle } from "../typography";
 
@@ -114,6 +114,12 @@ export interface IJoinPageProps {
   network: IGraph;
   cluster: IGraph;
   resources: IGraph;
+  refreshNodeLocation: () => void;
+  nodeCoordinatesLoading: boolean;
+  latitude: number;
+  longitude: number;
+  nodeAddress: string;
+  nodeFlag: string;
 }
 
 /**
@@ -125,6 +131,12 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
   network,
   cluster,
   resources,
+  refreshNodeLocation,
+  nodeCoordinatesLoading,
+  latitude,
+  longitude,
+  nodeAddress,
+  nodeFlag,
   ...otherProps
 }) => {
   // Hooks
@@ -544,6 +556,8 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
                 {/* Node IP */}
                 <TitleWrapper align="center">
                   <LocationButton
+                    onClick={refreshNodeLocation}
+                    loading={nodeCoordinatesLoading}
                     type="text"
                     shape="circle"
                     icon={<FontAwesomeIcon icon={faLocationArrow} fixedWidth />}
@@ -558,7 +572,18 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
                 <Text>
                   <Space>
                     <FontAwesomeIcon icon={faMapMarkerAlt} />
-                    Stuttgart, Germany
+                    <Tooltip
+                      title={`${nodeAddress ? nodeAddress : t("notSet")}
+                      ${nodeFlag ? " " + nodeFlag : ""}`}
+                    >
+                      {nodeAddress
+                        ? nodeAddress
+                            .split(", ")
+                            .filter((_, i) => i <= 3)
+                            .join(", ")
+                        : t("notSet")}
+                      {`${nodeFlag ? " " + nodeFlag : ""}`}
+                    </Tooltip>
                   </Space>
                 </Text>
               </Space>

@@ -265,6 +265,12 @@ function RoutesPage() {
             cluster={graphs.cluster}
             network={graphs.network}
             resources={graphs.resources}
+            latitude={local.location.latitude}
+            longitude={local.location.longitude}
+            nodeAddress={local.location.address || ""}
+            nodeCoordinatesLoading={local.location.loading}
+            nodeFlag={local.location.flag || ""}
+            refreshNodeLocation={local.location.refreshLocation}
           />
         )}
       </Route>
