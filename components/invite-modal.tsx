@@ -15,6 +15,12 @@ export interface IInviteModalProps {
   onDone: () => void;
 }
 
+/**
+ * InviteModal is a simplified version of CreatedPage.
+ * It allows a manager to invite workers while in the management interface.
+ *
+ * @param param0 Props
+ */
 const InviteModal: React.FC<IInviteModalProps> = ({
   open,
   onDone,

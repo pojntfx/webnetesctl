@@ -15,7 +15,7 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import node from "../data/node";
 import ResourceEditorTmpl from "./resource-editor";
-import { BareLink } from "./typography";
+import { BareLink, MoreLink } from "./typography";
 
 export interface IEditNodeConfigModalProps {
   open: boolean;
@@ -24,6 +24,12 @@ export interface IEditNodeConfigModalProps {
   skipConfirmation?: boolean;
 }
 
+/**
+ * EditNodeConfigModal is a universal node configuration editing modal for both workers and managers.
+ * By default it asks for confirmation before closing; use the skipConfirmation to skip this step.
+ *
+ * @param param0 Props
+ */
 const EditNodeConfigModal: React.FC<IEditNodeConfigModalProps> = ({
   open,
   onDone,
@@ -130,7 +136,7 @@ const EditNodeConfigModal: React.FC<IEditNodeConfigModalProps> = ({
             onEdit={(value) => setDefinition(value)}
           />
 
-          <ExternalExampleLink>
+          <MoreLink>
             {t("youCanFindAnExampleInThe")}{" "}
             <BareLink
               href="https://github.com/pojntfx/webnetes/blob/main/app/webnetes_node/node.yaml"
@@ -139,7 +145,7 @@ const EditNodeConfigModal: React.FC<IEditNodeConfigModalProps> = ({
               GitHub Repository <FontAwesomeIcon icon={faExternalLinkAlt} />
             </BareLink>
             .
-          </ExternalExampleLink>
+          </MoreLink>
         </div>
       </Animate>
     </Modal>
@@ -178,10 +184,6 @@ const ResourceEditor = styled(ResourceEditorTmpl)`
   margin-left: -24px;
   margin-right: -24px;
   min-height: 60vh;
-`;
-
-const ExternalExampleLink = styled.div`
-  padding-bottom: 1rem;
 `;
 
 export default EditNodeConfigModal;

@@ -19,6 +19,12 @@ export interface IGraphModalProps {
   onDone: () => void;
 }
 
+/**
+ * GraphModal is a modalized version of the composite graph from JoinPage.
+ * It visualizes the relationships between nodes and resources.
+ *
+ * @param param0 Props
+ */
 const GraphModal: React.FC<IGraphModalProps> = ({
   open,
   graphData,
@@ -26,10 +32,11 @@ const GraphModal: React.FC<IGraphModalProps> = ({
   ...otherProps
 }) => {
   const { t } = useTranslation();
-
   const { width, height } = useWindowSize();
 
   const compositeGraphRef = useCallback((graph) => {
+    // Zoom the graph to fit as soon as it exists
+
     if (graph) {
       setTimeout(() => graph.zoomToFit(500, 0), 500);
     }

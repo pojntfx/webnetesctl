@@ -9,7 +9,7 @@ import {
   faPlus,
   faTimes,
   faTrash,
-  faWindowMinimize
+  faWindowMinimize,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Modal as ModalTmpl, Select as SelectTmpl, Space } from "antd";
@@ -24,7 +24,7 @@ import styled from "styled-components";
 import nodes from "../data/nodes.json";
 import { TitleSpace } from "./layouts";
 import ResourceEditorTmpl from "./resource-editor";
-import { BareLink } from "./typography";
+import { BareLink, MoreLink } from "./typography";
 
 export interface ICreateResourceModalProps {
   open: boolean;
@@ -33,6 +33,12 @@ export interface ICreateResourceModalProps {
   onMinimize: () => void;
 }
 
+/**
+ * CreateResourceModal provides a resource editor and target node selector.
+ * It enables deploying resources to a specific node.
+ *
+ * @param param0 Props
+ */
 const CreateResourceModal: React.FC<ICreateResourceModalProps> = ({
   open,
   onCreate,
@@ -154,6 +160,7 @@ const CreateResourceModal: React.FC<ICreateResourceModalProps> = ({
       closable={false}
       {...otherProps}
     >
+      {/* Resource editor toggler */}
       <TitleSpace
         align="center"
         onClick={() => setDefinitionOpen((resourcesOpen) => !resourcesOpen)}
@@ -171,12 +178,13 @@ const CreateResourceModal: React.FC<ICreateResourceModalProps> = ({
       <Animate transitionName="fadeandslide" transitionAppear>
         {definitionOpen && (
           <div>
+            {/* Resource editor */}
             <ResourceEditor
               data={definition || ""}
               onEdit={(value) => setDefinition(value)}
             />
 
-            <ExternalExampleLink>
+            <MoreLink>
               {t("youCanFindSomeExamplesInThe")}{" "}
               <BareLink
                 href="https://github.com/pojntfx/webnetes/tree/main/examples"
@@ -185,11 +193,12 @@ const CreateResourceModal: React.FC<ICreateResourceModalProps> = ({
                 GitHub Repository <FontAwesomeIcon icon={faExternalLinkAlt} />
               </BareLink>
               .
-            </ExternalExampleLink>
+            </MoreLink>
           </div>
         )}
       </Animate>
 
+      {/* Target node selector */}
       <Select
         showSearch
         placeholder={t("selectATargetNode")}
@@ -205,6 +214,7 @@ const CreateResourceModal: React.FC<ICreateResourceModalProps> = ({
         ))}
       </Select>
 
+      {/* Example link */}
       <Text>
         {t("youCanFindYourCreatedResourcesInThe")}{" "}
         <a
@@ -253,10 +263,6 @@ export const Modal = styled(ModalTmpl)`
     display: flex;
     justify-content: space-between;
   }
-`;
-
-const ExternalExampleLink = styled.div`
-  padding-bottom: 1rem;
 `;
 
 const Select = styled(SelectTmpl)`

@@ -27,6 +27,12 @@ export interface ICreateFileModalProps {
   onMinimize: () => void;
 }
 
+/**
+ * CreateFileModal is a component for seeding files.
+ * It also enables adding metadata such as labels and names to them.
+ *
+ * @param param0 Props
+ */
 const CreateFileModal: React.FC<ICreateFileModalProps> = ({
   open,
   onCreate,
@@ -149,7 +155,8 @@ const CreateFileModal: React.FC<ICreateFileModalProps> = ({
       closable={false}
       {...otherProps}
     >
-      <WideSpace size="middle" direction="vertical">
+      <ModalContentWrapper size="middle" direction="vertical">
+        {/* File input */}
         <Upload.Dragger multiple={false} beforeUpload={() => false}>
           <div>
             <FontAwesomeIcon icon={faPlus} />
@@ -158,6 +165,7 @@ const CreateFileModal: React.FC<ICreateFileModalProps> = ({
           </div>
         </Upload.Dragger>
 
+        {/* Metadata inputs */}
         <Form form={form} layout="vertical">
           <Form.Item
             label={t("fileLabel")}
@@ -219,6 +227,7 @@ const CreateFileModal: React.FC<ICreateFileModalProps> = ({
           </Form.Item>
         </Form>
 
+        {/* Example link */}
         <Text>
           {t("youCanFindYourCreatedFileResourcesInThe")}{" "}
           <a
@@ -236,12 +245,12 @@ const CreateFileModal: React.FC<ICreateFileModalProps> = ({
           </a>
           .
         </Text>
-      </WideSpace>
+      </ModalContentWrapper>
     </Modal>
   );
 };
 
-const WideSpace = styled(Space)`
+const ModalContentWrapper = styled(Space)`
   width: 100%;
 
   .ant-form-item:last-child {
