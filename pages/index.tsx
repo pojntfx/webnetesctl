@@ -41,7 +41,7 @@ import Navbar, {
   SearchInput,
 } from "../components/navbar";
 import HomePage from "../components/pages";
-import ConfigPage from "../components/pages/config";
+import { ConfigPage } from "../components/pages/config";
 import CreatedPage from "../components/pages/created";
 import ExplorerPage from "../components/pages/explorer";
 import JoinPage from "../components/pages/join";
@@ -52,6 +52,7 @@ import { AppTray } from "../components/trays";
 import composite from "../data/cluster.json";
 import nodes from "../data/network-cluster.json";
 import resources from "../data/resources-cluster.json";
+import nodeResource, { nodeId as nodeResourceId } from "../data/node-config";
 import { parseResourceKey, stringifyResourceKey } from "../utils/resource-key";
 
 /**
@@ -85,6 +86,9 @@ function RoutesPage() {
   );
 
   const [searchQuery, setSearchQuery] = useState<string>();
+
+  const [nodeId, setNodeId] = useState(nodeResourceId);
+  const [nodeConfig, setNodeConfig] = useState(nodeResource);
 
   // Effects
   useEffect(() => {
@@ -565,7 +569,11 @@ function RoutesPage() {
             </Route>
 
             <Route path="/config">
-              <ConfigPage />
+              <ConfigPage
+                nodeConfig={nodeConfig}
+                setNodeConfig={setNodeConfig}
+                nodeId={nodeId}
+              />
             </Route>
           </Content>
 

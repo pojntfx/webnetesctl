@@ -19,7 +19,6 @@ import { useCallback, useEffect, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import nodeResource, { nodeId } from "../../data/node-config";
 import packageJSON from "../../package.json";
 import glass from "../../styles/glass";
 import { LocationButton } from "../buttons";
@@ -27,11 +26,22 @@ import { ManagerWrapper, TitleSpace } from "../layouts";
 import ResourceEditorTmpl from "../resource-editor";
 import { BareLink, MoreLink } from "../typography";
 
+export interface IConfigPageProps {
+  nodeId: string;
+  nodeConfig: string;
+  setNodeConfig: (newNodeConfig: string) => void;
+}
+
 /**
  * ConfigPage allows the user to get some info about their current node.
  * Advanced users can also manually configure their node here.
  */
-function ConfigPage() {
+export const ConfigPage: React.FC<IConfigPageProps> = ({
+  nodeId,
+  nodeConfig,
+  setNodeConfig,
+  ...otherProps
+}) => {
   // Hooks
   const { t } = useTranslation();
 
@@ -46,8 +56,6 @@ function ConfigPage() {
 
   const [userLocationAddress, setUserLocationAddress] = useState("");
   const [userLocationEmoji, setUserLocationEmoji] = useState("");
-
-  const [node, setNode] = useState(nodeResource);
 
   // Effects
   useEffect(() => {
@@ -106,7 +114,7 @@ function ConfigPage() {
   }, []);
 
   return (
-    <ManagerWrapper>
+    <ManagerWrapper {...otherProps}>
       <Animate transitionName="fadeandzoom" transitionAppear>
         <div>
           {/* Node metadata */}
@@ -210,7 +218,7 @@ function ConfigPage() {
           </TitleSpace>
 
           {/* Node config editor */}
-          <ResourceEditor data={node} onEdit={(value) => setNode(value)} />
+          <ResourceEditor data={nodeConfig} onEdit={setNodeConfig} />
 
           <MoreLink>
             {t("youCanFindAnExampleInThe")}{" "}
@@ -226,7 +234,7 @@ function ConfigPage() {
       </Animate>
     </ManagerWrapper>
   );
-}
+};
 
 // Layout components
 const NodeMetadataCard = styled.div`
@@ -314,5 +322,3 @@ const ResourceEditor = styled(ResourceEditorTmpl)`
     ); /* Top navbar, top & bottom margins, example link */
   }
 `;
-
-export default ConfigPage;
