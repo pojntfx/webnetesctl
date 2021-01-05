@@ -1,358 +1,582 @@
-import { faCogs, faHandshake, faPlus } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowCircleUp,
+  faBan,
+  faBell,
+  faCaretDown,
+  faCube,
+  faFile,
+  faHandshake,
+  faNetworkWired,
+  faPlus,
+  faProjectDiagram,
+  faSearch,
+  faTerminal,
+  faTimes,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Dropdown, Input, Menu, Space } from "antd";
-import Text from "antd/lib/typography/Text";
-import { useRouter } from "next/router";
-import Animate from "rc-animate";
-import { useState } from "react";
+import {
+  Button,
+  Dropdown,
+  List,
+  Menu,
+  notification,
+  Popover,
+  Space,
+  Tooltip,
+} from "antd";
+import { Content } from "antd/lib/layout/layout";
+import React, { useEffect, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
-import styled from "styled-components";
-import EditNodeConfigModal from "../components/edit-node-config-modal";
-import node from "../data/node-config";
-import bg from "../img/fernando-rodrigues-sGJUb5HJBqs-unsplash.jpg";
-import glass from "../styles/glass";
-import { urlencodeYAMLAll } from "../utils/urltranscode";
+import { Route, Switch, useHistory, useLocation } from "react-router-dom";
+import CreateFileModal from "../components/create-file-modal";
+import CreateResourceModal from "../components/create-resource-modal";
+import GraphModal from "../components/graph-modal";
+import InviteModal from "../components/invite-modal";
+import { Layout } from "../components/layouts";
+import Navbar, {
+  DesktopHeader,
+  MobileHeader,
+  MobileTabs,
+  SearchInput,
+} from "../components/navbar";
+import HomePage from "../components/pages";
+import ConfigPage from "../components/pages/config";
+import CreatedPage from "../components/pages/created";
+import ExplorerPage from "../components/pages/explorer";
+import JoinPage from "../components/pages/join";
+import OverviewPage from "../components/pages/overview";
+import SearchModal from "../components/search-modal";
+import TerminalModal from "../components/terminal-modal";
+import { AppTray } from "../components/trays";
+import composite from "../data/cluster.json";
+import nodes from "../data/network-cluster.json";
+import resources from "../data/resources-cluster.json";
+import { parseResourceKey, stringifyResourceKey } from "../utils/resource-key";
 
 /**
- * HomePage is the central starting point for webnetes.
- *
- * There are two CTAs: "Create cluster" and "Join cluster", which link to CreatedPage and JoinPage respectively.
+ * RoutesPage is the client-side routing part of the hybrid PWA.
+ * As such, it handles all imports which are not handled by Next.js.
  */
-function HomePage() {
+function RoutesPage() {
   // Hooks
   const { t } = useTranslation();
-  const router = useRouter();
+  const router = useHistory();
+  const location = useLocation();
 
   // State
-  const [clusterId, setClusterId] = useState<string>();
-  const [editNodeConfigModalOpen, setEditNodeConfigModalOpen] = useState(false);
-  const [editingWorker, setEditingWorker] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+
+  const [createResourceDialogOpen, setCreateResourceDialogOpen] = useState(
+    false
+  );
+  const [createFileModalOpen, setCreateFileModalOpen] = useState(false);
+  const [inviteModalOpen, setInviteModalOpen] = useState(false);
+  const [graphModalOpen, setGraphModalOpen] = useState(false);
+  const [searchModalOpen, setSearchModalOpen] = useState(false);
+  const [terminalsModalOpen, setTerminalsModalOpen] = useState(false);
+
+  const [
+    createResourceModalMaximized,
+    setCreateResourceModalMaximized,
+  ] = useState(true);
+  const [createFileModalMaximized, setCreateFileModalMaximized] = useState(
+    true
+  );
+
+  const [searchQuery, setSearchQuery] = useState<string>();
+
+  // Effects
+  useEffect(() => {
+    // Handle service worker updates
+    if (
+      typeof window !== "undefined" &&
+      "serviceWorker" in navigator &&
+      (window as any).workbox !== undefined
+    ) {
+      const wb = (window as any).workbox;
+
+      const promptNewVersionAvailable = () => {
+        const key = "update";
+
+        notification.open({
+          message: t("updateAvailable"),
+          description: t("reloadToUpdate"),
+          btn: (
+            <Space>
+              <Button
+                onClick={async () => {
+                  wb.addEventListener("controlling", () => {
+                    setTimeout(() => {
+                      window.location.reload();
+                    }, 2000);
+                  });
+
+                  wb.messageSW({ type: "SKIP_WAITING" });
+
+                  const registrations = await navigator.serviceWorker.getRegistrations();
+
+                  await Promise.all(
+                    registrations.map((reg) => reg.unregister())
+                  );
+
+                  notification.close(key);
+
+                  setTimeout(() => {
+                    window.location.reload();
+                  }, 2000);
+                }}
+                type="primary"
+              >
+                <Space>
+                  <FontAwesomeIcon icon={faArrowCircleUp} />
+                  {t("reloadAndUpdate")}
+                </Space>
+              </Button>
+
+              <Button onClick={() => notification.close(key)}>
+                <Space>
+                  <FontAwesomeIcon icon={faBan} />
+                  {t("dontUpdate")}
+                </Space>
+              </Button>
+            </Space>
+          ),
+          duration: 0,
+          onClose: () => notification.close(key),
+          closeIcon: <FontAwesomeIcon icon={faTimes} />,
+          key,
+        });
+      };
+
+      wb.addEventListener("waiting", promptNewVersionAvailable);
+      wb.addEventListener("externalwaiting", promptNewVersionAvailable);
+
+      wb.register();
+    }
+  }, []);
+
+  useEffect(() => {
+    // Map the privateIP query parameter to state
+    if (new URLSearchParams(location.search).get("privateIP")) {
+      const node = nodes.find(
+        (candidate) =>
+          candidate.privateIP ===
+          new URLSearchParams(location.search).get("privateIP")
+      );
+
+      if (node) {
+        setSearchQuery(
+          `${t("node")} ${node.privateIP} (${node.location}, ${node.publicIP})`
+        );
+      } else {
+        setSearchQuery(undefined);
+      }
+    }
+  }, [new URLSearchParams(location.search).get("privateIP")]);
+
+  useEffect(() => {
+    // Map the resource query parameter to state
+    if (new URLSearchParams(location.search).get("resource")) {
+      const { kind, label, node } = parseResourceKey(
+        new URLSearchParams(location.search).get("resource") as string
+      );
+
+      const resource = resources.find(
+        (candidate) =>
+          candidate.kind === kind &&
+          candidate.label === label &&
+          candidate.node === node
+      );
+
+      if (resource) {
+        setSearchQuery(
+          `${t("resource")} ${resource.kind}/${resource.name} on ${
+            resource.node
+          }`
+        );
+      } else {
+        setSearchQuery(undefined);
+      }
+    }
+  }, [new URLSearchParams(location.search).get("resource")]);
+
+  useEffect(() => {
+    // Map the privateIP and resource query parameters to state
+    if (
+      !new URLSearchParams(location.search).get("privateIP") &&
+      !new URLSearchParams(location.search).get("resource")
+    ) {
+      setSearchQuery(undefined);
+    }
+  }, [
+    new URLSearchParams(location.search).get("privateIP"),
+    new URLSearchParams(location.search).get("resource"),
+  ]);
+
+  // Inline components
+  const createMenus = (
+    <Menu>
+      <Menu.Item
+        key="resource"
+        onClick={() => {
+          unstable_batchedUpdates(() => {
+            setCreateResourceModalMaximized(true);
+            setCreateResourceDialogOpen(true);
+          });
+        }}
+      >
+        <Space>
+          <FontAwesomeIcon fixedWidth icon={faCube} />
+          {t("resource")}
+        </Space>
+      </Menu.Item>
+      <Menu.Item key="cluster">
+        <a href="/" target="_blank">
+          <Space>
+            <FontAwesomeIcon fixedWidth icon={faNetworkWired} />
+            {t("cluster")}
+          </Space>
+        </a>
+      </Menu.Item>
+      <Menu.Item
+        key="file"
+        onClick={() => {
+          unstable_batchedUpdates(() => {
+            setCreateFileModalMaximized(true);
+            setCreateFileModalOpen(true);
+          });
+        }}
+      >
+        <Space>
+          <FontAwesomeIcon fixedWidth icon={faFile} />
+          {t("file")}
+        </Space>
+      </Menu.Item>
+    </Menu>
+  );
 
   return (
-    <HomeAfterWrapper>
-      <HomeBlurWrapper>
-        <Animate transitionName="fadeandzoom" transitionAppear>
-          <div>
-            {/* Node config editor */}
-            <EditNodeConfigModal
-              open={editNodeConfigModalOpen}
-              onDone={(definition) => {
-                setEditNodeConfigModalOpen(false);
+    <Switch>
+      <Route path="/join">
+        <JoinPage />
+      </Route>
 
-                try {
-                  if (editingWorker) {
-                    router.push(
-                      `/join?id=${clusterId}&nodeConfig=${urlencodeYAMLAll(
-                        definition
-                      )}`
-                    );
+      <Route path="/created">
+        <CreatedPage />
+      </Route>
+
+      <Route path="/" exact>
+        <HomePage />
+      </Route>
+
+      <Route path="/">
+        {/* Manager layout */}
+
+        <Layout>
+          {/* Modals */}
+          <CreateResourceModal
+            open={createResourceDialogOpen && createResourceModalMaximized}
+            onCreate={() => setCreateResourceDialogOpen(false)}
+            onCancel={() => setCreateResourceDialogOpen(false)}
+            onMinimize={() => setCreateResourceModalMaximized(false)}
+          />
+
+          <CreateFileModal
+            open={createFileModalOpen && createFileModalMaximized}
+            onCreate={() => setCreateFileModalOpen(false)}
+            onCancel={() => setCreateFileModalOpen(false)}
+            onMinimize={() => setCreateFileModalMaximized(false)}
+          />
+
+          <InviteModal
+            open={inviteModalOpen}
+            onDone={() => setInviteModalOpen(false)}
+          />
+
+          <GraphModal
+            open={graphModalOpen}
+            onDone={() => setGraphModalOpen(false)}
+            graphData={composite}
+          />
+
+          <TerminalModal
+            open={terminalsModalOpen}
+            onDone={() => setTerminalsModalOpen(false)}
+            onTerminalCreated={(label, xterm) =>
+              setInterval(
+                () => xterm.terminal.writeln(`${label} Hello, world!`),
+                1000
+              )
+            }
+            onStdin={(label, key) => console.log(label, key)}
+            labels={resources
+              .filter((resource) => resource.kind === "Workload")
+              .map((resource) => resource.label)}
+          />
+
+          <SearchModal
+            open={searchModalOpen}
+            handleChange={(query) => {
+              if (query) {
+                setSearchQuery(query);
+
+                if (query.startsWith("node=")) {
+                  location.pathname === "/config"
+                    ? router?.push(
+                        `/explorer?privateIP=${query.split("node=")[1]}`
+                      )
+                    : router?.push(`?privateIP=${query.split("node=")[1]}`);
+                } else {
+                  router?.push(
+                    `/explorer?resource=${query.split("resource=")[1]}`
+                  );
+                }
+
+                setSearchModalOpen(false);
+              } else {
+                setSearchQuery(undefined);
+
+                router?.push(location.pathname);
+              }
+            }}
+            query={searchQuery as string}
+            nodes={nodes}
+            resources={resources}
+            onDone={() => setSearchModalOpen(false)}
+          />
+
+          {/* App tray */}
+          {(!createResourceModalMaximized ||
+            !createFileModalMaximized ||
+            !graphModalOpen ||
+            !terminalsModalOpen) && (
+            <AppTray>
+              {!createResourceModalMaximized && (
+                <Button
+                  type="text"
+                  onClick={() => setCreateResourceModalMaximized(true)}
+                  icon={<FontAwesomeIcon icon={faCube} />}
+                />
+              )}
+
+              {!createFileModalMaximized && (
+                <Button
+                  type="text"
+                  onClick={() => setCreateFileModalMaximized(true)}
+                  icon={<FontAwesomeIcon icon={faFile} />}
+                />
+              )}
+
+              {!graphModalOpen && (
+                <Button
+                  type="text"
+                  onClick={() => setGraphModalOpen(true)}
+                  icon={<FontAwesomeIcon icon={faProjectDiagram} />}
+                />
+              )}
+
+              {!terminalsModalOpen && (
+                <Button
+                  type="text"
+                  onClick={() => setTerminalsModalOpen(true)}
+                  icon={<FontAwesomeIcon icon={faTerminal} />}
+                />
+              )}
+            </AppTray>
+          )}
+
+          {/* Mobile-friendly header */}
+          <MobileHeader>
+            {/* Search modal trigger */}
+            <Tooltip title={t("findNodeOrResource")}>
+              <Button
+                type="text"
+                shape="circle"
+                onClick={() => setSearchModalOpen(true)}
+              >
+                <FontAwesomeIcon icon={faSearch} />
+              </Button>
+            </Tooltip>
+
+            <Space>
+              {/* Notifications */}
+              <Popover
+                title={t("notifications")}
+                trigger="click"
+                visible={notificationsOpen}
+                onVisibleChange={(open) => setNotificationsOpen(open)}
+                content={
+                  <List>
+                    <List.Item>Example notification 1</List.Item>
+                    <List.Item>Example notification 2</List.Item>
+                  </List>
+                }
+              >
+                <Button
+                  type="text"
+                  shape="circle"
+                  onClick={() => setNotificationsOpen(true)}
+                >
+                  <FontAwesomeIcon icon={faBell} />
+                </Button>
+              </Popover>
+
+              {/* Create dropdown */}
+              <Dropdown overlay={createMenus}>
+                <Button type="text" shape="circle">
+                  <FontAwesomeIcon icon={faPlus} />
+                </Button>
+              </Dropdown>
+
+              {/* Invite trigger */}
+              <Tooltip title={t("invite")}>
+                <Button
+                  type="primary"
+                  shape="circle"
+                  onClick={() => setInviteModalOpen(true)}
+                >
+                  <FontAwesomeIcon icon={faHandshake} />
+                </Button>
+              </Tooltip>
+            </Space>
+          </MobileHeader>
+
+          {/* Desktop-friendly header */}
+          <DesktopHeader>
+            {/* Main navigation */}
+            <Navbar path={location.pathname} />
+
+            {/* Global node & resource search */}
+            <SearchInput
+              showSearch
+              suffixIcon={<FontAwesomeIcon icon={faSearch} />}
+              placeholder={t("findNodeOrResource")}
+              optionFilterProp="children"
+              notFoundContent={t("noMatchingNodesOrResourcesFound")}
+              onChange={(e) => {
+                if (e) {
+                  setSearchQuery(e.toString());
+
+                  if (e.toString().startsWith("node=")) {
+                    location.pathname === "/config"
+                      ? router?.push(
+                          `/explorer?privateIP=${
+                            e.toString().split("node=")[1]
+                          }`
+                        )
+                      : router?.push(
+                          `?privateIP=${e.toString().split("node=")[1]}`
+                        );
                   } else {
-                    router.push(
-                      `/created?nodeConfig=${urlencodeYAMLAll(definition)}`
+                    router?.push(
+                      `/explorer?resource=${e.toString().split("resource=")[1]}`
                     );
                   }
-                } catch (e) {
-                  console.error("could not parse definition", e);
+                } else {
+                  setSearchQuery(undefined);
+
+                  router?.push(location.pathname);
                 }
               }}
-              onCancel={() => {
-                unstable_batchedUpdates(() => {
-                  setEditingWorker(false);
-                  setEditNodeConfigModalOpen(false);
-                });
-              }}
-            />
+              value={searchQuery}
+              allowClear
+            >
+              {nodes.map((node) => (
+                <SearchInput.Option
+                  value={`node=${node.privateIP}`}
+                  key={`node=${node.privateIP}`}
+                >
+                  {t("node")} {node.privateIP} ({node.location}, {node.publicIP}
+                  )
+                </SearchInput.Option>
+              ))}
+              {resources.map((resource) => (
+                <SearchInput.Option
+                  value={`resource=${stringifyResourceKey(
+                    resource.label,
+                    resource.kind,
+                    resource.node
+                  )}`}
+                  key={`resource=${stringifyResourceKey(
+                    resource.label,
+                    resource.kind,
+                    resource.node
+                  )}`}
+                >
+                  {t("resource")} {resource.kind}/{resource.name} on{" "}
+                  {resource.node}
+                </SearchInput.Option>
+              ))}
+            </SearchInput>
 
-            {/* Logo */}
-            <Logo alt={t("webnetesLogo")} src="/logo.svg" />
+            <Space>
+              {/* Notifications */}
+              <Popover
+                title={t("notifications")}
+                trigger="click"
+                visible={notificationsOpen}
+                onVisibleChange={(open) => setNotificationsOpen(open)}
+                content={
+                  <List>
+                    <List.Item>Example notification 1</List.Item>
+                    <List.Item>Example notification 2</List.Item>
+                  </List>
+                }
+              >
+                <Button
+                  type="text"
+                  shape="circle"
+                  onClick={() => setNotificationsOpen(true)}
+                >
+                  <FontAwesomeIcon icon={faBell} />
+                </Button>
+              </Popover>
 
-            {/* Actions */}
-            <ActionSplit>
-              <div>
-                {/* Create cluster action */}
-                <Action direction="vertical" align="center">
-                  <ActionIcon icon={faPlus} size="3x" />
-
-                  <Text strong>{t("createClusterIntro")}</Text>
-
-                  <Text>{t("createClusterDescription")}</Text>
-
-                  <Dropdown.Button
-                    onClick={() =>
-                      router.push(
-                        `/created?nodeConfig=${urlencodeYAMLAll(node)}`
-                      )
-                    }
-                    overlay={
-                      <Menu>
-                        <Menu.Item
-                          key="cluster"
-                          onClick={() => setEditNodeConfigModalOpen(true)}
-                        >
-                          <Space>
-                            <FontAwesomeIcon fixedWidth icon={faCogs} />
-                            {t("advancedNodeConfig")}
-                          </Space>
-                        </Menu.Item>
-                      </Menu>
-                    }
-                    type="primary"
-                  >
-                    {t("create")} {t("cluster")}
-                  </Dropdown.Button>
-                </Action>
-
-                {/* Main divider */}
-                <MainDivider>
-                  <MainDividerPart />
-
-                  <span>{t("or")}</span>
-
-                  <MainDividerPart />
-                </MainDivider>
-
-                {/* Join cluster action */}
-                <Action direction="vertical" align="center">
-                  <ActionIcon icon={faHandshake} size="3x" />
-
-                  <Text strong>{t("joinClusterIntro")}</Text>
-
-                  <Text>{t("joinClusterDescription")}</Text>
-
+              {/* Create dropdown */}
+              <Dropdown overlay={createMenus}>
+                <Button>
                   <Space>
-                    <Input
-                      placeholder={t("clusterId")}
-                      value={clusterId}
-                      onChange={(e) => setClusterId(e.target.value)}
-                      onKeyDown={(e) =>
-                        e.key === "Enter" &&
-                        clusterId &&
-                        router.push(
-                          `/join?id=${clusterId}&nodeConfig=${urlencodeYAMLAll(
-                            node
-                          )}`
-                        )
-                      }
-                    />
-
-                    <Dropdown.Button
-                      onClick={() =>
-                        clusterId &&
-                        router.push(
-                          `/join?id=${clusterId}&nodeConfig=${urlencodeYAMLAll(
-                            node
-                          )}`
-                        )
-                      }
-                      overlay={
-                        <Menu>
-                          <Menu.Item
-                            key="cluster"
-                            onClick={() => {
-                              clusterId &&
-                                unstable_batchedUpdates(() => {
-                                  setEditingWorker(true);
-                                  setEditNodeConfigModalOpen(true);
-                                });
-                            }}
-                          >
-                            <Space>
-                              <FontAwesomeIcon fixedWidth icon={faCogs} />
-                              {t("advancedNodeConfig")}
-                            </Space>
-                          </Menu.Item>
-                        </Menu>
-                      }
-                      type="primary"
-                    >
-                      {t("joinCluster")}
-                    </Dropdown.Button>
+                    <FontAwesomeIcon icon={faPlus} />
+                    {t("create")}
+                    <FontAwesomeIcon icon={faCaretDown} />
                   </Space>
-                </Action>
-              </div>
-            </ActionSplit>
-          </div>
-        </Animate>
-      </HomeBlurWrapper>
-    </HomeAfterWrapper>
+                </Button>
+              </Dropdown>
+
+              {/* Invite trigger */}
+              <Button type="primary" onClick={() => setInviteModalOpen(true)}>
+                <Space>
+                  <FontAwesomeIcon icon={faHandshake} />
+                  {t("invite")}
+                </Space>
+              </Button>
+            </Space>
+          </DesktopHeader>
+
+          {/* Main content */}
+          <Content>
+            <Route path="/overview">
+              <OverviewPage />
+            </Route>
+
+            <Route path="/explorer">
+              <ExplorerPage />
+            </Route>
+
+            <Route path="/config">
+              <ConfigPage />
+            </Route>
+          </Content>
+
+          {/* Mobile-friendly main navigation */}
+          <MobileTabs>
+            <Navbar path={location.pathname} />
+          </MobileTabs>
+        </Layout>
+      </Route>
+    </Switch>
   );
 }
 
-// Wrapper components
-const HomeAfterWrapper = styled.div`
-  background: url(${bg}) no-repeat center center fixed;
-  background-size: cover;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-height: 100%;
-  position: relative;
-
-  &::after {
-    position: absolute;
-    content: "";
-    height: 100%;
-    width: 100%;
-    top: 0;
-    left: 0;
-    background: linear-gradient(
-      black,
-      transparent,
-      transparent,
-      transparent,
-      transparent,
-      transparent,
-      transparent,
-      black
-    );
-    pointer-events: none;
-  }
-
-  > * {
-    width: 100%;
-  }
-`;
-
-const HomeBlurWrapper = styled.div`
-  width: 100%;
-  position: relative;
-  padding-bottom: 4rem; // Visual centering offset for logo
-
-  .ant-input,
-  .ant-btn {
-    ${glass}
-  }
-
-  &::after {
-    position: absolute;
-    content: "";
-    height: 100%;
-    width: 100%;
-    top: 0;
-    left: 0;
-    ${glass}
-    pointer-events: none;
-    -webkit-mask-image: -webkit-gradient(
-      linear,
-      left 0%,
-      left 100%,
-      color-stop(100%, rgba(0, 0, 0, 0)),
-      color-stop(80%, rgba(0, 0, 0, 0.7)),
-      color-stop(50%, rgba(0, 0, 0, 1)),
-      color-stop(20%, rgba(0, 0, 0, 0.7)),
-      color-stop(0%, rgba(0, 0, 0, 0))
-    );
-    transform: scaleY(1.5);
-  }
-
-  * {
-    z-index: 10;
-  }
-`;
-
-// Logo components
-const Logo = styled.img`
-  position: relative;
-  width: 100%;
-  padding-top: 2rem;
-  padding-bottom: 2rem;
-  padding-right: 1rem;
-  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.5));
-  max-height: 10rem;
-`;
-
-// Action components
-const ActionSplit = styled.div`
-  position: relative;
-  width: 100%;
-
-  > * {
-    padding-left: 1rem;
-    padding-right: 1rem;
-    margin: 0 auto;
-    display: grid;
-    gap: 2rem;
-    grid-template-columns: 1fr;
-    align-items: center;
-    justify-items: center;
-    max-width: 45rem;
-    margin-bottom: 2rem;
-
-    .ant-btn-primary {
-      box-shadow: none !important;
-
-      &:last-child:not(:first-child) {
-        border-color: rgb(67, 67, 67) !important;
-        border-left: 0;
-      }
-
-      &:first-child {
-        background: #177ddc94 !important;
-
-        &:hover {
-          background: #177ddc !important;
-        }
-      }
-    }
-
-    @media screen and (min-width: 812px) {
-      grid-template-columns: 6fr 1fr 6fr;
-    }
-  }
-`;
-
-const Action = styled(Space)`
-  text-align: center;
-
-  > *:last-child {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-  }
-`;
-
-const ActionIcon = styled(FontAwesomeIcon)`
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.5));
-`;
-
-// Divider components
-const MainDivider = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  > *:not(:first-child):not(:last-child) {
-    padding-right: 1rem;
-    padding-left: 1rem;
-  }
-
-  > *:first-child,
-  > *:last-child {
-    flex: 1;
-  }
-
-  @media screen and (min-width: 812px) {
-    height: 100%;
-    flex-direction: column;
-
-    > *:not(:first-child):not(:last-child) {
-      padding-top: 1rem;
-      padding-bottom: 1rem;
-    }
-  }
-`;
-
-const MainDividerPart = styled.div`
-  border-bottom: 0.5px solid rgba(255, 255, 255, 0.85) !important;
-
-  @media screen and (min-width: 812px) {
-    border-right: 0.5px solid rgba(255, 255, 255, 0.85) !important;
-  }
-`;
-
-export default HomePage;
+export default RoutesPage;

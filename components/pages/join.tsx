@@ -24,7 +24,6 @@ import { Button, notification, Space, Tooltip } from "antd";
 import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
 import dynamic from "next/dynamic";
-import { useRouter } from "next/router";
 import Animate from "rc-animate";
 import { forwardRef, useCallback, useEffect, useState } from "react";
 import useDimensions from "react-cool-dimensions";
@@ -34,9 +33,9 @@ import ParticlesTmpl from "react-particles-js";
 import styled from "styled-components";
 import SpriteText from "three-spritetext";
 import { useWindowSize } from "use-window-size-hook";
-import { JoinFooterBar, JoinHeaderBar } from "../components/bars";
-import { LocationButton as LocationButtonTmpl } from "../components/buttons";
-import EditNodeConfigModal from "../components/edit-node-config-modal";
+import { JoinFooterBar, JoinHeaderBar } from "../bars";
+import { LocationButton as LocationButtonTmpl } from "../buttons";
+import EditNodeConfigModal from "../edit-node-config-modal";
 import {
   LeftGaugeButton,
   LeftGaugeContent,
@@ -46,19 +45,20 @@ import {
   RightGaugeContent,
   RightGaugeToggler,
   RightGaugeWrapper,
-} from "../components/gauges";
+} from "../gauges";
 import {
   AfterWrapper,
   BlurWrapper as BlurWrapperTmpl,
   ContentWrapper as ContentWrapperTmpl,
-} from "../components/layouts";
-import { FocusedTitle, MainTitle } from "../components/typography";
-import composite from "../data/cluster.json";
-import network from "../data/network-local.json";
-import localResources from "../data/resources-local.json";
-import glass from "../styles/glass";
-import { getColorForGraphGroup } from "../styles/graph-group-color";
-import { urldecodeYAMLAll, urlencodeYAMLAll } from "../utils/urltranscode";
+} from "../layouts";
+import { FocusedTitle, MainTitle } from "../typography";
+import composite from "../../data/cluster.json";
+import network from "../../data/network-local.json";
+import localResources from "../../data/resources-local.json";
+import glass from "../../styles/glass";
+import { getColorForGraphGroup } from "../../styles/graph-group-color";
+import { urldecodeYAMLAll, urlencodeYAMLAll } from "../../utils/urltranscode";
+import { useHistory } from "react-router-dom";
 
 const particlesConfig: typeof ParticlesTmpl["arguments"] = {
   particles: {
@@ -112,7 +112,7 @@ const particlesConfig: typeof ParticlesTmpl["arguments"] = {
 function JoinPage() {
   // Hooks
   const { t } = useTranslation();
-  const router = useRouter();
+  const router = useHistory();
   const { width, height } = useWindowSize();
   const { ref: bottomBarRef, height: bottomBarHeight } = useDimensions();
   const { ref: rightGaugeRef, height: rightGaugeHeight } = useDimensions();
@@ -214,7 +214,9 @@ function JoinPage() {
 
   useEffect(() => {
     // Map the nodeConfig query parameter to state
-    const rawNodeConfig = router.query.nodeConfig;
+    const rawNodeConfig = new URLSearchParams(router.location.search).get(
+      "nodeConfig"
+    );
 
     if (rawNodeConfig) {
       try {
@@ -223,7 +225,7 @@ function JoinPage() {
         console.log("could not decode node config", e);
       }
     }
-  }, [router.query.nodeConfig]);
+  }, [new URLSearchParams(router.location.search).get("nodeConfig")]);
 
   const graphRef = useCallback((graph) => {
     // Zoom graph into view center
@@ -245,9 +247,9 @@ function JoinPage() {
 
           try {
             router.push(
-              `/join?id=${router.query.id}&nodeConfig=${urlencodeYAMLAll(
-                definition
-              )}`
+              `/join?id=${new URLSearchParams(router.location.search).get(
+                "id"
+              )}&nodeConfig=${urlencodeYAMLAll(definition)}`
             );
           } catch (e) {
             console.error("could not parse definition", e);
@@ -529,7 +531,9 @@ function JoinPage() {
                     icon={<FontAwesomeIcon icon={faLocationArrow} fixedWidth />}
                   />
 
-                  <Title level={1}>{router.query.id}</Title>
+                  <Title level={1}>
+                    {new URLSearchParams(router.location.search).get("id")}
+                  </Title>
                 </TitleWrapper>
 
                 {/* Node location */}
@@ -678,7 +682,7 @@ const Particles = styled(ParticlesTmpl)`
 `;
 
 // Graph components
-const GraphTmpl = dynamic(() => import("../components/graph"), {
+const GraphTmpl = dynamic(() => import("../graph"), {
   ssr: false,
 });
 

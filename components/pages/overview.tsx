@@ -30,27 +30,26 @@ import {
 } from "antd";
 import Text from "antd/lib/typography/Text";
 import dynamic from "next/dynamic";
-import Link from "next/link";
-import { useRouter } from "next/router";
 import Animate from "rc-animate";
 import { createRef, forwardRef, useCallback, useEffect, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
+import { Link, useHistory } from "react-router-dom";
 import styled from "styled-components";
 import earthTexture from "three-globe/example/img/earth-night.jpg";
 import earthElevation from "three-globe/example/img/earth-topology.png";
 import universeTexture from "three-globe/example/img/night-sky.png";
 import { useWindowSize } from "use-window-size-hook";
-import { ResourceItem, ResourceList } from "../components/lists";
-import NodeChart from "../components/node-chart";
-import { InspectorPanel, StatsPanel } from "../components/panels";
-import { OverviewTray } from "../components/trays";
-import nodes from "../data/network-cluster.json";
-import connections from "../data/network-connections.json";
-import resources from "../data/resources-cluster.json";
-import computeStats from "../data/stats-compute.json";
-import networkingStats from "../data/stats-networking.json";
-import { stringifyResourceKey } from "../utils/resource-key";
+import nodes from "../../data/network-cluster.json";
+import connections from "../../data/network-connections.json";
+import resources from "../../data/resources-cluster.json";
+import computeStats from "../../data/stats-compute.json";
+import networkingStats from "../../data/stats-networking.json";
+import { stringifyResourceKey } from "../../utils/resource-key";
+import { ResourceItem, ResourceList } from "../lists";
+import NodeChart from "../node-chart";
+import { InspectorPanel, StatsPanel } from "../panels";
+import { OverviewTray } from "../trays";
 
 /**
  * OverviewPage shows a central globe for a quick topological cluster overview.
@@ -62,7 +61,7 @@ function OverviewPage() {
   const { t } = useTranslation();
   const ref = createRef();
   const { width, height } = useWindowSize();
-  const router = useRouter();
+  const router = useHistory();
 
   // State
   const [statsPanelOpen, setStatsPanelOpen] = useState(true);
@@ -131,7 +130,9 @@ function OverviewPage() {
   useEffect(() => {
     // Map privateIP query parameter to globe position
     if (ref.current) {
-      const privateIP = router.query.privateIP;
+      const privateIP = new URLSearchParams(router.location.search).get(
+        "privateIP"
+      );
 
       if (privateIP) {
         const foundNode: any = nodes.find(
@@ -149,7 +150,7 @@ function OverviewPage() {
         });
       }
     }
-  }, [ref, router.query.privateIP]);
+  }, [ref, new URLSearchParams(router.location.search).get("privateIP")]);
 
   const refreshUserCoordinates = useCallback(() => {
     // Get a user's coordinates and set the globe position accordingly
@@ -388,7 +389,7 @@ function OverviewPage() {
             }
             extra={
               <Space>
-                <Link href={`/explorer?privateIP=${selectedNode.privateIP}`}>
+                <Link to={`/explorer?privateIP=${selectedNode.privateIP}`}>
                   <Tooltip title={t("openInExplorer")} placement="bottom">
                     <Button type="text" shape="circle">
                       <FontAwesomeIcon icon={faBinoculars} />
@@ -627,7 +628,7 @@ function OverviewPage() {
 }
 
 // Globe components
-const GlobeTmpl = dynamic(() => import("../components/globe"), {
+const GlobeTmpl = dynamic(() => import("../globe"), {
   ssr: false,
 });
 

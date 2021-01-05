@@ -6,15 +6,15 @@ import {
   faQuestionCircle,
   faTimes,
   faTrash,
-  faWindowMinimize
+  faWindowMinimize,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Form, Input, Select, Space, Upload } from "antd";
 import Text from "antd/lib/typography/Text";
-import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { nodeId } from "../data/node-config";
 import resources from "../data/resources-cluster.json";
@@ -42,7 +42,7 @@ const CreateFileModal: React.FC<ICreateFileModalProps> = ({
 }) => {
   const { t } = useTranslation();
   const [form] = Form.useForm();
-  const router = useRouter();
+  const router = useHistory();
 
   const [maximized, setMaximized] = useState(true);
   const [fileLabel, setFileLabel] = useState<string>();

@@ -19,13 +19,13 @@ import { useCallback, useEffect, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import { LocationButton } from "../components/buttons";
-import { ManagerWrapper, TitleSpace } from "../components/layouts";
-import ResourceEditorTmpl from "../components/resource-editor";
-import { BareLink, MoreLink } from "../components/typography";
-import nodeResource, { nodeId } from "../data/node-config";
-import packageJSON from "../package.json";
-import glass from "../styles/glass";
+import nodeResource, { nodeId } from "../../data/node-config";
+import packageJSON from "../../package.json";
+import glass from "../../styles/glass";
+import { LocationButton } from "../buttons";
+import { ManagerWrapper, TitleSpace } from "../layouts";
+import ResourceEditorTmpl from "../resource-editor";
+import { BareLink, MoreLink } from "../typography";
 
 /**
  * ConfigPage allows the user to get some info about their current node.

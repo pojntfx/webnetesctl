@@ -6,7 +6,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Select } from "antd";
 import { Header as HeaderTmpl } from "antd/lib/layout/layout";
-import Link from "next/link";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import glass from "../styles/glass";
@@ -25,21 +25,21 @@ const Navbar = ({ path, ...otherProps }: INavbarProps) => {
 
   return (
     <NavigationMenu {...otherProps}>
-      <Link href="/overview">
+      <Link to="/overview">
         <NavigationButton type={path === "/overview" ? "primary" : "text"}>
           <FontAwesomeIcon size="lg" icon={faGlobe} fixedWidth />
           {t("overview")}
         </NavigationButton>
       </Link>
 
-      <Link href="/explorer">
+      <Link to="/explorer">
         <NavigationButton type={path === "/explorer" ? "primary" : "text"}>
           <FontAwesomeIcon size="lg" icon={faBinoculars} fixedWidth />
           {t("explorer")}
         </NavigationButton>
       </Link>
 
-      <Link href="/config">
+      <Link to="/config">
         <NavigationButton type={path === "/config" ? "primary" : "text"}>
           <FontAwesomeIcon size="lg" icon={faCogs} fixedWidth />
           {t("config")}

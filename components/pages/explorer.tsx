@@ -16,7 +16,7 @@ import {
   faShapes,
   faTerminal,
   faTrash,
-  faWifi,
+  faWifi
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -27,27 +27,30 @@ import {
   List,
   Menu,
   Space,
-  Tooltip,
+  Tooltip
 } from "antd";
 import Text from "antd/lib/typography/Text";
 import yaml from "js-yaml";
-import { useRouter } from "next/router";
 import Animate from "rc-animate";
 import React, { createRef, useCallback, useEffect, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { ManagerWrapper, TitleSpace, WideSpace } from "../components/layouts";
-import { ResourceItem as ResourceItemTmpl } from "../components/lists";
-import ResourceEditorTmpl from "../components/resource-editor";
-import Table from "../components/tables";
-import { BareTitle } from "../components/typography";
-import nodes from "../data/network-cluster.json";
-import resources from "../data/resources-cluster.json";
-import computeStats from "../data/stats-compute.json";
-import networkingStats from "../data/stats-networking.json";
-import { filterKeys } from "../utils/filter-keys";
-import { parseResourceKey, stringifyResourceKey } from "../utils/resource-key";
+import nodes from "../../data/network-cluster.json";
+import resources from "../../data/resources-cluster.json";
+import computeStats from "../../data/stats-compute.json";
+import networkingStats from "../../data/stats-networking.json";
+import { filterKeys } from "../../utils/filter-keys";
+import {
+  parseResourceKey,
+  stringifyResourceKey
+} from "../../utils/resource-key";
+import { ManagerWrapper, TitleSpace, WideSpace } from "../layouts";
+import { ResourceItem as ResourceItemTmpl } from "../lists";
+import ResourceEditorTmpl from "../resource-editor";
+import Table from "../tables";
+import { BareTitle } from "../typography";
 
 /**
  * ExplorerPage is a way for the user to quickly find & manage a node or resource.
@@ -56,7 +59,7 @@ import { parseResourceKey, stringifyResourceKey } from "../utils/resource-key";
 function ExplorerPage() {
   // Hooks
   const { t } = useTranslation();
-  const router = useRouter();
+  const router = useHistory();
   const ref = createRef<HTMLElement>();
 
   // State
@@ -74,7 +77,9 @@ function ExplorerPage() {
   // Effects
   useEffect(() => {
     // Map privateIP query parameter to selected node
-    const privateIP = router.query.privateIP;
+    const privateIP = new URLSearchParams(router.location.search).get(
+      "privateIP"
+    );
 
     if (privateIP) {
       const foundNode: any = nodes.find(
@@ -88,11 +93,13 @@ function ExplorerPage() {
     } else {
       _setSelectedNode(undefined);
     }
-  }, [router.query.privateIP]);
+  }, [new URLSearchParams(router.location.search).get("privateIP")]);
 
   useEffect(() => {
     // Map resource query parameter to selected resource
-    const resource = router.query.resource as string;
+    const resource = new URLSearchParams(router.location.search).get(
+      "resource"
+    );
 
     if (resource) {
       const { kind, label, node } = parseResourceKey(resource);
@@ -119,7 +126,7 @@ function ExplorerPage() {
     } else {
       _setSelectedResource(undefined);
     }
-  }, [router.query.resource]);
+  }, [new URLSearchParams(router.location.search).get("resource")]);
 
   useEffect(() => {
     // Scroll the selected node/resource into view

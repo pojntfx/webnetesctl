@@ -49,5 +49,13 @@ module.exports = withPlugins(
 
       return config;
     },
+    async rewrites() {
+      return [
+        {
+          source: "/:any*",
+          destination: "/",
+        },
+      ];
+    },
   }
 );

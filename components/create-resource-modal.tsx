@@ -9,17 +9,17 @@ import {
   faPlus,
   faTimes,
   faTrash,
-  faWindowMinimize
+  faWindowMinimize,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Modal as ModalTmpl, Select as SelectTmpl, Space } from "antd";
 import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
-import { useRouter } from "next/router";
 import Animate from "rc-animate";
 import { useCallback, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import nodes from "../data/network-cluster.json";
 import { TitleSpace } from "./layouts";
@@ -47,7 +47,7 @@ const CreateResourceModal: React.FC<ICreateResourceModalProps> = ({
   ...otherProps
 }) => {
   const { t } = useTranslation();
-  const router = useRouter();
+  const router = useHistory();
 
   const [definitionOpen, setDefinitionOpen] = useState(true);
   const [maximized, setMaximized] = useState(true);

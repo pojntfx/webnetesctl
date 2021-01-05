@@ -2,21 +2,16 @@ import { faArrowRight, faGlassCheers } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Space } from "antd";
 import Text from "antd/lib/typography/Text";
-import Link from "next/link";
-import { useRouter } from "next/router";
 import Animate from "rc-animate";
 import { useEffect, useState } from "react";
 import Confetti from "react-dom-confetti";
 import { useTranslation } from "react-i18next";
+import { Link, useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { CreatedFooterBar, CreatedHeaderBar } from "../components/bars";
-import {
-  AfterWrapper,
-  BlurWrapper,
-  ContentWrapper,
-} from "../components/layouts";
-import { QRLink } from "../components/qr-link";
-import { IlluminatedIcon, IlluminatedTitle } from "../components/typography";
+import { CreatedFooterBar, CreatedHeaderBar } from "../bars";
+import { AfterWrapper, BlurWrapper, ContentWrapper } from "../layouts";
+import { QRLink } from "../qr-link";
+import { IlluminatedIcon, IlluminatedTitle } from "../typography";
 
 const confettiConfig = {
   angle: 90,
@@ -40,7 +35,7 @@ const confettiConfig = {
 function CreatedPage() {
   // Hooks
   const { t } = useTranslation();
-  const router = useRouter();
+  const router = useHistory();
 
   // State
   const [link, setLink] = useState<string>();
@@ -51,7 +46,9 @@ function CreatedPage() {
     setLink(
       `${
         typeof window !== "undefined" && window.location.origin
-      }/join?id=127.0.2&nodeConfig=${router.query.nodeConfig as string}`
+      }/join?id=127.0.2&nodeConfig=${new URLSearchParams(
+        router.location.search
+      ).get("nodeConfig")}`
     );
   }, []);
 
@@ -84,7 +81,7 @@ function CreatedPage() {
 
             {/* Footer */}
             <CreatedFooterBar>
-              <Link href="/overview">
+              <Link to="/overview">
                 <ActionButton type="primary">
                   <Space>
                     <FontAwesomeIcon icon={faArrowRight} />
