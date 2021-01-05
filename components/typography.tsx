@@ -28,3 +28,11 @@ export const IlluminatedTitle = styled(Title)`
 export const IlluminatedIcon = styled(FontAwesomeIcon)`
   filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.5));
 `;
+
+export const MainTitle = styled(Title)`
+  text-align: center;
+`;
+
+export const FocusedTitle = styled.strong`
+  font-weight: 700 !important;
+`;

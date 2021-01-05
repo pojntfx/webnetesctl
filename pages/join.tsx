@@ -51,13 +51,14 @@ import {
   BlurWrapper as BlurWrapperTmpl,
   ContentWrapper as ContentWrapperTmpl,
 } from "../components/layout-wrapper";
-import { LocationButton } from "../components/lists";
+import { LocationButton as LocationButtonTmpl } from "../components/lists";
 import composite from "../data/composite.json";
 import localResources from "../data/local-resources.json";
 import network from "../data/network.json";
 import glass from "../styles/glass";
 import { graphGroupColor } from "../styles/graph-group-color";
 import { urldecodeYAMLAll, urlencodeYAMLAll } from "../utils/urltranscode";
+import { MainTitle, FocusedTitle } from "../components/typography";
 
 const particlesConfig: typeof ParticlesTmpl["arguments"] = {
   particles: {
@@ -103,7 +104,13 @@ const particlesConfig: typeof ParticlesTmpl["arguments"] = {
   retina_detect: true,
 };
 
+/**
+ * JoinPage is the "worker page"; it shows a worker of a cluster their current node status.
+ *
+ * Particles and music links have been added, making this a `de facto` start page option.
+ */
 function JoinPage() {
+  // Hooks
   const { t } = useTranslation();
   const router = useRouter();
   const { width, height } = useWindowSize();
@@ -119,32 +126,40 @@ function JoinPage() {
     height: leftGaugeToolbarHeight,
   } = useDimensions();
 
+  // State
   const [nodeConfig, setNodeConfig] = useState<string>();
+
   const [rightGaugeOpen, setRightGaugeOpen] = useState(
     width ? (width > 821 ? true : false) : false
   );
   const [leftGaugeOpen, setLeftGaugeOpen] = useState(
     width ? (width > 821 ? true : false) : false
   );
-  const [compositeGraphOpen, setCompositeGraphOpen] = useState(false);
+
   const [rightGaugeMaximized, setRightGaugeMaximized] = useState(false);
   const [leftGaugeMaximized, setLeftGaugeMaximized] = useState(false);
-  const [editNodeConfigModalOpen, setEditNodeConfigModalOpen] = useState(false);
-  const [openTitle, setOpenTitle] = useState(-1);
 
+  const [compositeGraphOpen, setCompositeGraphOpen] = useState(false);
+  const [editNodeConfigModalOpen, setEditNodeConfigModalOpen] = useState(false);
+
+  const [currentTitle, setCurrentTitle] = useState(-1);
+
+  // Effects
   useEffect(() => {
+    // Transition through the titles
     (async () => {
       await new Promise<void>((res) => setTimeout(() => res(), 1000));
 
       for (let i = 1; i <= 6; i++) {
-        setOpenTitle((curr) => curr + 1);
+        setCurrentTitle((curr) => curr + 1);
 
         await new Promise<void>((res) => setTimeout(() => res(), 5000));
 
-        setOpenTitle((curr) => curr + 1);
+        setCurrentTitle((curr) => curr + 1);
 
         await new Promise<void>((res) => setTimeout(() => res(), 500));
 
+        // After the last title, link user to music
         if (i === 6) {
           await new Promise<void>((res) => setTimeout(() => res(), 2000));
 
@@ -198,6 +213,7 @@ function JoinPage() {
   }, []);
 
   useEffect(() => {
+    // Map the nodeConfig query parameter to state
     const rawNodeConfig = router.query.nodeConfig;
 
     if (rawNodeConfig) {
@@ -209,23 +225,8 @@ function JoinPage() {
     }
   }, [router.query.nodeConfig]);
 
-  useEffect(() => {
-    nodeConfig && console.log(nodeConfig);
-  }, [nodeConfig]);
-
-  const networkGraphRef = useCallback((graph) => {
-    if (graph) {
-      setTimeout(() => graph.zoomToFit(500, 0), 500);
-    }
-  }, []);
-
-  const resourceGraphRef = useCallback((graph) => {
-    if (graph) {
-      setTimeout(() => graph.zoomToFit(500, 0), 500);
-    }
-  }, []);
-
-  const compositeGraphRef = useCallback((graph) => {
+  const graphRef = useCallback((graph) => {
+    // Zoom graph into view center
     if (graph) {
       setTimeout(() => graph.zoomToFit(500, 0), 500);
     }
@@ -233,8 +234,10 @@ function JoinPage() {
 
   return (
     <AfterWrapper>
+      {/* Particles background */}
       <Particles params={particlesConfig} />
 
+      {/* Node config editor */}
       <EditNodeConfigModal
         open={editNodeConfigModalOpen}
         onDone={(definition) => {
@@ -254,43 +257,45 @@ function JoinPage() {
         skipConfirmation
       />
 
-      <IntroTitleWrapper transitionName="fadeandzoom" transitionAppear>
-        {openTitle === 0 && (
-          <IntroTitle level={3} key="0">
+      {/* Titles */}
+      <MainTitleAnimator transitionName="fadeandzoom" transitionAppear>
+        {currentTitle === 0 && (
+          <MainTitle level={3} key="0">
             <FocusedTitle>
               <FontAwesomeIcon icon={faHandPeace} fixedWidth /> {t("welcome")}
             </FocusedTitle>{" "}
             {t("youveJoinedTheCluster")}
-          </IntroTitle>
+          </MainTitle>
         )}
 
-        {openTitle === 2 && (
-          <IntroTitle level={3} key="2">
+        {currentTitle === 2 && (
+          <MainTitle level={3} key="2">
             <FocusedTitle>
               <FontAwesomeIcon icon={faThumbsUp} fixedWidth />{" "}
               {t("thanksForKeepingThisTabOpen")}
             </FocusedTitle>{" "}
             {t("youreHelpingSomeone")}
-          </IntroTitle>
+          </MainTitle>
         )}
 
-        {openTitle === 4 && (
-          <IntroTitle level={3} key="4">
+        {currentTitle === 4 && (
+          <MainTitle level={3} key="4">
             <FontAwesomeIcon icon={faCubes} fixedWidth />{" "}
             {t("theGraphsBelowShowWhatYoureHosting")}
-          </IntroTitle>
+          </MainTitle>
         )}
 
-        {openTitle === 6 && (
-          <IntroTitle level={3} key="6">
+        {currentTitle === 6 && (
+          <MainTitle level={3} key="6">
             <FontAwesomeIcon icon={faCampground} fixedWidth />{" "}
             {t("enjoyYourStay")}
-          </IntroTitle>
+          </MainTitle>
         )}
-      </IntroTitleWrapper>
+      </MainTitleAnimator>
 
+      {/* Header */}
       <JoinHeaderBar>
-        <LogoImage alt={t("webnetesLogo")} src="/logo.svg" />
+        <Logo alt={t("webnetesLogo")} src="/logo.svg" />
 
         <Tooltip title={t("advancedNodeConfig")} placement="left">
           <Button
@@ -303,7 +308,8 @@ function JoinPage() {
         </Tooltip>
       </JoinHeaderBar>
 
-      <CompositeGraphAnimate
+      {/* Composite graph */}
+      <CompositeGraphAnimator
         transitionName="fadeandzoom"
         transitionAppear
         $active={compositeGraphOpen}
@@ -328,12 +334,13 @@ function JoinPage() {
                 return sprite;
               }}
               nodeAutoColorBy="group"
-              ref={compositeGraphRef}
+              ref={graphRef}
             />
           </CompositeGraphWrapper>
         )}
-      </CompositeGraphAnimate>
+      </CompositeGraphAnimator>
 
+      {/* Footer */}
       <BlurWrapper>
         <Animate transitionName="fadeandzoom" transitionAppear>
           <ContentWrapper>
@@ -368,12 +375,15 @@ function JoinPage() {
                 }
               })()}
             >
+              {/* Left gauge */}
               <LeftGaugeWrapper
                 $maximized={leftGaugeMaximized}
                 ref={leftGaugeRef}
               >
                 <Animate transitionName="fadeandslideleft" transitionAppear>
                   {leftGaugeOpen && (
+                    // Left gauge graph
+
                     <LeftGaugeContent
                       $maximized={leftGaugeMaximized}
                       cover={
@@ -408,12 +418,12 @@ function JoinPage() {
 
                             return sprite;
                           }}
-                          ref={resourceGraphRef}
+                          ref={graphRef}
                         />
                       }
                     >
-                      <CardSpaceWrapper ref={leftGaugeToolbarRef}>
-                        <CardSpace>
+                      <div ref={leftGaugeToolbarRef as any}>
+                        <CardContentWrapper>
                           <div>
                             <Text strong>
                               <FontAwesomeIcon icon={faMobile} /> 16{" "}
@@ -450,13 +460,14 @@ function JoinPage() {
                               <FontAwesomeIcon icon={faAngleDoubleLeft} />
                             </Button>
                           </Space>
-                        </CardSpace>
-                      </CardSpaceWrapper>
+                        </CardContentWrapper>
+                      </div>
                     </LeftGaugeContent>
                   )}
                 </Animate>
               </LeftGaugeWrapper>
 
+              {/* Left gauge toggler */}
               <LeftGaugeToggler>
                 {!leftGaugeOpen && (
                   <LeftGaugeButton
@@ -470,8 +481,10 @@ function JoinPage() {
                 )}
               </LeftGaugeToggler>
 
+              {/* Node metadata */}
               <Space direction="vertical" align="center">
-                <MainExpandButton
+                {/* Composite graph toggler */}
+                <ExpandButton
                   type="text"
                   shape="circle"
                   onClick={() =>
@@ -505,18 +518,20 @@ function JoinPage() {
                         : faChevronUp
                     }
                   />
-                </MainExpandButton>
+                </ExpandButton>
 
-                <TitleSpace align="center">
-                  <TransparentLocationButton
+                {/* Node IP */}
+                <TitleWrapper align="center">
+                  <LocationButton
                     type="text"
                     shape="circle"
                     icon={<FontAwesomeIcon icon={faLocationArrow} fixedWidth />}
                   />
 
                   <Title level={1}>{router.query.id}</Title>
-                </TitleSpace>
+                </TitleWrapper>
 
+                {/* Node location */}
                 <Text>
                   <Space>
                     <FontAwesomeIcon icon={faMapMarkerAlt} />
@@ -525,12 +540,15 @@ function JoinPage() {
                 </Text>
               </Space>
 
+              {/* Right gauge */}
               <RightGaugeWrapper
                 $maximized={rightGaugeMaximized}
                 ref={rightGaugeRef}
               >
                 <Animate transitionName="fadeandslideright" transitionAppear>
                   {rightGaugeOpen && (
+                    // Right gauge graph
+
                     <RightGaugeContent
                       $maximized={rightGaugeMaximized}
                       cover={
@@ -565,12 +583,12 @@ function JoinPage() {
 
                             return sprite;
                           }}
-                          ref={networkGraphRef}
+                          ref={graphRef}
                         />
                       }
                     >
-                      <CardSpaceWrapper ref={rightGaugeToolbarRef}>
-                        <CardSpace>
+                      <div ref={rightGaugeToolbarRef as any}>
+                        <CardContentWrapper>
                           <div>
                             <Text strong>
                               <FontAwesomeIcon icon={faMobile} /> 4{" "}
@@ -607,13 +625,14 @@ function JoinPage() {
                               <FontAwesomeIcon icon={faAngleDoubleRight} />
                             </Button>
                           </Space>
-                        </CardSpace>
-                      </CardSpaceWrapper>
+                        </CardContentWrapper>
+                      </div>
                     </RightGaugeContent>
                   )}
                 </Animate>
               </RightGaugeWrapper>
 
+              {/* Right gauge toggler */}
               <RightGaugeToggler>
                 {!rightGaugeOpen && (
                   <RightGaugeButton
@@ -634,28 +653,22 @@ function JoinPage() {
   );
 }
 
-const FocusedTitle = styled.strong`
-  font-weight: 700 !important;
-`;
-
-const IntroTitleWrapper = styled(Animate)`
+// Animator components
+const MainTitleAnimator = styled(Animate)`
   width: auto;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
 `;
 
-const IntroTitle = styled(Title)`
-  text-align: center;
-`;
-
-const CardSpaceWrapper = styled.div<any>``;
-
-const CardSpace = styled(Space)`
+const CompositeGraphAnimator = styled(Animate)<{ $active: boolean }>`
   width: 100%;
-  justify-content: space-between;
+  height: 100%;
+  position: absolute;
+  ${(props) => (props.$active ? "" : "pointer-events: none;")}
 `;
 
+// Particles components
 const Particles = styled(ParticlesTmpl)`
   background: transparent;
   width: 100%;
@@ -663,6 +676,21 @@ const Particles = styled(ParticlesTmpl)`
   position: absolute;
 `;
 
+// Graph components
+const GraphTmpl = dynamic(() => import("../components/graph"), {
+  ssr: false,
+});
+
+const Graph = forwardRef((props: any, ref) => (
+  <GraphTmpl {...props} forwardRef={ref} />
+));
+
+// Logo components
+const Logo = styled.img`
+  width: calc(200px - 2rem);
+`;
+
+// Wrapper components
 const ContentWrapper = styled(ContentWrapperTmpl)`
   .ant-typography {
     margin-bottom: 0;
@@ -673,18 +701,17 @@ const BlurWrapper = styled(BlurWrapperTmpl)`
   margin-top: auto;
 `;
 
-const GraphTmpl = dynamic(() => import("../components/graph"), {
-  ssr: false,
-});
-const Graph = forwardRef((props: any, ref) => (
-  <GraphTmpl {...props} forwardRef={ref} />
-));
+const TitleWrapper = styled(Space)`
+  margin-left: -8px; // Visual centering to balance out the location button
 
-const CompositeGraphAnimate = styled(Animate)<{ $active: boolean }>`
+  > *:first-child {
+    margin-right: 4px !important;
+  }
+`;
+
+const CardContentWrapper = styled(Space)`
   width: 100%;
-  height: 100%;
-  position: absolute;
-  ${(props) => (props.$active ? "" : "pointer-events: none;")}
+  justify-content: space-between;
 `;
 
 const CompositeGraphWrapper = styled.div`
@@ -693,26 +720,15 @@ const CompositeGraphWrapper = styled.div`
   ${glass}
 `;
 
-const TransparentLocationButton = styled(LocationButton)`
+// Button components
+const LocationButton = styled(LocationButtonTmpl)`
   background: transparent !important;
   backdrop-filter: none !important;
 `;
 
-const MainExpandButton = styled(Button)`
+const ExpandButton = styled(Button)`
   background: transparent !important;
   backdrop-filter: none !important;
-`;
-
-const TitleSpace = styled(Space)`
-  margin-left: -8px; // Visual centering to balance out the location button
-
-  > *:first-child {
-    margin-right: 4px !important;
-  }
-`;
-
-const LogoImage = styled.img`
-  width: calc(200px - 2rem);
 `;
 
 export default JoinPage;
