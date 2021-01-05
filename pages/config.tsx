@@ -20,28 +20,38 @@ import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { TitleSpace, Wrapper } from "../components/layout-wrapper";
-import ResourceEditorTmpl, {
-  ExternalLink,
-} from "../components/resource-editor";
+import ResourceEditorTmpl from "../components/resource-editor";
 import { LocationButton } from "../components/lists";
 import nodeResource, { nodeId } from "../data/node";
 import packageJSON from "../package.json";
 import glass from "../styles/glass";
+import { MoreLink, BareLink } from "../components/typography";
 
+/**
+ * ConfigPage allows the user to get some info about their current node.
+ * Advanced users can also manually configure their node here.
+ */
 function ConfigPage() {
+  // Hooks
   const { t } = useTranslation();
 
+  // State
   const [publicIP, setPublicIP] = useState("");
-  const [loadingUserCoordinates, setLoadingUserCoordinates] = useState(false);
+
   const [userCoordinates, setUserCoordinates] = useState<number[]>([
     2.2770202,
     48.8589507,
   ]);
-  const [featureLocation, setFeatureLocation] = useState("");
-  const [featureFlag, setFeatureFlag] = useState("");
+  const [userCoordinatesLoading, setUserCoordinatesLoading] = useState(false);
+
+  const [userLocationAddress, setUserLocationAddress] = useState("");
+  const [userLocationEmoji, setUserLocationEmoji] = useState("");
+
   const [node, setNode] = useState(nodeResource);
 
+  // Effects
   useEffect(() => {
+    // Get the public IPv6 address
     getPublicIp
       .v6()
       .then((ip) => setPublicIP(ip))
@@ -49,6 +59,7 @@ function ConfigPage() {
   }, []);
 
   useEffect(() => {
+    // Map an address to the user's coordinates
     Nominatim.reverseGeocode({
       lat: userCoordinates[1].toString(),
       lon: userCoordinates[0].toString(),
@@ -59,16 +70,17 @@ function ConfigPage() {
 
         if (feat) {
           unstable_batchedUpdates(() => {
-            setFeatureLocation(res.display_name);
-            setFeatureFlag(feat.properties.emojiFlag!);
+            setUserLocationAddress(res.display_name);
+            setUserLocationEmoji(feat.properties.emojiFlag!);
           });
         }
       }
     });
   }, [userCoordinates]);
 
-  const getUserCoordinates = useCallback(() => {
-    setLoadingUserCoordinates(true);
+  const refreshUserCoordinates = useCallback(() => {
+    // Get a user's coordinates and set them
+    setUserCoordinatesLoading(true);
 
     typeof window !== "undefined" &&
       navigator.geolocation.getCurrentPosition(
@@ -78,7 +90,7 @@ function ConfigPage() {
               position.coords.longitude,
               position.coords.latitude,
             ]);
-            setLoadingUserCoordinates(false);
+            setUserCoordinatesLoading(false);
           });
         },
         (e) => {
@@ -88,7 +100,7 @@ function ConfigPage() {
           );
 
           setUserCoordinates([0, 0]);
-          setLoadingUserCoordinates(false);
+          setUserCoordinatesLoading(false);
         }
       );
   }, []);
@@ -97,50 +109,54 @@ function ConfigPage() {
     <Wrapper>
       <Animate transitionName="fadeandzoom" transitionAppear>
         <div>
-          <StatusCard>
-            <Overview>
-              <ConnectedStatus>
+          {/* Node metadata */}
+          <NodeMetadataCard>
+            <NodeMetadataOverview>
+              {/* Connection status */}
+              <ConnectionStatusDisplay>
                 <FontAwesomeIcon icon={faCheckCircle} size="lg" fixedWidth />{" "}
                 {t("connected")}!
-              </ConnectedStatus>
+              </ConnectionStatusDisplay>
 
-              <ClusterData direction="vertical" align="center">
+              {/* Cluster node */}
+              <ClusterNodeDisplay direction="vertical" align="center">
                 <div>{t("youAre")}:</div>
 
                 <Space align="center">
                   <LocationButton
                     type="text"
                     shape="circle"
-                    onClick={getUserCoordinates}
-                    loading={loadingUserCoordinates}
+                    onClick={refreshUserCoordinates}
+                    loading={userCoordinatesLoading}
                     icon={<FontAwesomeIcon icon={faLocationArrow} fixedWidth />}
                   />
 
-                  <IPAddress>{nodeId}</IPAddress>
+                  <IPAddressDisplays>{nodeId}</IPAddressDisplays>
                 </Space>
-              </ClusterData>
+              </ClusterNodeDisplay>
 
-              <VersionInformation>
+              {/* Version information */}
+              <VersionInformationDisplay>
                 <dl>
                   <dt>
-                    <ExternalLink
+                    <BareLink
                       href="https://github.com/pojntfx/webnetesctl"
                       target="_blank"
                     >
                       webnetesctl <FontAwesomeIcon icon={faExternalLinkAlt} />
-                    </ExternalLink>
+                    </BareLink>
                   </dt>
                   <dd>
                     <Text code>{packageJSON.version}</Text>
                   </dd>
 
                   <dt>
-                    <ExternalLink
+                    <BareLink
                       href="https://github.com/pojntfx/webnetes"
                       target="_blank"
                     >
                       webnetes <FontAwesomeIcon icon={faExternalLinkAlt} />
-                    </ExternalLink>
+                    </BareLink>
                   </dt>
                   <dd>
                     <Text code>
@@ -148,12 +164,13 @@ function ConfigPage() {
                     </Text>
                   </dd>
                 </dl>
-              </VersionInformation>
-            </Overview>
+              </VersionInformationDisplay>
+            </NodeMetadataOverview>
 
-            <Divider>{t("metadata")}</Divider>
+            <VirtualPhysicalDivider>{t("metadata")}</VirtualPhysicalDivider>
 
-            <Details>
+            {/* Information on the physical node */}
+            <PhysicialNodeDisplay>
               <dl>
                 <dt>
                   <FontAwesomeIcon icon={faGlobe} /> {t("publicIp")}
@@ -164,8 +181,8 @@ function ConfigPage() {
                   <FontAwesomeIcon icon={faMapMarkerAlt} /> {t("location")}
                 </dt>
                 <dd>
-                  {featureLocation}
-                  {`${featureFlag ? " " + featureFlag : ""}`}
+                  {userLocationAddress}
+                  {`${userLocationEmoji ? " " + userLocationEmoji : ""}`}
                 </dd>
 
                 <dt>
@@ -175,9 +192,12 @@ function ConfigPage() {
                   {userCoordinates[0]}, {userCoordinates[1]}
                 </dd>
               </dl>
-            </Details>
-          </StatusCard>
+            </PhysicialNodeDisplay>
+          </NodeMetadataCard>
 
+          {/* Node config */}
+
+          {/* Node config toolbar */}
           <TitleSpace align="center">
             <Title level={2}>{t("nodeConfig")}</Title>
 
@@ -189,25 +209,37 @@ function ConfigPage() {
             </Button>
           </TitleSpace>
 
+          {/* Node config editor */}
           <ResourceEditor data={node} onEdit={(value) => setNode(value)} />
 
-          <ExternalExampleLink>
+          <MoreLink>
             {t("youCanFindAnExampleInThe")}{" "}
-            <ExternalLink
+            <BareLink
               href="https://github.com/pojntfx/webnetes/blob/main/app/webnetes_node/node.yaml"
               target="_blank"
             >
               GitHub Repository <FontAwesomeIcon icon={faExternalLinkAlt} />
-            </ExternalLink>
+            </BareLink>
             .
-          </ExternalExampleLink>
+          </MoreLink>
         </div>
       </Animate>
     </Wrapper>
   );
 }
 
-const Overview = styled.div`
+// Layout components
+const NodeMetadataCard = styled.div`
+  border: 1px solid #303030;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 1.5rem;
+  margin-bottom: 2.5rem;
+  max-width: 812px;
+  ${glass}
+`;
+
+const NodeMetadataOverview = styled.div`
   display: grid;
   grid-template-columns: 1fr;
   align-items: center;
@@ -223,11 +255,13 @@ const Overview = styled.div`
   }
 `;
 
-const ExternalExampleLink = styled.div`
-  padding-top: 1rem;
+const VirtualPhysicalDivider = styled(DividerTmpl)`
+  margin-top: -0.5rem !important;
+  margin-bottom: -0.5rem !important;
 `;
 
-const Details = styled.div`
+// Display components
+const PhysicialNodeDisplay = styled.div`
   padding: 1rem;
 
   dl,
@@ -240,27 +274,12 @@ const Details = styled.div`
   }
 `;
 
-const Divider = styled(DividerTmpl)`
-  margin-top: -0.5rem !important;
-  margin-bottom: -0.5rem !important;
-`;
-
-const StatusCard = styled.div`
-  border: 1px solid #303030;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 1.5rem;
-  margin-bottom: 2.5rem;
-  max-width: 812px;
-  ${glass}
-`;
-
-const ConnectedStatus = styled.div`
+const ConnectionStatusDisplay = styled.div`
   font-size: 1.5rem;
   margin: 0 auto;
 `;
 
-const ClusterData = styled(Space)`
+const ClusterNodeDisplay = styled(Space)`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -268,11 +287,11 @@ const ClusterData = styled(Space)`
   margin: 0 auto;
 `;
 
-const IPAddress = styled.span`
+const IPAddressDisplays = styled.span`
   font-size: 2.5rem;
 `;
 
-const VersionInformation = styled.div`
+const VersionInformationDisplay = styled.div`
   dl,
   dd:last-child {
     margin-bottom: 0;
@@ -283,6 +302,7 @@ const VersionInformation = styled.div`
   }
 `;
 
+// Editor components
 const ResourceEditor = styled(ResourceEditorTmpl)`
   min-height: calc(
     100vh - 64px - 64px - 64px - 2rem - 1rem - 1.5715em

@@ -8,7 +8,7 @@ import CopyToClipboard from "react-copy-to-clipboard";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import icon from "../img/icon-512x512.png";
-import { ExternalLink } from "./resource-editor";
+import { BareLink } from "./typography";
 
 export interface IQRCodeProps {
   link: string;
@@ -39,9 +39,9 @@ export const QRLink: React.FC<IQRCodeProps> = ({ link, ...otherProps }) => {
 
         <NestedSpace>
           <Text code>
-            <ExternalLink href={link} target="_blank">
+            <BareLink href={link} target="_blank">
               {link}
-            </ExternalLink>
+            </BareLink>
           </Text>
 
           <Tooltip

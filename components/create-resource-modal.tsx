@@ -9,7 +9,7 @@ import {
   faPlus,
   faTimes,
   faTrash,
-  faWindowMinimize,
+  faWindowMinimize
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Modal as ModalTmpl, Select as SelectTmpl, Space } from "antd";
@@ -23,7 +23,8 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import nodes from "../data/nodes.json";
 import { TitleSpace } from "./layout-wrapper";
-import ResourceEditorTmpl, { ExternalLink } from "./resource-editor";
+import ResourceEditorTmpl from "./resource-editor";
+import { BareLink } from "./typography";
 
 export interface ICreateResourceModalProps {
   open: boolean;
@@ -177,12 +178,12 @@ const CreateResourceModal: React.FC<ICreateResourceModalProps> = ({
 
             <ExternalExampleLink>
               {t("youCanFindSomeExamplesInThe")}{" "}
-              <ExternalLink
+              <BareLink
                 href="https://github.com/pojntfx/webnetes/tree/main/examples"
                 target="_blank"
               >
                 GitHub Repository <FontAwesomeIcon icon={faExternalLinkAlt} />
-              </ExternalLink>
+              </BareLink>
               .
             </ExternalExampleLink>
           </div>
