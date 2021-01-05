@@ -8,18 +8,24 @@ import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import node from "../../data/node-config";
 import bg from "../../img/fernando-rodrigues-sGJUb5HJBqs-unsplash.jpg";
 import glass from "../../styles/glass";
 import { urlencodeYAMLAll } from "../../utils/urltranscode";
 import EditNodeConfigModal from "../edit-node-config-modal";
+
+export interface IHomePageProps {
+  nodeConfig: string;
+}
 
 /**
  * HomePage is the central starting point for webnetes.
  *
  * There are two CTAs: "Create cluster" and "Join cluster", which link to CreatedPage and JoinPage respectively.
  */
-function HomePage() {
+export const HomePage: React.FC<IHomePageProps> = ({
+  nodeConfig,
+  ...otherProps
+}) => {
   // Hooks
   const { t } = useTranslation();
   const router = useHistory();
@@ -30,7 +36,7 @@ function HomePage() {
   const [editingWorker, setEditingWorker] = useState(false);
 
   return (
-    <HomeAfterWrapper>
+    <HomeAfterWrapper {...otherProps}>
       <HomeBlurWrapper>
         <Animate transitionName="fadeandzoom" transitionAppear>
           <div>
@@ -81,7 +87,7 @@ function HomePage() {
                   <Dropdown.Button
                     onClick={() =>
                       router.push(
-                        `/created?nodeConfig=${urlencodeYAMLAll(node)}`
+                        `/created?nodeConfig=${urlencodeYAMLAll(nodeConfig)}`
                       )
                     }
                     overlay={
@@ -130,7 +136,7 @@ function HomePage() {
                         clusterId &&
                         router.push(
                           `/join?id=${clusterId}&nodeConfig=${urlencodeYAMLAll(
-                            node
+                            nodeConfig
                           )}`
                         )
                       }
@@ -141,7 +147,7 @@ function HomePage() {
                         clusterId &&
                         router.push(
                           `/join?id=${clusterId}&nodeConfig=${urlencodeYAMLAll(
-                            node
+                            nodeConfig
                           )}`
                         )
                       }
@@ -177,7 +183,7 @@ function HomePage() {
       </HomeBlurWrapper>
     </HomeAfterWrapper>
   );
-}
+};
 
 // Wrapper components
 const HomeAfterWrapper = styled.div`
@@ -354,5 +360,3 @@ const MainDividerPart = styled.div`
     border-right: 0.5px solid rgba(255, 255, 255, 0.85) !important;
   }
 `;
-
-export default HomePage;
