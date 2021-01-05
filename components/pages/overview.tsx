@@ -40,23 +40,40 @@ import earthTexture from "three-globe/example/img/earth-night.jpg";
 import earthElevation from "three-globe/example/img/earth-topology.png";
 import universeTexture from "three-globe/example/img/night-sky.png";
 import { useWindowSize } from "use-window-size-hook";
-import nodes from "../../data/network-cluster.json";
-import connections from "../../data/network-connections.json";
-import resources from "../../data/resources-cluster.json";
-import computeStats from "../../data/stats-compute.json";
-import networkingStats from "../../data/stats-networking.json";
 import { stringifyResourceKey } from "../../utils/resource-key";
 import { ResourceItem, ResourceList } from "../lists";
 import NodeChart from "../node-chart";
 import { InspectorPanel, StatsPanel } from "../panels";
 import { OverviewTray } from "../trays";
+import { IClusterNode, IClusterResource, INodeScore } from "./explorer";
+
+export interface IConnections {
+  management: number[][][];
+  application: number[][][];
+}
+
+export interface IOverviewPageProps {
+  cluster: {
+    nodes: IClusterNode[];
+    resources: IClusterResource[];
+    connections: IConnections;
+  };
+  stats: {
+    compute: INodeScore[];
+    networking: INodeScore[];
+  };
+}
 
 /**
  * OverviewPage shows a central globe for a quick topological cluster overview.
  * Using the inspector and stats panels, it is possible to quickly and visually get insights.
  * For complex resources, it links to the explorer page.
  */
-function OverviewPage() {
+export const OverviewPage: React.FC<IOverviewPageProps> = ({
+  cluster: { nodes, resources, connections },
+  stats: { compute, networking },
+  ...otherProps
+}) => {
   // Hooks
   const { t } = useTranslation();
   const ref = createRef();
@@ -210,7 +227,7 @@ function OverviewPage() {
   return (
     <>
       {/* Globe */}
-      <GlobeWrapper $hoverable={globeInteractive}>
+      <GlobeWrapper $hoverable={globeInteractive} {...otherProps}>
         <Globe
           labelsData={nodes}
           labelLat={(d: any) => (d as typeof nodes[0]).latitude}
@@ -323,7 +340,7 @@ function OverviewPage() {
                 key="computeDistribution"
               >
                 <NodeChart
-                  data={computeStats}
+                  data={compute}
                   colors={[
                     "#1890ff",
                     "#096dd9",
@@ -350,7 +367,7 @@ function OverviewPage() {
                 key="networkingDistribution"
               >
                 <NodeChart
-                  data={networkingStats}
+                  data={networking}
                   colors={[
                     "#faad14",
                     "#d48806",
@@ -437,12 +454,12 @@ function OverviewPage() {
                   </Space>
                 }
                 value={
-                  computeStats.find(
+                  compute.find(
                     (candidate) => candidate.ip === selectedNode?.privateIP
                   )?.score
                 }
                 suffix={t("point", {
-                  count: computeStats.find(
+                  count: compute.find(
                     (candidate) => candidate.ip === selectedNode?.privateIP
                   )?.score,
                 })}
@@ -455,12 +472,12 @@ function OverviewPage() {
                   </Space>
                 }
                 value={
-                  networkingStats.find(
+                  networking.find(
                     (candidate) => candidate.ip === selectedNode?.privateIP
                   )?.score
                 }
                 suffix={t("mbps", {
-                  count: networkingStats.find(
+                  count: networking.find(
                     (candidate) => candidate.ip === selectedNode?.privateIP
                   )?.score,
                 })}
@@ -625,7 +642,7 @@ function OverviewPage() {
       </Animate>
     </>
   );
-}
+};
 
 // Globe components
 const GlobeTmpl = dynamic(() => import("../globe"), {
@@ -655,5 +672,3 @@ const StatsPanelWrapper = styled.div<{ $long?: boolean }>`
 const StatsPanelDivider = styled(Divider)`
   margin: 0.25rem 0;
 `;
-
-export default OverviewPage;

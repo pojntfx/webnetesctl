@@ -45,11 +45,12 @@ import CreatedPage from "../components/pages/created";
 import { ExplorerPage } from "../components/pages/explorer";
 import { HomePage } from "../components/pages/home";
 import JoinPage from "../components/pages/join";
-import OverviewPage from "../components/pages/overview";
+import { OverviewPage } from "../components/pages/overview";
 import SearchModal from "../components/search-modal";
 import TerminalModal from "../components/terminal-modal";
 import { AppTray } from "../components/trays";
 import composite from "../data/cluster.json";
+import connections from "../data/network-connections.json";
 import {
   default as clusterNodes,
   default as nodes,
@@ -569,7 +570,17 @@ function RoutesPage() {
           {/* Main content */}
           <Content>
             <Route path="/overview">
-              <OverviewPage />
+              <OverviewPage
+                cluster={{
+                  nodes: clusterNodes,
+                  resources: clusterResources,
+                  connections,
+                }}
+                stats={{
+                  compute: computeStats,
+                  networking: networkingStats,
+                }}
+              />
             </Route>
 
             <Route path="/explorer">
