@@ -63,6 +63,10 @@ export interface IOverviewPageProps {
     networking: INodeScore[];
   };
   onOpenTerminal: (label: string) => void;
+  refreshNodeLocation: () => void;
+  nodeCoordinatesLoading: boolean;
+  latitude: number;
+  longitude: number;
 }
 
 /**
@@ -74,6 +78,10 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
   cluster: { nodes, resources, connections },
   stats: { compute, networking },
   onOpenTerminal,
+  refreshNodeLocation,
+  nodeCoordinatesLoading,
+  latitude,
+  longitude,
   ...otherProps
 }) => {
   // Hooks
@@ -90,9 +98,6 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
   const [selectedNode, _setSelectedNode] = useState<any>();
   const [globeInteractive, setGlobeInteractive] = useState(false);
   const [cameraActive, setCameraActive] = useState(false);
-
-  const [userCoordinates, setUserCoordinates] = useState<number[]>([0, 0]);
-  const [userCoordinatesLoading, setUserCoordinatesLoading] = useState(false);
 
   const [resourcesFilter, setResourcesFilter] = useState("");
 
@@ -135,8 +140,8 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
       } else {
         (ref.current as any).pointOfView(
           {
-            lat: userCoordinates[0],
-            lng: userCoordinates[1],
+            lat: latitude,
+            lng: longitude,
             altitude: 2.5,
           },
           1000
@@ -145,7 +150,7 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
 
       setCameraActive(false);
     }
-  }, [ref.current, cameraActive, selectedNode, userCoordinates]);
+  }, [ref.current, cameraActive, selectedNode, latitude, longitude]);
 
   useEffect(() => {
     // Map privateIP query parameter to globe position
@@ -171,32 +176,14 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
     }
   }, [ref, location.search]);
 
-  const refreshUserCoordinates = useCallback(() => {
+  const refreshLocation = useCallback(() => {
     // Get a user's coordinates and set the globe position accordingly
-    setUserCoordinatesLoading(true);
+    unstable_batchedUpdates(() => {
+      setCameraActive(true);
+      setSelectedNode(undefined);
+    });
 
-    typeof window !== "undefined" &&
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          unstable_batchedUpdates(() => {
-            setCameraActive(true);
-            setSelectedNode(undefined);
-            setUserCoordinates([
-              position.coords.latitude,
-              position.coords.longitude,
-            ]);
-            setUserCoordinatesLoading(false);
-          });
-        },
-        (e) => {
-          console.error(
-            "could not get user location, falling back to [0,0]",
-            e
-          );
-
-          setUserCoordinatesLoading(false);
-        }
-      );
+    refreshNodeLocation();
   }, []);
 
   useEffect(() => {
@@ -628,8 +615,8 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
         <OverviewTray>
           <Button
             type="text"
-            onClick={refreshUserCoordinates}
-            loading={userCoordinatesLoading}
+            onClick={refreshLocation}
+            loading={nodeCoordinatesLoading}
             icon={<FontAwesomeIcon icon={faLocationArrow} />}
           />
 

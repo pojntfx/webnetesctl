@@ -593,6 +593,10 @@ function RoutesPage() {
                         networking: stats.networking,
                       }}
                       onOpenTerminal={() => setTerminalsModalOpen(true)}
+                      latitude={local.location.latitude}
+                      longitude={local.location.longitude}
+                      nodeCoordinatesLoading={local.location.loading}
+                      refreshNodeLocation={local.location.refreshLocation}
                     />
                   )}
               </Route>
