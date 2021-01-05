@@ -14,19 +14,27 @@ import bg from "../img/fernando-rodrigues-sGJUb5HJBqs-unsplash.jpg";
 import glass from "../styles/glass";
 import { urlencodeYAMLAll } from "../utils/urltranscode";
 
+/**
+ * HomePage is the central starting point for webnetes.
+ *
+ * There are two CTAs: "Create cluster" and "Join cluster", which link to CreatedPage and JoinPage respectively.
+ */
 function HomePage() {
+  // Hooks
   const { t } = useTranslation();
   const router = useRouter();
 
+  // State
   const [clusterId, setClusterId] = useState<string>();
   const [editNodeConfigModalOpen, setEditNodeConfigModalOpen] = useState(false);
   const [editingWorker, setEditingWorker] = useState(false);
 
   return (
-    <Wrapper>
-      <BlurWrapper>
+    <HomeAfterWrapper>
+      <HomeBlurWrapper>
         <Animate transitionName="fadeandzoom" transitionAppear>
           <div>
+            {/* Node config editor */}
             <EditNodeConfigModal
               open={editNodeConfigModalOpen}
               onDone={(definition) => {
@@ -56,10 +64,13 @@ function HomePage() {
               }}
             />
 
-            <Image alt={t("webnetesLogo")} src="/logo.svg" />
+            {/* Logo */}
+            <Logo alt={t("webnetesLogo")} src="/logo.svg" />
 
+            {/* Actions */}
             <ActionSplit>
               <div>
+                {/* Create cluster action */}
                 <Action direction="vertical" align="center">
                   <ActionIcon icon={faPlus} size="3x" />
 
@@ -92,14 +103,16 @@ function HomePage() {
                   </Dropdown.Button>
                 </Action>
 
-                <DividerWrapper>
-                  <Divider />
+                {/* Main divider */}
+                <MainDivider>
+                  <MainDividerPart />
 
                   <span>{t("or")}</span>
 
-                  <Divider />
-                </DividerWrapper>
+                  <MainDividerPart />
+                </MainDivider>
 
+                {/* Join cluster action */}
                 <Action direction="vertical" align="center">
                   <ActionIcon icon={faHandshake} size="3x" />
 
@@ -161,12 +174,13 @@ function HomePage() {
             </ActionSplit>
           </div>
         </Animate>
-      </BlurWrapper>
-    </Wrapper>
+      </HomeBlurWrapper>
+    </HomeAfterWrapper>
   );
 }
 
-const Wrapper = styled.div`
+// Wrapper components
+const HomeAfterWrapper = styled.div`
   background: url(${bg}) no-repeat center center fixed;
   background-size: cover;
   overflow: hidden;
@@ -202,7 +216,7 @@ const Wrapper = styled.div`
   }
 `;
 
-const BlurWrapper = styled.div`
+const HomeBlurWrapper = styled.div`
   width: 100%;
   position: relative;
   padding-bottom: 4rem; // Visual centering offset for logo
@@ -239,7 +253,8 @@ const BlurWrapper = styled.div`
   }
 `;
 
-const Image = styled.img`
+// Logo components
+const Logo = styled.img`
   position: relative;
   width: 100%;
   padding-top: 2rem;
@@ -249,6 +264,7 @@ const Image = styled.img`
   max-height: 10rem;
 `;
 
+// Action components
 const ActionSplit = styled.div`
   position: relative;
   width: 100%;
@@ -303,7 +319,8 @@ const ActionIcon = styled(FontAwesomeIcon)`
   filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.5));
 `;
 
-const DividerWrapper = styled.div`
+// Divider components
+const MainDivider = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
@@ -330,7 +347,7 @@ const DividerWrapper = styled.div`
   }
 `;
 
-const Divider = styled.div`
+const MainDividerPart = styled.div`
   border-bottom: 0.5px solid rgba(255, 255, 255, 0.85) !important;
 
   @media screen and (min-width: 812px) {
