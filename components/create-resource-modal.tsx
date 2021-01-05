@@ -21,8 +21,8 @@ import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import nodes from "../data/network-cluster.json";
 import { TitleSpace } from "./layouts";
+import { IClusterNode } from "./pages/explorer";
 import ResourceEditorTmpl from "./resource-editor";
 import { BareLink, MoreLink } from "./typography";
 
@@ -31,6 +31,7 @@ export interface ICreateResourceModalProps {
   onCreate: () => void;
   onCancel: () => void;
   onMinimize: () => void;
+  nodes: IClusterNode[];
 }
 
 /**
@@ -44,6 +45,7 @@ const CreateResourceModal: React.FC<ICreateResourceModalProps> = ({
   onCreate,
   onCancel,
   onMinimize,
+  nodes,
   ...otherProps
 }) => {
   const { t } = useTranslation();

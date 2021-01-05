@@ -293,6 +293,7 @@ function RoutesPage() {
             onCreate={() => setCreateResourceDialogOpen(false)}
             onCancel={() => setCreateResourceDialogOpen(false)}
             onMinimize={() => setCreateResourceModalMaximized(false)}
+            nodes={clusterNodes}
           />
 
           <CreateFileModal
@@ -300,6 +301,7 @@ function RoutesPage() {
             onCreate={() => setCreateFileModalOpen(false)}
             onCancel={() => setCreateFileModalOpen(false)}
             onMinimize={() => setCreateFileModalMaximized(false)}
+            resources={clusterResources}
           />
 
           <InviteModal

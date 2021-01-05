@@ -17,14 +17,15 @@ import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { nodeId } from "../data/node-config";
-import resources from "../data/resources-cluster.json";
 import { Modal } from "./create-resource-modal";
+import { IClusterResource } from "./pages/explorer";
 
 export interface ICreateFileModalProps {
   open: boolean;
   onCreate: () => void;
   onCancel: () => void;
   onMinimize: () => void;
+  resources: IClusterResource[];
 }
 
 /**
@@ -38,6 +39,7 @@ const CreateFileModal: React.FC<ICreateFileModalProps> = ({
   onCreate,
   onCancel,
   onMinimize,
+  resources,
   ...otherProps
 }) => {
   const { t } = useTranslation();

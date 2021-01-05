@@ -3,16 +3,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Space } from "antd";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import nodeType from "../data/network-cluster.json";
-import resourceType from "../data/resources-cluster.json";
 import { stringifyResourceKey } from "../utils/resource-key";
 import { Modal as ModalTmpl } from "./create-resource-modal";
 import { SearchInput } from "./navbar";
+import { IClusterNode, IClusterResource } from "./pages/explorer";
 
 export interface ISearchModalProps {
   open: boolean;
-  nodes: typeof nodeType[0][];
-  resources: typeof resourceType[0][];
+  nodes: IClusterNode[];
+  resources: IClusterResource[];
   query: string;
   handleChange: (newValue?: string) => void;
   onDone: () => void;
