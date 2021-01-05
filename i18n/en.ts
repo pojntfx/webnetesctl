@@ -37,7 +37,7 @@ export default {
   openInNodes: "Open in Nodes",
   name: "Name",
   kind: "Kind",
-  openInTerminal: "Open in Terminal",
+  openTerminals: "Open Terminals",
   connected: "Connected",
   coordinates: "Coordinates",
   youAre: "You are",

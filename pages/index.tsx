@@ -592,6 +592,7 @@ function RoutesPage() {
                         compute: stats.compute,
                         networking: stats.networking,
                       }}
+                      onOpenTerminal={() => setTerminalsModalOpen(true)}
                     />
                   )}
               </Route>
@@ -610,6 +611,7 @@ function RoutesPage() {
                         compute: stats.compute,
                         networking: stats.networking,
                       }}
+                      onOpenTerminal={() => setTerminalsModalOpen(true)}
                     />
                   )}
               </Route>

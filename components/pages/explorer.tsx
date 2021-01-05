@@ -16,7 +16,7 @@ import {
   faShapes,
   faTerminal,
   faTrash,
-  faWifi,
+  faWifi
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -27,7 +27,7 @@ import {
   List,
   Menu,
   Space,
-  Tooltip,
+  Tooltip
 } from "antd";
 import Text from "antd/lib/typography/Text";
 import yaml from "js-yaml";
@@ -40,7 +40,7 @@ import styled from "styled-components";
 import { filterKeys } from "../../utils/filter-keys";
 import {
   parseResourceKey,
-  stringifyResourceKey,
+  stringifyResourceKey
 } from "../../utils/resource-key";
 import { ManagerWrapper, TitleSpace, WideSpace } from "../layouts";
 import { ResourceItem as ResourceItemTmpl } from "../lists";
@@ -78,6 +78,7 @@ export interface IExplorerPageProps {
     compute: INodeScore[];
     networking: INodeScore[];
   };
+  onOpenTerminal: (label: string) => void;
 }
 
 /**
@@ -87,6 +88,7 @@ export interface IExplorerPageProps {
 export const ExplorerPage: React.FC<IExplorerPageProps> = ({
   cluster: { nodes, resources },
   stats: { compute, networking },
+  onOpenTerminal,
   ...otherProps
 }) => {
   // Hooks
@@ -385,8 +387,16 @@ export const ExplorerPage: React.FC<IExplorerPageProps> = ({
         <>
           {resource.kind === "Workload" && (
             <>
-              <Tooltip title={t("openInTerminal")}>
-                <Action type="text" shape="circle">
+              <Tooltip title={t("openTerminals")}>
+                <Action
+                  type="text"
+                  shape="circle"
+                  onClick={(e) => {
+                    e.stopPropagation();
+
+                    onOpenTerminal(resource.label);
+                  }}
+                >
                   <FontAwesomeIcon icon={faTerminal} />
                 </Action>
               </Tooltip>
@@ -489,8 +499,16 @@ export const ExplorerPage: React.FC<IExplorerPageProps> = ({
                                   }}
                                   actions={[
                                     resource.kind === "Workload" && (
-                                      <Tooltip title={t("openInTerminal")}>
-                                        <Button type="text" shape="circle">
+                                      <Tooltip title={t("openTerminals")}>
+                                        <Button
+                                          type="text"
+                                          shape="circle"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+
+                                            onOpenTerminal(resource.label);
+                                          }}
+                                        >
                                           <FontAwesomeIcon icon={faTerminal} />
                                         </Button>
                                       </Tooltip>

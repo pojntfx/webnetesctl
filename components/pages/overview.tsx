@@ -62,6 +62,7 @@ export interface IOverviewPageProps {
     compute: INodeScore[];
     networking: INodeScore[];
   };
+  onOpenTerminal: (label: string) => void;
 }
 
 /**
@@ -72,6 +73,7 @@ export interface IOverviewPageProps {
 export const OverviewPage: React.FC<IOverviewPageProps> = ({
   cluster: { nodes, resources, connections },
   stats: { compute, networking },
+  onOpenTerminal,
   ...otherProps
 }) => {
   // Hooks
@@ -543,8 +545,16 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
                           }}
                           actions={[
                             resource.kind === "Workload" && (
-                              <Tooltip title={t("openInTerminal")}>
-                                <Button type="text" shape="circle">
+                              <Tooltip title={t("openTerminals")}>
+                                <Button
+                                  type="text"
+                                  shape="circle"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+
+                                    onOpenTerminal(resource.label);
+                                  }}
+                                >
                                   <FontAwesomeIcon icon={faTerminal} />
                                 </Button>
                               </Tooltip>
