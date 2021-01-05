@@ -17,7 +17,7 @@ import {
   faMobile,
   faRecordVinyl,
   faThumbsUp,
-  faTimes
+  faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, notification, Space, Tooltip } from "antd";
@@ -45,19 +45,19 @@ import {
   RightGaugeButton,
   RightGaugeContent,
   RightGaugeToggler,
-  RightGaugeWrapper
+  RightGaugeWrapper,
 } from "../components/gauges";
 import {
   AfterWrapper,
   BlurWrapper as BlurWrapperTmpl,
-  ContentWrapper as ContentWrapperTmpl
+  ContentWrapper as ContentWrapperTmpl,
 } from "../components/layouts";
 import { FocusedTitle, MainTitle } from "../components/typography";
 import composite from "../data/composite.json";
 import localResources from "../data/local-resources.json";
 import network from "../data/network.json";
 import glass from "../styles/glass";
-import { graphGroupColor } from "../styles/graph-group-color";
+import { getColorForGraphGroup } from "../styles/graph-group-color";
 import { urldecodeYAMLAll, urlencodeYAMLAll } from "../utils/urltranscode";
 
 const particlesConfig: typeof ParticlesTmpl["arguments"] = {
@@ -328,7 +328,8 @@ function JoinPage() {
 
                 sprite.color = "#ffffff";
                 sprite.textHeight = 2;
-                sprite.backgroundColor = graphGroupColor(node.group) + "F0";
+                sprite.backgroundColor =
+                  getColorForGraphGroup(node.group) + "F0";
                 sprite.padding = 2;
 
                 return sprite;

@@ -1,4 +1,4 @@
-export const graphGroupColor = (group: number) =>
+export const getColorForGraphGroup = (group: number) =>
   [
     "#a8071a",
     "#ad2102",

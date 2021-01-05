@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import SpriteText from "three-spritetext";
 import { useWindowSize } from "use-window-size-hook";
-import { graphGroupColor } from "../styles/graph-group-color";
+import { getColorForGraphGroup } from "../styles/graph-group-color";
 import { Modal as ModalTmpl } from "./create-resource-modal";
 
 export interface IGraphModalProps {
@@ -79,7 +79,7 @@ const GraphModal: React.FC<IGraphModalProps> = ({
 
           sprite.color = "#ffffff";
           sprite.textHeight = 2;
-          sprite.backgroundColor = graphGroupColor(node.group) + "F0";
+          sprite.backgroundColor = getColorForGraphGroup(node.group) + "F0";
           sprite.padding = 2;
 
           return sprite;
