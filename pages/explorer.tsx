@@ -42,10 +42,10 @@ import { ResourceItem as ResourceItemTmpl } from "../components/lists";
 import ResourceEditorTmpl from "../components/resource-editor";
 import Table from "../components/tables";
 import { BareTitle } from "../components/typography";
-import computeStats from "../data/compute-stats.json";
-import networkingStats from "../data/networking-stats.json";
-import nodes from "../data/nodes.json";
-import resources from "../data/resources.json";
+import nodes from "../data/network-cluster.json";
+import resources from "../data/resources-cluster.json";
+import computeStats from "../data/stats-compute.json";
+import networkingStats from "../data/stats-networking.json";
 import { filterKeys } from "../utils/filter-keys";
 import { parseResourceKey, stringifyResourceKey } from "../utils/resource-key";
 

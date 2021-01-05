@@ -1,10 +1,10 @@
-import { monaco, ControlledEditor } from "@monaco-editor/react";
+import { ControlledEditor, monaco } from "@monaco-editor/react";
 import yaml from "js-yaml";
 import solarizedMonaco from "monaco-themes/themes/Solarized-dark.json";
 import { useEffect, useState } from "react";
 import JSONTree from "react-json-tree";
 import styled from "styled-components";
-import solarized from "../data/solarized.json";
+import solarized from "../data/theme-solarized.json";
 
 export interface IResourceEditorProps {
   data: string;

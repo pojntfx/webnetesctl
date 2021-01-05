@@ -45,11 +45,11 @@ import { ResourceItem, ResourceList } from "../components/lists";
 import NodeChart from "../components/node-chart";
 import { InspectorPanel, StatsPanel } from "../components/panels";
 import { OverviewTray } from "../components/trays";
-import computeStats from "../data/compute-stats.json";
-import connections from "../data/connections.json";
-import networkingStats from "../data/networking-stats.json";
-import nodes from "../data/nodes.json";
-import resources from "../data/resources.json";
+import nodes from "../data/network-cluster.json";
+import connections from "../data/network-connections.json";
+import resources from "../data/resources-cluster.json";
+import computeStats from "../data/stats-compute.json";
+import networkingStats from "../data/stats-networking.json";
 import { stringifyResourceKey } from "../utils/resource-key";
 
 /**

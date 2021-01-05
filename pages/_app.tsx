@@ -11,7 +11,7 @@ import {
   faProjectDiagram,
   faSearch,
   faTerminal,
-  faTimes
+  faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -22,7 +22,7 @@ import {
   notification,
   Popover,
   Space,
-  Tooltip
+  Tooltip,
 } from "antd";
 import { Content } from "antd/lib/layout/layout";
 import i18n from "i18next";
@@ -41,15 +41,15 @@ import { Layout } from "../components/layouts";
 import Navbar, {
   DesktopHeader,
   MobileHeader,
-
-  MobileTabs, SearchInput
+  MobileTabs,
+  SearchInput,
 } from "../components/navbar";
 import SearchModal from "../components/search-modal";
 import TerminalModal from "../components/terminal-modal";
 import { AppTray } from "../components/trays";
-import composite from "../data/composite.json";
-import nodes from "../data/nodes.json";
-import resources from "../data/resources.json";
+import composite from "../data/cluster.json";
+import nodes from "../data/network-cluster.json";
+import resources from "../data/resources-cluster.json";
 import en from "../i18n/en";
 import frostedGlass from "../styles/frosted-glass";
 import "../styles/index.less";

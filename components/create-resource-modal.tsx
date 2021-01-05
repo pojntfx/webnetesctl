@@ -9,7 +9,7 @@ import {
   faPlus,
   faTimes,
   faTrash,
-  faWindowMinimize,
+  faWindowMinimize
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Modal as ModalTmpl, Select as SelectTmpl, Space } from "antd";
@@ -21,7 +21,7 @@ import { useCallback, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import nodes from "../data/nodes.json";
+import nodes from "../data/network-cluster.json";
 import { TitleSpace } from "./layouts";
 import ResourceEditorTmpl from "./resource-editor";
 import { BareLink, MoreLink } from "./typography";

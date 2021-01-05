@@ -53,9 +53,9 @@ import {
   ContentWrapper as ContentWrapperTmpl,
 } from "../components/layouts";
 import { FocusedTitle, MainTitle } from "../components/typography";
-import composite from "../data/composite.json";
-import localResources from "../data/local-resources.json";
-import network from "../data/network.json";
+import composite from "../data/cluster.json";
+import network from "../data/network-local.json";
+import localResources from "../data/resources-local.json";
 import glass from "../styles/glass";
 import { getColorForGraphGroup } from "../styles/graph-group-color";
 import { urldecodeYAMLAll, urlencodeYAMLAll } from "../utils/urltranscode";
