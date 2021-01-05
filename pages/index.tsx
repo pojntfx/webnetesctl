@@ -43,7 +43,7 @@ import Navbar, {
 import HomePage from "../components/pages";
 import { ConfigPage } from "../components/pages/config";
 import CreatedPage from "../components/pages/created";
-import ExplorerPage from "../components/pages/explorer";
+import { ExplorerPage } from "../components/pages/explorer";
 import JoinPage from "../components/pages/join";
 import OverviewPage from "../components/pages/overview";
 import SearchModal from "../components/search-modal";
@@ -54,6 +54,10 @@ import nodes from "../data/network-cluster.json";
 import resources from "../data/resources-cluster.json";
 import nodeResource, { nodeId as nodeResourceId } from "../data/node-config";
 import { parseResourceKey, stringifyResourceKey } from "../utils/resource-key";
+import clusterNodes from "../data/network-cluster.json";
+import clusterResources from "../data/resources-cluster.json";
+import computeStats from "../data/stats-compute.json";
+import networkingStats from "../data/stats-networking.json";
 
 /**
  * RoutesPage is the client-side routing part of the hybrid PWA.
@@ -565,7 +569,16 @@ function RoutesPage() {
             </Route>
 
             <Route path="/explorer">
-              <ExplorerPage />
+              <ExplorerPage
+                cluster={{
+                  nodes: clusterNodes,
+                  resources: clusterResources,
+                }}
+                stats={{
+                  compute: computeStats,
+                  networking: networkingStats,
+                }}
+              />
             </Route>
 
             <Route path="/config">

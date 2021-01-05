@@ -16,7 +16,7 @@ import {
   faShapes,
   faTerminal,
   faTrash,
-  faWifi
+  faWifi,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -27,7 +27,7 @@ import {
   List,
   Menu,
   Space,
-  Tooltip
+  Tooltip,
 } from "antd";
 import Text from "antd/lib/typography/Text";
 import yaml from "js-yaml";
@@ -37,14 +37,10 @@ import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import nodes from "../../data/network-cluster.json";
-import resources from "../../data/resources-cluster.json";
-import computeStats from "../../data/stats-compute.json";
-import networkingStats from "../../data/stats-networking.json";
 import { filterKeys } from "../../utils/filter-keys";
 import {
   parseResourceKey,
-  stringifyResourceKey
+  stringifyResourceKey,
 } from "../../utils/resource-key";
 import { ManagerWrapper, TitleSpace, WideSpace } from "../layouts";
 import { ResourceItem as ResourceItemTmpl } from "../lists";
@@ -52,11 +48,47 @@ import ResourceEditorTmpl from "../resource-editor";
 import Table from "../tables";
 import { BareTitle } from "../typography";
 
+export interface IClusterNode {
+  privateIP: string;
+  publicIP: string;
+  location: string;
+  latitude: number;
+  longitude: number;
+  size: number;
+}
+
+export interface IClusterResource {
+  kind: string;
+  name: string;
+  label: string;
+  node: string;
+}
+
+export interface INodeScore {
+  ip: string;
+  score: number;
+}
+
+export interface IExplorerPageProps {
+  cluster: {
+    nodes: IClusterNode[];
+    resources: IClusterResource[];
+  };
+  stats: {
+    compute: INodeScore[];
+    networking: INodeScore[];
+  };
+}
+
 /**
  * ExplorerPage is a way for the user to quickly find & manage a node or resource.
  * If a visual aid is of use, it links to the overview page.
  */
-function ExplorerPage() {
+export const ExplorerPage: React.FC<IExplorerPageProps> = ({
+  cluster: { nodes, resources },
+  stats: { compute, networking },
+  ...otherProps
+}) => {
   // Hooks
   const { t } = useTranslation();
   const router = useHistory();
@@ -181,10 +213,10 @@ function ExplorerPage() {
 
   // Data sources
   const nodesDataSource = nodes.map((node) => {
-    const computeScore = computeStats.find(
+    const computeScore = compute.find(
       (candidate) => candidate.ip === node.privateIP
     )?.score;
-    const networkingScore = networkingStats.find(
+    const networkingScore = networking.find(
       (candidate) => candidate.ip === node.privateIP
     )?.score;
 
@@ -388,7 +420,7 @@ function ExplorerPage() {
   ];
 
   return (
-    <ManagerWrapper>
+    <ManagerWrapper {...otherProps}>
       <Animate transitionName="fadeandzoom" transitionAppear>
         <div>
           {/* Nodes */}
@@ -690,7 +722,7 @@ function ExplorerPage() {
       </Animate>
     </ManagerWrapper>
   );
-}
+};
 
 // Resource components
 const ResourceList = styled(List)``;
@@ -727,5 +759,3 @@ const Action = styled(Button)`
     margin-right: 8px;
   }
 `;
-
-export default ExplorerPage;
