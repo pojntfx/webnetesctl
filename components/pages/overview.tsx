@@ -164,7 +164,6 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
 
         unstable_batchedUpdates(() => {
           setCameraActive(true);
-          setInspectorPanelOpen(true);
           _setSelectedNode(foundNode);
         });
       } else {
@@ -287,13 +286,13 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
           >
             <StatsPanelWrapper>
               <Statistic
-                title={t("node", { count: 4 })}
-                value={4}
+                title={t("node", { count: nodes.length })}
+                value={nodes.length}
                 prefix={<FontAwesomeIcon fixedWidth icon={faMobile} />}
               />
               <Statistic
-                title={t("resource", { count: 16 })}
-                value={16}
+                title={t("resource", { count: resources.length })}
+                value={resources.length}
                 prefix={<FontAwesomeIcon fixedWidth icon={faCube} />}
               />
             </StatsPanelWrapper>
@@ -308,8 +307,10 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
                     {t("compute")}
                   </Space>
                 }
-                value={1560}
-                suffix={t("point", { count: 1560 })}
+                value={compute.reduce((all, curr) => all + curr.score, 0)}
+                suffix={t("point", {
+                  count: compute.reduce((all, curr) => all + curr.score, 0),
+                })}
               />
               <Statistic
                 title={
@@ -318,8 +319,10 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
                     {t("network")}
                   </Space>
                 }
-                value={920}
-                suffix={t("mbps", { count: 920 })}
+                value={networking.reduce((all, curr) => all + curr.score, 0)}
+                suffix={t("mbps", {
+                  count: networking.reduce((all, curr) => all + curr.score, 0),
+                })}
               />
             </StatsPanelWrapper>
 
@@ -662,7 +665,7 @@ const StatsPanelWrapper = styled.div<{ $long?: boolean }>`
 
   ${(props) =>
     props.$long
-      ? ".ant-statistic-content { font-size: 20px !important; }"
+      ? ".ant-statistic-content { font-size: 18px !important; }"
       : "padding-bottom: 6px;"}
 `;
 
