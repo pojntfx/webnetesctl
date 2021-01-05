@@ -31,6 +31,7 @@ import { useTranslation } from "react-i18next";
 import { Route, Switch, useHistory, useLocation } from "react-router-dom";
 import CreateFileModal from "../components/create-file-modal";
 import CreateResourceModal from "../components/create-resource-modal";
+import { DataProvider } from "../components/data-provider";
 import GraphModal from "../components/graph-modal";
 import InviteModal from "../components/invite-modal";
 import { Layout } from "../components/layouts";
@@ -49,16 +50,7 @@ import { OverviewPage } from "../components/pages/overview";
 import SearchModal from "../components/search-modal";
 import TerminalModal from "../components/terminal-modal";
 import { AppTray } from "../components/trays";
-import clusterGraph from "../data/cluster.json";
-import connections from "../data/network-connections.json";
-import clusterNodes from "../data/network-cluster.json";
-import nodeResource, { nodeId as nodeResourceId } from "../data/node-config";
-import clusterResources from "../data/resources-cluster.json";
-import computeStats from "../data/stats-compute.json";
-import networkingStats from "../data/stats-networking.json";
 import { parseResourceKey, stringifyResourceKey } from "../utils/resource-key";
-import networkGraph from "../data/network-local.json";
-import resourceGraph from "../data/resources-local.json";
 
 /**
  * RoutesPage is the client-side routing part of the hybrid PWA.
@@ -91,9 +83,6 @@ function RoutesPage() {
   );
 
   const [searchQuery, setSearchQuery] = useState<string>();
-
-  const [nodeId, setNodeId] = useState(nodeResourceId);
-  const [nodeConfig, setNodeConfig] = useState(nodeResource);
 
   // Effects
   useEffect(() => {
@@ -168,19 +157,18 @@ function RoutesPage() {
   useEffect(() => {
     // Map the privateIP query parameter to state
     if (new URLSearchParams(location.search).get("privateIP")) {
-      const node = clusterNodes.find(
-        (candidate) =>
-          candidate.privateIP ===
-          new URLSearchParams(location.search).get("privateIP")
-      );
-
-      if (node) {
-        setSearchQuery(
-          `${t("node")} ${node.privateIP} (${node.location}, ${node.publicIP})`
-        );
-      } else {
-        setSearchQuery(undefined);
-      }
+      // const node = clusterNodes.find(
+      //   (candidate) =>
+      //     candidate.privateIP ===
+      //     new URLSearchParams(location.search).get("privateIP")
+      // );
+      // if (node) {
+      //   setSearchQuery(
+      //     `${t("node")} ${node.privateIP} (${node.location}, ${node.publicIP})`
+      //   );
+      // } else {
+      //   setSearchQuery(undefined);
+      // }
     }
   }, [new URLSearchParams(location.search).get("privateIP")]);
 
@@ -191,22 +179,22 @@ function RoutesPage() {
         new URLSearchParams(location.search).get("resource") as string
       );
 
-      const resource = clusterResources.find(
-        (candidate) =>
-          candidate.kind === kind &&
-          candidate.label === label &&
-          candidate.node === node
-      );
+      // const resource = clusterResources.find(
+      //   (candidate) =>
+      //     candidate.kind === kind &&
+      //     candidate.label === label &&
+      //     candidate.node === node
+      // );
 
-      if (resource) {
-        setSearchQuery(
-          `${t("resource")} ${resource.kind}/${resource.name} on ${
-            resource.node
-          }`
-        );
-      } else {
-        setSearchQuery(undefined);
-      }
+      // if (resource) {
+      //   setSearchQuery(
+      //     `${t("resource")} ${resource.kind}/${resource.name} on ${
+      //       resource.node
+      //     }`
+      //   );
+      // } else {
+      //   setSearchQuery(undefined);
+      // }
     }
   }, [new URLSearchParams(location.search).get("resource")]);
 
@@ -267,352 +255,367 @@ function RoutesPage() {
 
   return (
     <Switch>
-      <Route path="/join">
-        <JoinPage
-          cluster={clusterGraph}
-          network={networkGraph}
-          resources={resourceGraph}
-        />
-      </Route>
+      <DataProvider>
+        {({ graphs, stats, cluster, local }) => (
+          <>
+            <Route path="/join">
+              <JoinPage
+                cluster={graphs.cluster}
+                network={graphs.network}
+                resources={graphs.resources}
+              />
+            </Route>
 
-      <Route path="/created">
-        <CreatedPage />
-      </Route>
+            <Route path="/created">
+              <CreatedPage />
+            </Route>
 
-      <Route path="/" exact>
-        <HomePage nodeConfig={nodeConfig} />
-      </Route>
+            <Route path="/" exact>
+              <HomePage nodeConfig={local.nodeConfig} />
+            </Route>
 
-      <Route path="/">
-        {/* Manager layout */}
+            <Route path="/">
+              {/* Manager layout */}
 
-        <Layout>
-          {/* Modals */}
-          <CreateResourceModal
-            open={createResourceDialogOpen && createResourceModalMaximized}
-            onCreate={() => setCreateResourceDialogOpen(false)}
-            onCancel={() => setCreateResourceDialogOpen(false)}
-            onMinimize={() => setCreateResourceModalMaximized(false)}
-            nodes={clusterNodes}
-          />
-
-          <CreateFileModal
-            open={createFileModalOpen && createFileModalMaximized}
-            onCreate={() => setCreateFileModalOpen(false)}
-            onCancel={() => setCreateFileModalOpen(false)}
-            onMinimize={() => setCreateFileModalMaximized(false)}
-            resources={clusterResources}
-          />
-
-          <InviteModal
-            open={inviteModalOpen}
-            onDone={() => setInviteModalOpen(false)}
-          />
-
-          <GraphModal
-            open={graphModalOpen}
-            onDone={() => setGraphModalOpen(false)}
-            graphData={clusterGraph}
-          />
-
-          <TerminalModal
-            open={terminalsModalOpen}
-            onDone={() => setTerminalsModalOpen(false)}
-            onTerminalCreated={(label, xterm) =>
-              setInterval(
-                () => xterm.terminal.writeln(`${label} Hello, world!`),
-                1000
-              )
-            }
-            onStdin={(label, key) => console.log(label, key)}
-            labels={clusterResources
-              .filter((resource) => resource.kind === "Workload")
-              .map((resource) => resource.label)}
-          />
-
-          <SearchModal
-            open={searchModalOpen}
-            handleChange={(query) => {
-              if (query) {
-                setSearchQuery(query);
-
-                if (query.startsWith("node=")) {
-                  location.pathname === "/config"
-                    ? router?.push(
-                        `/explorer?privateIP=${query.split("node=")[1]}`
-                      )
-                    : router?.push(`?privateIP=${query.split("node=")[1]}`);
-                } else {
-                  router?.push(
-                    `/explorer?resource=${query.split("resource=")[1]}`
-                  );
-                }
-
-                setSearchModalOpen(false);
-              } else {
-                setSearchQuery(undefined);
-
-                router?.push(location.pathname);
-              }
-            }}
-            query={searchQuery as string}
-            nodes={clusterNodes}
-            resources={clusterResources}
-            onDone={() => setSearchModalOpen(false)}
-          />
-
-          {/* App tray */}
-          {(!createResourceModalMaximized ||
-            !createFileModalMaximized ||
-            !graphModalOpen ||
-            !terminalsModalOpen) && (
-            <AppTray>
-              {!createResourceModalMaximized && (
-                <Button
-                  type="text"
-                  onClick={() => setCreateResourceModalMaximized(true)}
-                  icon={<FontAwesomeIcon icon={faCube} />}
-                />
-              )}
-
-              {!createFileModalMaximized && (
-                <Button
-                  type="text"
-                  onClick={() => setCreateFileModalMaximized(true)}
-                  icon={<FontAwesomeIcon icon={faFile} />}
-                />
-              )}
-
-              {!graphModalOpen && (
-                <Button
-                  type="text"
-                  onClick={() => setGraphModalOpen(true)}
-                  icon={<FontAwesomeIcon icon={faProjectDiagram} />}
-                />
-              )}
-
-              {!terminalsModalOpen && (
-                <Button
-                  type="text"
-                  onClick={() => setTerminalsModalOpen(true)}
-                  icon={<FontAwesomeIcon icon={faTerminal} />}
-                />
-              )}
-            </AppTray>
-          )}
-
-          {/* Mobile-friendly header */}
-          <MobileHeader>
-            {/* Search modal trigger */}
-            <Tooltip title={t("findNodeOrResource")}>
-              <Button
-                type="text"
-                shape="circle"
-                onClick={() => setSearchModalOpen(true)}
-              >
-                <FontAwesomeIcon icon={faSearch} />
-              </Button>
-            </Tooltip>
-
-            <Space>
-              {/* Notifications */}
-              <Popover
-                title={t("notifications")}
-                trigger="click"
-                visible={notificationsOpen}
-                onVisibleChange={(open) => setNotificationsOpen(open)}
-                content={
-                  <List>
-                    <List.Item>Example notification 1</List.Item>
-                    <List.Item>Example notification 2</List.Item>
-                  </List>
-                }
-              >
-                <Button
-                  type="text"
-                  shape="circle"
-                  onClick={() => setNotificationsOpen(true)}
-                >
-                  <FontAwesomeIcon icon={faBell} />
-                </Button>
-              </Popover>
-
-              {/* Create dropdown */}
-              <Dropdown overlay={createMenus}>
-                <Button type="text" shape="circle">
-                  <FontAwesomeIcon icon={faPlus} />
-                </Button>
-              </Dropdown>
-
-              {/* Invite trigger */}
-              <Tooltip title={t("invite")}>
-                <Button
-                  type="primary"
-                  shape="circle"
-                  onClick={() => setInviteModalOpen(true)}
-                >
-                  <FontAwesomeIcon icon={faHandshake} />
-                </Button>
-              </Tooltip>
-            </Space>
-          </MobileHeader>
-
-          {/* Desktop-friendly header */}
-          <DesktopHeader>
-            {/* Main navigation */}
-            <Navbar path={location.pathname} />
-
-            {/* Global node & resource search */}
-            <SearchInput
-              showSearch
-              suffixIcon={<FontAwesomeIcon icon={faSearch} />}
-              placeholder={t("findNodeOrResource")}
-              optionFilterProp="children"
-              notFoundContent={t("noMatchingNodesOrResourcesFound")}
-              onChange={(e) => {
-                if (e) {
-                  setSearchQuery(e.toString());
-
-                  if (e.toString().startsWith("node=")) {
-                    location.pathname === "/config"
-                      ? router?.push(
-                          `/explorer?privateIP=${
-                            e.toString().split("node=")[1]
-                          }`
-                        )
-                      : router?.push(
-                          `?privateIP=${e.toString().split("node=")[1]}`
-                        );
-                  } else {
-                    router?.push(
-                      `/explorer?resource=${e.toString().split("resource=")[1]}`
-                    );
+              <Layout>
+                {/* Modals */}
+                <CreateResourceModal
+                  open={
+                    createResourceDialogOpen && createResourceModalMaximized
                   }
-                } else {
-                  setSearchQuery(undefined);
+                  onCreate={() => setCreateResourceDialogOpen(false)}
+                  onCancel={() => setCreateResourceDialogOpen(false)}
+                  onMinimize={() => setCreateResourceModalMaximized(false)}
+                  nodes={cluster.nodes}
+                />
 
-                  router?.push(location.pathname);
-                }
-              }}
-              value={searchQuery}
-              allowClear
-            >
-              {clusterNodes.map((node) => (
-                <SearchInput.Option
-                  value={`node=${node.privateIP}`}
-                  key={`node=${node.privateIP}`}
-                >
-                  {t("node")} {node.privateIP} ({node.location}, {node.publicIP}
-                  )
-                </SearchInput.Option>
-              ))}
-              {clusterResources.map((resource) => (
-                <SearchInput.Option
-                  value={`resource=${stringifyResourceKey(
-                    resource.label,
-                    resource.kind,
-                    resource.node
-                  )}`}
-                  key={`resource=${stringifyResourceKey(
-                    resource.label,
-                    resource.kind,
-                    resource.node
-                  )}`}
-                >
-                  {t("resource")} {resource.kind}/{resource.name} on{" "}
-                  {resource.node}
-                </SearchInput.Option>
-              ))}
-            </SearchInput>
+                <CreateFileModal
+                  open={createFileModalOpen && createFileModalMaximized}
+                  onCreate={() => setCreateFileModalOpen(false)}
+                  onCancel={() => setCreateFileModalOpen(false)}
+                  onMinimize={() => setCreateFileModalMaximized(false)}
+                  resources={cluster.resources}
+                />
 
-            <Space>
-              {/* Notifications */}
-              <Popover
-                title={t("notifications")}
-                trigger="click"
-                visible={notificationsOpen}
-                onVisibleChange={(open) => setNotificationsOpen(open)}
-                content={
-                  <List>
-                    <List.Item>Example notification 1</List.Item>
-                    <List.Item>Example notification 2</List.Item>
-                  </List>
-                }
-              >
-                <Button
-                  type="text"
-                  shape="circle"
-                  onClick={() => setNotificationsOpen(true)}
-                >
-                  <FontAwesomeIcon icon={faBell} />
-                </Button>
-              </Popover>
+                <InviteModal
+                  open={inviteModalOpen}
+                  onDone={() => setInviteModalOpen(false)}
+                />
 
-              {/* Create dropdown */}
-              <Dropdown overlay={createMenus}>
-                <Button>
+                <GraphModal
+                  open={graphModalOpen}
+                  onDone={() => setGraphModalOpen(false)}
+                  graphData={graphs.cluster}
+                />
+
+                <TerminalModal
+                  open={terminalsModalOpen}
+                  onDone={() => setTerminalsModalOpen(false)}
+                  onTerminalCreated={(label, xterm) =>
+                    setInterval(
+                      () => xterm.terminal.writeln(`${label} Hello, world!`),
+                      1000
+                    )
+                  }
+                  onStdin={(label, key) => console.log(label, key)}
+                  labels={cluster.resources
+                    .filter((resource) => resource.kind === "Workload")
+                    .map((resource) => resource.label)}
+                />
+
+                <SearchModal
+                  open={searchModalOpen}
+                  handleChange={(query) => {
+                    if (query) {
+                      setSearchQuery(query);
+
+                      if (query.startsWith("node=")) {
+                        location.pathname === "/config"
+                          ? router?.push(
+                              `/explorer?privateIP=${query.split("node=")[1]}`
+                            )
+                          : router?.push(
+                              `?privateIP=${query.split("node=")[1]}`
+                            );
+                      } else {
+                        router?.push(
+                          `/explorer?resource=${query.split("resource=")[1]}`
+                        );
+                      }
+
+                      setSearchModalOpen(false);
+                    } else {
+                      setSearchQuery(undefined);
+
+                      router?.push(location.pathname);
+                    }
+                  }}
+                  query={searchQuery as string}
+                  nodes={cluster.nodes}
+                  resources={cluster.resources}
+                  onDone={() => setSearchModalOpen(false)}
+                />
+
+                {/* App tray */}
+                {(!createResourceModalMaximized ||
+                  !createFileModalMaximized ||
+                  !graphModalOpen ||
+                  !terminalsModalOpen) && (
+                  <AppTray>
+                    {!createResourceModalMaximized && (
+                      <Button
+                        type="text"
+                        onClick={() => setCreateResourceModalMaximized(true)}
+                        icon={<FontAwesomeIcon icon={faCube} />}
+                      />
+                    )}
+
+                    {!createFileModalMaximized && (
+                      <Button
+                        type="text"
+                        onClick={() => setCreateFileModalMaximized(true)}
+                        icon={<FontAwesomeIcon icon={faFile} />}
+                      />
+                    )}
+
+                    {!graphModalOpen && (
+                      <Button
+                        type="text"
+                        onClick={() => setGraphModalOpen(true)}
+                        icon={<FontAwesomeIcon icon={faProjectDiagram} />}
+                      />
+                    )}
+
+                    {!terminalsModalOpen && (
+                      <Button
+                        type="text"
+                        onClick={() => setTerminalsModalOpen(true)}
+                        icon={<FontAwesomeIcon icon={faTerminal} />}
+                      />
+                    )}
+                  </AppTray>
+                )}
+
+                {/* Mobile-friendly header */}
+                <MobileHeader>
+                  {/* Search modal trigger */}
+                  <Tooltip title={t("findNodeOrResource")}>
+                    <Button
+                      type="text"
+                      shape="circle"
+                      onClick={() => setSearchModalOpen(true)}
+                    >
+                      <FontAwesomeIcon icon={faSearch} />
+                    </Button>
+                  </Tooltip>
+
                   <Space>
-                    <FontAwesomeIcon icon={faPlus} />
-                    {t("create")}
-                    <FontAwesomeIcon icon={faCaretDown} />
+                    {/* Notifications */}
+                    <Popover
+                      title={t("notifications")}
+                      trigger="click"
+                      visible={notificationsOpen}
+                      onVisibleChange={(open) => setNotificationsOpen(open)}
+                      content={
+                        <List>
+                          <List.Item>Example notification 1</List.Item>
+                          <List.Item>Example notification 2</List.Item>
+                        </List>
+                      }
+                    >
+                      <Button
+                        type="text"
+                        shape="circle"
+                        onClick={() => setNotificationsOpen(true)}
+                      >
+                        <FontAwesomeIcon icon={faBell} />
+                      </Button>
+                    </Popover>
+
+                    {/* Create dropdown */}
+                    <Dropdown overlay={createMenus}>
+                      <Button type="text" shape="circle">
+                        <FontAwesomeIcon icon={faPlus} />
+                      </Button>
+                    </Dropdown>
+
+                    {/* Invite trigger */}
+                    <Tooltip title={t("invite")}>
+                      <Button
+                        type="primary"
+                        shape="circle"
+                        onClick={() => setInviteModalOpen(true)}
+                      >
+                        <FontAwesomeIcon icon={faHandshake} />
+                      </Button>
+                    </Tooltip>
                   </Space>
-                </Button>
-              </Dropdown>
+                </MobileHeader>
 
-              {/* Invite trigger */}
-              <Button type="primary" onClick={() => setInviteModalOpen(true)}>
-                <Space>
-                  <FontAwesomeIcon icon={faHandshake} />
-                  {t("invite")}
-                </Space>
-              </Button>
-            </Space>
-          </DesktopHeader>
+                {/* Desktop-friendly header */}
+                <DesktopHeader>
+                  {/* Main navigation */}
+                  <Navbar path={location.pathname} />
 
-          {/* Main content */}
-          <Content>
-            <Route path="/overview">
-              <OverviewPage
-                cluster={{
-                  nodes: clusterNodes,
-                  resources: clusterResources,
-                  connections,
-                }}
-                stats={{
-                  compute: computeStats,
-                  networking: networkingStats,
-                }}
-              />
+                  {/* Global node & resource search */}
+                  <SearchInput
+                    showSearch
+                    suffixIcon={<FontAwesomeIcon icon={faSearch} />}
+                    placeholder={t("findNodeOrResource")}
+                    optionFilterProp="children"
+                    notFoundContent={t("noMatchingNodesOrResourcesFound")}
+                    onChange={(e) => {
+                      if (e) {
+                        setSearchQuery(e.toString());
+
+                        if (e.toString().startsWith("node=")) {
+                          location.pathname === "/config"
+                            ? router?.push(
+                                `/explorer?privateIP=${
+                                  e.toString().split("node=")[1]
+                                }`
+                              )
+                            : router?.push(
+                                `?privateIP=${e.toString().split("node=")[1]}`
+                              );
+                        } else {
+                          router?.push(
+                            `/explorer?resource=${
+                              e.toString().split("resource=")[1]
+                            }`
+                          );
+                        }
+                      } else {
+                        setSearchQuery(undefined);
+
+                        router?.push(location.pathname);
+                      }
+                    }}
+                    value={searchQuery}
+                    allowClear
+                  >
+                    {cluster.nodes.map((node) => (
+                      <SearchInput.Option
+                        value={`node=${node.privateIP}`}
+                        key={`node=${node.privateIP}`}
+                      >
+                        {t("node")} {node.privateIP} ({node.location},{" "}
+                        {node.publicIP})
+                      </SearchInput.Option>
+                    ))}
+                    {cluster.resources.map((resource) => (
+                      <SearchInput.Option
+                        value={`resource=${stringifyResourceKey(
+                          resource.label,
+                          resource.kind,
+                          resource.node
+                        )}`}
+                        key={`resource=${stringifyResourceKey(
+                          resource.label,
+                          resource.kind,
+                          resource.node
+                        )}`}
+                      >
+                        {t("resource")} {resource.kind}/{resource.name} on{" "}
+                        {resource.node}
+                      </SearchInput.Option>
+                    ))}
+                  </SearchInput>
+
+                  <Space>
+                    {/* Notifications */}
+                    <Popover
+                      title={t("notifications")}
+                      trigger="click"
+                      visible={notificationsOpen}
+                      onVisibleChange={(open) => setNotificationsOpen(open)}
+                      content={
+                        <List>
+                          <List.Item>Example notification 1</List.Item>
+                          <List.Item>Example notification 2</List.Item>
+                        </List>
+                      }
+                    >
+                      <Button
+                        type="text"
+                        shape="circle"
+                        onClick={() => setNotificationsOpen(true)}
+                      >
+                        <FontAwesomeIcon icon={faBell} />
+                      </Button>
+                    </Popover>
+
+                    {/* Create dropdown */}
+                    <Dropdown overlay={createMenus}>
+                      <Button>
+                        <Space>
+                          <FontAwesomeIcon icon={faPlus} />
+                          {t("create")}
+                          <FontAwesomeIcon icon={faCaretDown} />
+                        </Space>
+                      </Button>
+                    </Dropdown>
+
+                    {/* Invite trigger */}
+                    <Button
+                      type="primary"
+                      onClick={() => setInviteModalOpen(true)}
+                    >
+                      <Space>
+                        <FontAwesomeIcon icon={faHandshake} />
+                        {t("invite")}
+                      </Space>
+                    </Button>
+                  </Space>
+                </DesktopHeader>
+
+                {/* Main content */}
+                <Content>
+                  <Route path="/overview">
+                    <OverviewPage
+                      cluster={{
+                        nodes: cluster.nodes,
+                        resources: cluster.resources,
+                        connections: cluster.connections,
+                      }}
+                      stats={{
+                        compute: stats.compute,
+                        networking: stats.networking,
+                      }}
+                    />
+                  </Route>
+
+                  <Route path="/explorer">
+                    <ExplorerPage
+                      cluster={{
+                        nodes: cluster.nodes,
+                        resources: cluster.resources,
+                      }}
+                      stats={{
+                        compute: stats.compute,
+                        networking: stats.networking,
+                      }}
+                    />
+                  </Route>
+
+                  <Route path="/config">
+                    <ConfigPage
+                      nodeConfig={local.nodeConfig}
+                      setNodeConfig={local.setNodeConfig}
+                      nodeId={local.nodeId}
+                    />
+                  </Route>
+                </Content>
+
+                {/* Mobile-friendly main navigation */}
+                <MobileTabs>
+                  <Navbar path={location.pathname} />
+                </MobileTabs>
+              </Layout>
             </Route>
-
-            <Route path="/explorer">
-              <ExplorerPage
-                cluster={{
-                  nodes: clusterNodes,
-                  resources: clusterResources,
-                }}
-                stats={{
-                  compute: computeStats,
-                  networking: networkingStats,
-                }}
-              />
-            </Route>
-
-            <Route path="/config">
-              <ConfigPage
-                nodeConfig={nodeConfig}
-                setNodeConfig={setNodeConfig}
-                nodeId={nodeId}
-              />
-            </Route>
-          </Content>
-
-          {/* Mobile-friendly main navigation */}
-          <MobileTabs>
-            <Navbar path={location.pathname} />
-          </MobileTabs>
-        </Layout>
-      </Route>
+          </>
+        )}
+      </DataProvider>
     </Switch>
   );
 }
