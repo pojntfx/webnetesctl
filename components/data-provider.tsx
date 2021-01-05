@@ -1,23 +1,14 @@
-import clusterGraph from "../data/cluster.json";
-import clusterNodes from "../data/network-cluster.json";
-import connections from "../data/network-connections.json";
-import networkGraph from "../data/network-local.json";
-import nodeResource, { nodeId } from "../data/node-config";
-import clusterResources from "../data/resources-cluster.json";
-import resourceGraph from "../data/resources-local.json";
-import computeStats from "../data/stats-compute.json";
-import networkingStats from "../data/stats-networking.json";
+import clusterNodesData from "../data/network-cluster.json";
+import clusterConnectionsData from "../data/network-connections.json";
+import nodeConfigData, { nodeId as nodeIdData } from "../data/node-config";
+import clusterResourcesData from "../data/resources-cluster.json";
+import statsComputeData from "../data/stats-compute.json";
+import statsNetworkingData from "../data/stats-networking.json";
 import { IClusterNode, IClusterResource, INodeScore } from "./pages/explorer";
-import { IGraph } from "./pages/join";
 import { IConnections } from "./pages/overview";
 
 export interface IDataProviderProps {
   children: (props: {
-    graphs: {
-      cluster: IGraph;
-      network: IGraph;
-      resources: IGraph;
-    };
     stats: {
       compute: INodeScore[];
       networking: INodeScore[];
@@ -42,23 +33,18 @@ export const DataProvider: React.FC<IDataProviderProps> = ({
   return (
     <>
       {children({
-        graphs: {
-          cluster: clusterGraph,
-          network: networkGraph,
-          resources: resourceGraph,
-        },
         stats: {
-          compute: computeStats,
-          networking: networkingStats,
+          compute: statsComputeData,
+          networking: statsNetworkingData,
         },
         cluster: {
-          connections: connections,
-          nodes: clusterNodes,
-          resources: clusterResources,
+          connections: clusterConnectionsData,
+          nodes: clusterNodesData,
+          resources: clusterResourcesData,
         },
         local: {
-          nodeConfig: nodeResource,
-          nodeId,
+          nodeConfig: nodeConfigData,
+          nodeId: nodeIdData,
         },
         ...otherProps,
       })}
