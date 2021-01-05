@@ -30,9 +30,13 @@ import useDimensions from "react-cool-dimensions";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import ParticlesTmpl from "react-particles-js";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import SpriteText from "three-spritetext";
 import { useWindowSize } from "use-window-size-hook";
+import glass from "../../styles/glass";
+import { getColorForGraphGroup } from "../../styles/graph-group-color";
+import { urldecodeYAMLAll, urlencodeYAMLAll } from "../../utils/urltranscode";
 import { JoinFooterBar, JoinHeaderBar } from "../bars";
 import { LocationButton as LocationButtonTmpl } from "../buttons";
 import EditNodeConfigModal from "../edit-node-config-modal";
@@ -52,13 +56,6 @@ import {
   ContentWrapper as ContentWrapperTmpl,
 } from "../layouts";
 import { FocusedTitle, MainTitle } from "../typography";
-import composite from "../../data/cluster.json";
-import network from "../../data/network-local.json";
-import localResources from "../../data/resources-local.json";
-import glass from "../../styles/glass";
-import { getColorForGraphGroup } from "../../styles/graph-group-color";
-import { urldecodeYAMLAll, urlencodeYAMLAll } from "../../utils/urltranscode";
-import { useHistory } from "react-router-dom";
 
 const particlesConfig: typeof ParticlesTmpl["arguments"] = {
   particles: {
@@ -104,12 +101,32 @@ const particlesConfig: typeof ParticlesTmpl["arguments"] = {
   retina_detect: true,
 };
 
+export interface IGraph {
+  nodes: { id: string; group: number }[];
+  links: {
+    source: string;
+    target: string;
+    value: number;
+  }[];
+}
+
+export interface IJoinPageProps {
+  network: IGraph;
+  cluster: IGraph;
+  resources: IGraph;
+}
+
 /**
  * JoinPage is the "worker page"; it shows a worker of a cluster their current node status.
  *
  * Particles and music links have been added, making this a `de facto` start page option.
  */
-function JoinPage() {
+export const JoinPage: React.FC<IJoinPageProps> = ({
+  network,
+  cluster,
+  resources,
+  ...otherProps
+}) => {
   // Hooks
   const { t } = useTranslation();
   const router = useHistory();
@@ -139,7 +156,7 @@ function JoinPage() {
   const [rightGaugeMaximized, setRightGaugeMaximized] = useState(false);
   const [leftGaugeMaximized, setLeftGaugeMaximized] = useState(false);
 
-  const [compositeGraphOpen, setCompositeGraphOpen] = useState(false);
+  const [clusterGraphOpen, setClusterGraphOpen] = useState(false);
   const [editNodeConfigModalOpen, setEditNodeConfigModalOpen] = useState(false);
 
   const [currentTitle, setCurrentTitle] = useState(-1);
@@ -235,7 +252,7 @@ function JoinPage() {
   }, []);
 
   return (
-    <AfterWrapper>
+    <AfterWrapper {...otherProps}>
       {/* Particles background */}
       <Particles params={particlesConfig} />
 
@@ -310,17 +327,17 @@ function JoinPage() {
         </Tooltip>
       </JoinHeaderBar>
 
-      {/* Composite graph */}
-      <CompositeGraphAnimator
+      {/* Cluster graph */}
+      <ClusterGraphAnimator
         transitionName="fadeandzoom"
         transitionAppear
-        $active={compositeGraphOpen}
+        $active={clusterGraphOpen}
       >
-        {compositeGraphOpen && (
-          <CompositeGraphWrapper>
+        {clusterGraphOpen && (
+          <ClusterGraphWrapper>
             <Graph
               warmupTicks={500}
-              graphData={composite}
+              graphData={cluster}
               backgroundColor="rgba(0,0,0,0)"
               showNavInfo={false}
               width={width}
@@ -339,9 +356,9 @@ function JoinPage() {
               nodeAutoColorBy="group"
               ref={graphRef}
             />
-          </CompositeGraphWrapper>
+          </ClusterGraphWrapper>
         )}
-      </CompositeGraphAnimator>
+      </ClusterGraphAnimator>
 
       {/* Footer */}
       <BlurWrapper>
@@ -392,7 +409,7 @@ function JoinPage() {
                       cover={
                         <Graph
                           warmupTicks={500}
-                          graphData={localResources}
+                          graphData={resources}
                           backgroundColor="rgba(0,0,0,0)"
                           showNavInfo={false}
                           width={
@@ -486,12 +503,12 @@ function JoinPage() {
 
               {/* Node metadata */}
               <Space direction="vertical" align="center">
-                {/* Composite graph toggler */}
+                {/* Cluster graph toggler */}
                 <ExpandButton
                   type="text"
                   shape="circle"
                   onClick={() =>
-                    setCompositeGraphOpen((open) => {
+                    setClusterGraphOpen((open) => {
                       if (!open) {
                         unstable_batchedUpdates(() => {
                           setLeftGaugeOpen(false);
@@ -513,10 +530,10 @@ function JoinPage() {
                   <FontAwesomeIcon
                     icon={
                       width && width > 821
-                        ? compositeGraphOpen
+                        ? clusterGraphOpen
                           ? faChevronUp
                           : faChevronDown
-                        : compositeGraphOpen
+                        : clusterGraphOpen
                         ? faChevronDown
                         : faChevronUp
                     }
@@ -656,7 +673,7 @@ function JoinPage() {
       </BlurWrapper>
     </AfterWrapper>
   );
-}
+};
 
 // Animator components
 const MainTitleAnimator = styled(Animate)`
@@ -666,7 +683,7 @@ const MainTitleAnimator = styled(Animate)`
   transform: translateX(-50%);
 `;
 
-const CompositeGraphAnimator = styled(Animate)<{ $active: boolean }>`
+const ClusterGraphAnimator = styled(Animate)<{ $active: boolean }>`
   width: 100%;
   height: 100%;
   position: absolute;
@@ -719,7 +736,7 @@ const CardContentWrapper = styled(Space)`
   justify-content: space-between;
 `;
 
-const CompositeGraphWrapper = styled.div`
+const ClusterGraphWrapper = styled.div`
   width: 100%;
   height: 100%;
   ${glass}
@@ -735,5 +752,3 @@ const ExpandButton = styled(Button)`
   background: transparent !important;
   backdrop-filter: none !important;
 `;
-
-export default JoinPage;

@@ -44,25 +44,21 @@ import { ConfigPage } from "../components/pages/config";
 import CreatedPage from "../components/pages/created";
 import { ExplorerPage } from "../components/pages/explorer";
 import { HomePage } from "../components/pages/home";
-import JoinPage from "../components/pages/join";
+import { JoinPage } from "../components/pages/join";
 import { OverviewPage } from "../components/pages/overview";
 import SearchModal from "../components/search-modal";
 import TerminalModal from "../components/terminal-modal";
 import { AppTray } from "../components/trays";
-import composite from "../data/cluster.json";
+import clusterGraph from "../data/cluster.json";
 import connections from "../data/network-connections.json";
-import {
-  default as clusterNodes,
-  default as nodes,
-} from "../data/network-cluster.json";
+import clusterNodes from "../data/network-cluster.json";
 import nodeResource, { nodeId as nodeResourceId } from "../data/node-config";
-import {
-  default as clusterResources,
-  default as resources,
-} from "../data/resources-cluster.json";
+import clusterResources from "../data/resources-cluster.json";
 import computeStats from "../data/stats-compute.json";
 import networkingStats from "../data/stats-networking.json";
 import { parseResourceKey, stringifyResourceKey } from "../utils/resource-key";
+import networkGraph from "../data/network-local.json";
+import resourceGraph from "../data/resources-local.json";
 
 /**
  * RoutesPage is the client-side routing part of the hybrid PWA.
@@ -172,7 +168,7 @@ function RoutesPage() {
   useEffect(() => {
     // Map the privateIP query parameter to state
     if (new URLSearchParams(location.search).get("privateIP")) {
-      const node = nodes.find(
+      const node = clusterNodes.find(
         (candidate) =>
           candidate.privateIP ===
           new URLSearchParams(location.search).get("privateIP")
@@ -195,7 +191,7 @@ function RoutesPage() {
         new URLSearchParams(location.search).get("resource") as string
       );
 
-      const resource = resources.find(
+      const resource = clusterResources.find(
         (candidate) =>
           candidate.kind === kind &&
           candidate.label === label &&
@@ -272,7 +268,11 @@ function RoutesPage() {
   return (
     <Switch>
       <Route path="/join">
-        <JoinPage />
+        <JoinPage
+          cluster={clusterGraph}
+          network={networkGraph}
+          resources={resourceGraph}
+        />
       </Route>
 
       <Route path="/created">
@@ -310,7 +310,7 @@ function RoutesPage() {
           <GraphModal
             open={graphModalOpen}
             onDone={() => setGraphModalOpen(false)}
-            graphData={composite}
+            graphData={clusterGraph}
           />
 
           <TerminalModal
@@ -323,7 +323,7 @@ function RoutesPage() {
               )
             }
             onStdin={(label, key) => console.log(label, key)}
-            labels={resources
+            labels={clusterResources
               .filter((resource) => resource.kind === "Workload")
               .map((resource) => resource.label)}
           />
@@ -354,8 +354,8 @@ function RoutesPage() {
               }
             }}
             query={searchQuery as string}
-            nodes={nodes}
-            resources={resources}
+            nodes={clusterNodes}
+            resources={clusterResources}
             onDone={() => setSearchModalOpen(false)}
           />
 
@@ -495,7 +495,7 @@ function RoutesPage() {
               value={searchQuery}
               allowClear
             >
-              {nodes.map((node) => (
+              {clusterNodes.map((node) => (
                 <SearchInput.Option
                   value={`node=${node.privateIP}`}
                   key={`node=${node.privateIP}`}
@@ -504,7 +504,7 @@ function RoutesPage() {
                   )
                 </SearchInput.Option>
               ))}
-              {resources.map((resource) => (
+              {clusterResources.map((resource) => (
                 <SearchInput.Option
                   value={`resource=${stringifyResourceKey(
                     resource.label,
