@@ -18,6 +18,7 @@ export const AppTray = styled.div`
     left: 50%;
     transform: translateX(-50%);
     margin-right: 0;
+    margin-left: 0;
   }
 `;
 

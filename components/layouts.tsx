@@ -106,6 +106,7 @@ export const AfterWrapper = styled.div`
 // Layout components
 export const Layout = styled(LayoutTmpl)`
   background: transparent;
+  height: 100%;
 `;
 
 // Space components
