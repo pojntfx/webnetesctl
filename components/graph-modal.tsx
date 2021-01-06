@@ -1,9 +1,10 @@
 import {
   faProjectDiagram,
-  faWindowMinimize,
+  faVrCardboard,
+  faWindowMinimize
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Space } from "antd";
+import { Button, Space, Tooltip } from "antd";
 import dynamic from "next/dynamic";
 import { forwardRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
@@ -17,6 +18,7 @@ export interface IGraphModalProps {
   open: boolean;
   graphData: any;
   onDone: () => void;
+  onOpenInAR: () => void;
 }
 
 /**
@@ -29,6 +31,7 @@ const GraphModal: React.FC<IGraphModalProps> = ({
   open,
   graphData,
   onDone,
+  onOpenInAR,
   ...otherProps
 }) => {
   const { t } = useTranslation();
@@ -51,9 +54,17 @@ const GraphModal: React.FC<IGraphModalProps> = ({
             <span>{t("clusterGraph")}</span>
           </Space>
 
-          <Button type="text" shape="circle" onClick={() => onDone()}>
-            <FontAwesomeIcon icon={faWindowMinimize} />
-          </Button>
+          <Space>
+            <Tooltip title={t("openInAugmentedReality")}>
+              <Button type="text" shape="circle" onClick={() => onOpenInAR()}>
+                <FontAwesomeIcon icon={faVrCardboard} />
+              </Button>
+            </Tooltip>
+
+            <Button type="text" shape="circle" onClick={() => onDone()}>
+              <FontAwesomeIcon icon={faWindowMinimize} />
+            </Button>
+          </Space>
         </>
       }
       centered

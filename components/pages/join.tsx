@@ -323,13 +323,15 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
         <Logo alt={t("webnetesLogo")} src="/logo.svg" />
 
         <Space>
-          <Tooltip title={t("openInAugmentedReality")} placement="left">
-            <Link to="/ar?local=true">
-              <Button type="text" shape="circle">
-                <FontAwesomeIcon icon={faVrCardboard} />
-              </Button>
-            </Link>
-          </Tooltip>
+          {clusterGraphOpen && (
+            <Tooltip title={t("openInAugmentedReality")} placement="left">
+              <Link to="/ar?local=true">
+                <Button type="text" shape="circle">
+                  <FontAwesomeIcon icon={faVrCardboard} />
+                </Button>
+              </Link>
+            </Tooltip>
+          )}
 
           <Tooltip title={t("advancedNodeConfig")} placement="left">
             <Button

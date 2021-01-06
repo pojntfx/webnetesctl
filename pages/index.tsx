@@ -325,6 +325,7 @@ function RoutesPage() {
             <GraphModal
               open={graphModalOpen}
               onDone={() => setGraphModalOpen(false)}
+              onOpenInAR={() => router.push("/ar")}
               graphData={graphs.cluster}
             />
 
