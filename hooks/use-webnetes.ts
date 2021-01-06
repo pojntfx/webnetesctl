@@ -4,7 +4,6 @@ import getPublicIp from "public-ip";
 import { useCallback, useEffect, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
-import clusterNodesData from "../data/network-cluster.json";
 import clusterConnectionsData from "../data/network-connections.json";
 import nodeConfigData, { nodeId as nodeIdData } from "../data/node-config";
 import clusterResourcesData from "../data/resources-cluster.json";
@@ -68,7 +67,7 @@ export const useWebnetes = () => {
   const [networkingStats, setNetworkingStats] = useState<INodeScore[]>();
 
   const [clusterConnections, setClusterConnections] = useState<IConnections>();
-  const [clusterNodes, setClusterNodes] = useState<IClusterNode[]>();
+  const [clusterNodes, setClusterNodes] = useState<IClusterNode[]>([]);
   const [clusterResources, setClusterResources] = useState<
     IClusterResource[]
   >();
@@ -218,7 +217,6 @@ export const useWebnetes = () => {
       setNetworkingStats(statsNetworkingData);
 
       setClusterConnections(clusterConnectionsData);
-      setClusterNodes(clusterNodesData);
       setClusterResources(clusterResourcesData);
 
       setNodeConfig(nodeConfigData);
@@ -365,9 +363,32 @@ export const useWebnetes = () => {
           appendToLog(`Management node acknowledged: ${id}`);
 
           setNodeId(id);
+          setClusterNodes((oldClusterNodes) => [
+            ...oldClusterNodes,
+            {
+              privateIP: id,
+              publicIP: "NOT_IMPLEMENTED",
+              location: "NOT_IMPLEMENTED",
+              latitude: 0,
+              longitude: 0,
+              size: 10000000,
+            },
+          ]);
         },
         async (id) => {
           console.log("Management node joined", id);
+
+          setClusterNodes((oldClusterNodes) => [
+            ...oldClusterNodes,
+            {
+              privateIP: id,
+              publicIP: "NOT_IMPLEMENTED",
+              location: "NOT_IMPLEMENTED",
+              latitude: 0,
+              longitude: 0,
+              size: 10000000,
+            },
+          ]);
         },
         async (id) => {
           console.log("Management node left", id);
