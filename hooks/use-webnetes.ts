@@ -4,7 +4,6 @@ import getPublicIp from "public-ip";
 import { useCallback, useEffect, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
-import graphClusterData from "../data/cluster.json";
 import clusterNodesData from "../data/network-cluster.json";
 import clusterConnectionsData from "../data/network-connections.json";
 import nodeConfigData, { nodeId as nodeIdData } from "../data/node-config";
@@ -83,8 +82,6 @@ export const useWebnetes = () => {
   // Effects
   useEffect(() => {
     unstable_batchedUpdates(() => {
-      setClusterGraph(graphClusterData);
-
       setComputeStats(statsComputeData);
       setNetworkingStats(statsNetworkingData);
 
@@ -167,6 +164,24 @@ export const useWebnetes = () => {
       setNetworkGraph({ nodes, links });
     }
   }, [clusterNodes]);
+
+  useEffect(() => {
+    if (resourceGraph && networkGraph) {
+      // Merge nodes
+      const nodes = [
+        ...resourceGraph.nodes,
+        ...networkGraph.nodes.filter(
+          (node) =>
+            !resourceGraph.nodes.find((candidate) => candidate.id === node.id)
+        ), // Remove duplicates
+      ];
+
+      // Merge links
+      const links = [...resourceGraph.links, ...networkGraph.links];
+
+      setClusterGraph({ nodes, links });
+    }
+  }, [resourceGraph, networkGraph]);
 
   useEffect(() => {
     // Get the public IPv6 address
