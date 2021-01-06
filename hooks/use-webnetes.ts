@@ -55,6 +55,7 @@ export const useWebnetes = () => {
 
   // State
   const [clusterGraph, setClusterGraph] = useState<IGraph>();
+  const [localGraph, setLocalGraph] = useState<IGraph>();
   const [networkGraph, setNetworkGraph] = useState<IGraph>();
   const [resourceGraph, setResourceGraph] = useState<IGraph>();
 
@@ -79,21 +80,7 @@ export const useWebnetes = () => {
 
   const [log, setLog] = useState<string[]>([]);
 
-  // Effects
-  useEffect(() => {
-    unstable_batchedUpdates(() => {
-      setComputeStats(statsComputeData);
-      setNetworkingStats(statsNetworkingData);
-
-      setClusterConnections(clusterConnectionsData);
-      setClusterNodes(clusterNodesData);
-      setClusterResources(clusterResourcesData);
-
-      setNodeConfig(nodeConfigData);
-      setNodeId(nodeIdData);
-    });
-  }, []);
-
+  // Callbacks
   const getResourceGraphForNode = useCallback(
     (nodeIdFilter: string) => {
       // Parse serialized resources
@@ -140,85 +127,43 @@ export const useWebnetes = () => {
     [clusterResources]
   );
 
-  useEffect(() => {
-    if (clusterResources && nodeId) {
-      setResourceGraph(getResourceGraphForNode(nodeId));
-    }
-  }, [clusterResources, nodeId]);
+  const mergeResourceAndNetworkGraphs = useCallback(
+    (resourceGraphs: IGraph[], networkGraph: IGraph) => {
+      // Merge nodes
+      let nodes: any[] = [];
+      resourceGraphs.forEach((resourceGraph) => {
+        nodes = [...nodes, ...resourceGraph.nodes];
+      });
 
-  useEffect(() => {
-    if (clusterNodes) {
-      // Transform into graph-internal node format
-      const nodes = clusterNodes.map((node) => ({
-        id: `Node/${node.privateIP}`,
-        group: NODE_GID,
-      }));
-
-      // Connect every node to every other node except for itself
-      const links: any[] = [];
-      nodes.forEach((node) =>
-        nodes
-          .filter((candidate) => candidate.id !== node.id)
-          .forEach((peer) =>
-            links.push({
-              source: node.id,
-              target: peer.id,
-              value: 1,
-            })
-          )
+      // Remove duplicates
+      nodes = [...nodes, ...networkGraph.nodes].reduce(
+        (all, curr) =>
+          all.find((candidate: IGraph["nodes"][0]) => candidate.id === curr.id)
+            ? all
+            : [...all, curr],
+        []
       );
 
-      setNetworkGraph({ nodes, links });
-    }
-  }, [clusterNodes]);
-
-  useEffect(() => {
-    if (resourceGraph && networkGraph) {
-      // Merge nodes
-      const nodes = [
-        ...resourceGraph.nodes,
-        ...networkGraph.nodes.filter(
-          (node) =>
-            !resourceGraph.nodes.find((candidate) => candidate.id === node.id)
-        ), // Remove duplicates
-      ];
-
       // Merge links
-      const links = [...resourceGraph.links, ...networkGraph.links];
+      let links: any[] = [];
+      resourceGraphs.forEach((resourceGraph) => {
+        links = [...links, ...resourceGraph.links];
+      });
 
-      setClusterGraph({ nodes, links });
-    }
-  }, [resourceGraph, networkGraph]);
-
-  useEffect(() => {
-    // Get the public IPv6 address
-    getPublicIp
-      .v6()
-      .then((ip) => setNodePublicIPv6(ip))
-      .catch((e) => console.log("could not get public IPv6", e));
-  }, []);
-
-  useEffect(() => {
-    // Map an address to the user's coordinates
-    Nominatim.reverseGeocode({
-      lat: nodeCoordinates[0].toString(),
-      lon: nodeCoordinates[1].toString(),
-      addressdetails: true,
-    }).then((res: any) => {
-      if (res.address?.country_code) {
-        const feat = feature(res.address?.country_code as string);
-
-        if (feat) {
-          unstable_batchedUpdates(() => {
-            setNodeAddress(res.display_name);
-            setNodeFlag(feat.properties.emojiFlag!);
-          });
-        }
-      }
-    });
-  }, [nodeCoordinates]);
+      return {
+        nodes,
+        links: [...links, ...networkGraph.links].map((link) => ({
+          source: link.source,
+          target: link.target,
+          value: link.value,
+        })),
+      };
+    },
+    []
+  );
 
   const appendToLog = useCallback(
+    // Add to the end of the visual log
     (msg) => {
       setLog((oldLog) => [
         ...oldLog,
@@ -258,11 +203,131 @@ export const useWebnetes = () => {
       );
   }, []);
 
+  // Effects
+  useEffect(() => {
+    // Set initial state
+    unstable_batchedUpdates(() => {
+      setComputeStats(statsComputeData);
+      setNetworkingStats(statsNetworkingData);
+
+      setClusterConnections(clusterConnectionsData);
+      setClusterNodes(clusterNodesData);
+      setClusterResources(clusterResourcesData);
+
+      setNodeConfig(nodeConfigData);
+      setNodeId(nodeIdData);
+    });
+  }, []);
+
+  useEffect(() => {
+    // Create the resource graph
+    if (clusterResources && nodeId) {
+      setResourceGraph(getResourceGraphForNode(nodeId));
+    }
+  }, [clusterResources, nodeId]);
+
+  useEffect(() => {
+    // Create the network graph
+    if (clusterNodes) {
+      // Transform into graph-internal node format
+      const nodes = clusterNodes.map((node) => ({
+        id: `Node/${node.privateIP}`,
+        group: NODE_GID,
+      }));
+
+      // Connect every node to every other node except for itself
+      const links: any[] = [];
+      nodes.forEach((node) =>
+        nodes
+          .filter((candidate) => candidate.id !== node.id)
+          .forEach((peer) =>
+            links.push({
+              source: node.id,
+              target: peer.id,
+              value: 1,
+            })
+          )
+      );
+
+      setNetworkGraph({
+        nodes,
+        links: links.map((link) => ({
+          source: link.source,
+          target: link.target,
+          value: link.value,
+        })),
+      });
+    }
+  }, [clusterNodes]);
+
+  useEffect(() => {
+    // Create node-local/"peer-resources" graph
+    if (nodeId && networkGraph) {
+      // Get resource graph for nodeId
+      const resourceGraph = getResourceGraphForNode(nodeId);
+
+      // Merge resource graph and network graph
+      const mergedGraph = mergeResourceAndNetworkGraphs(
+        [resourceGraph],
+        networkGraph
+      );
+
+      setLocalGraph(mergedGraph);
+    }
+  }, [nodeId, networkGraph]);
+
+  useEffect(() => {
+    // Create cluster-wide resource graph
+    if (clusterNodes && networkGraph) {
+      // Get resource graph for each node
+      const resourceGraphs = clusterNodes.map((node) =>
+        getResourceGraphForNode(node.privateIP)
+      );
+
+      // Merge resource graphs and network graph
+      const mergedGraph = mergeResourceAndNetworkGraphs(
+        resourceGraphs,
+        networkGraph
+      );
+
+      setClusterGraph(mergedGraph);
+    }
+  }, [clusterNodes, networkGraph]);
+
+  useEffect(() => {
+    // Get the public IPv6 address
+    getPublicIp
+      .v6()
+      .then((ip) => setNodePublicIPv6(ip))
+      .catch((e) => console.log("could not get public IPv6", e));
+  }, []);
+
+  useEffect(() => {
+    // Map coordinates to an address
+    Nominatim.reverseGeocode({
+      lat: nodeCoordinates[0].toString(),
+      lon: nodeCoordinates[1].toString(),
+      addressdetails: true,
+    }).then((res: any) => {
+      if (res.address?.country_code) {
+        const feat = feature(res.address?.country_code as string);
+
+        if (feat) {
+          unstable_batchedUpdates(() => {
+            setNodeAddress(res.display_name);
+            setNodeFlag(feat.properties.emojiFlag!);
+          });
+        }
+      }
+    });
+  }, [nodeCoordinates]);
+
   return {
     graphs: {
       cluster: clusterGraph,
       network: networkGraph,
       resources: resourceGraph,
+      local: localGraph,
     },
     stats: {
       compute: computeStats,

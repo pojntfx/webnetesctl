@@ -261,9 +261,9 @@ function RoutesPage() {
   return (
     <Switch>
       <Route path="/join">
-        {graphs.cluster && graphs.network && graphs.resources && (
+        {graphs.local && graphs.network && graphs.resources && (
           <JoinPage
-            cluster={graphs.cluster}
+            cluster={graphs.local}
             network={graphs.network}
             resources={graphs.resources}
             latitude={local.location.latitude}

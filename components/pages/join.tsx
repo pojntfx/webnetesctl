@@ -340,6 +340,7 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
       >
         {clusterGraphOpen && (
           <ClusterGraphWrapper>
+            {/* TODO: Check why this graph throws parsing errors at times */}
             <Graph
               warmupTicks={500}
               graphData={cluster}
@@ -358,7 +359,6 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
 
                 return sprite;
               }}
-              nodeAutoColorBy="group"
               ref={graphRef}
             />
           </ClusterGraphWrapper>
