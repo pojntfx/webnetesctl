@@ -526,6 +526,8 @@ export const useWebnetes = ({
       },
       close: async () => await node?.close(),
       opened: nodeOpened,
+      createResources: async (resources: string, nodeId: string) =>
+        await node?.createResources(resources, nodeId),
     },
   };
 };

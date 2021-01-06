@@ -315,7 +315,11 @@ function RoutesPage() {
             {cluster.nodes && (
               <CreateResourceModal
                 open={createResourceDialogOpen && createResourceModalMaximized}
-                onCreate={() => setCreateResourceDialogOpen(false)}
+                onCreate={async (resources, nodeId) => {
+                  await node.createResources(resources, nodeId);
+
+                  setCreateResourceDialogOpen(false);
+                }}
                 onCancel={() => setCreateResourceDialogOpen(false)}
                 onMinimize={() => setCreateResourceModalMaximized(false)}
                 nodes={cluster.nodes}

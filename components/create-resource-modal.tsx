@@ -28,7 +28,7 @@ import { IClusterNode } from "../hooks/use-webnetes";
 
 export interface ICreateResourceModalProps {
   open: boolean;
-  onCreate: () => void;
+  onCreate: (resources: string, nodeId: string) => void;
   onCancel: () => void;
   onMinimize: () => void;
   nodes: IClusterNode[];
@@ -148,7 +148,7 @@ const CreateResourceModal: React.FC<ICreateResourceModalProps> = ({
       onOk={() => {
         clear();
 
-        onCreate();
+        definition && node && onCreate(definition, node);
       }}
       onCancel={() => cancel()}
       okText={
