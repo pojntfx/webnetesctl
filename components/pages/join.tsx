@@ -340,7 +340,6 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
       >
         {clusterGraphOpen && (
           <ClusterGraphWrapper>
-            {/* TODO: Check why this graph throws parsing errors at times */}
             <Graph
               warmupTicks={500}
               graphData={cluster}

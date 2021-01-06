@@ -57,6 +57,10 @@ export const useWebnetes = () => {
   const [clusterGraph, setClusterGraph] = useState<IGraph>();
   const [localGraph, setLocalGraph] = useState<IGraph>();
   const [networkGraph, setNetworkGraph] = useState<IGraph>();
+  const [
+    networkGraphForLocalGraph,
+    setNetworkGraphForLocalGraph,
+  ] = useState<IGraph>();
   const [resourceGraph, setResourceGraph] = useState<IGraph>();
 
   const [computeStats, setComputeStats] = useState<INodeScore[]>();
@@ -249,8 +253,24 @@ export const useWebnetes = () => {
           )
       );
 
+      // Three.js modifies the graphs below. We have to store & copy them seperately like so.
       setNetworkGraph({
-        nodes,
+        nodes: nodes.map((node) => ({
+          id: node.id,
+          group: node.group,
+        })),
+        links: links.map((link) => ({
+          source: link.source,
+          target: link.target,
+          value: link.value,
+        })),
+      });
+
+      setNetworkGraphForLocalGraph({
+        nodes: nodes.map((node) => ({
+          id: node.id,
+          group: node.group,
+        })),
         links: links.map((link) => ({
           source: link.source,
           target: link.target,
@@ -262,19 +282,19 @@ export const useWebnetes = () => {
 
   useEffect(() => {
     // Create node-local/"peer-resources" graph
-    if (nodeId && networkGraph) {
+    if (nodeId && networkGraphForLocalGraph) {
       // Get resource graph for nodeId
       const resourceGraph = getResourceGraphForNode(nodeId);
 
       // Merge resource graph and network graph
       const mergedGraph = mergeResourceAndNetworkGraphs(
         [resourceGraph],
-        networkGraph
+        networkGraphForLocalGraph
       );
 
       setLocalGraph(mergedGraph);
     }
-  }, [nodeId, networkGraph]);
+  }, [nodeId, networkGraphForLocalGraph]);
 
   useEffect(() => {
     // Create cluster-wide resource graph
