@@ -17,7 +17,7 @@ import {
   faMobile,
   faRecordVinyl,
   faThumbsUp,
-  faTimes
+  faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, notification, Space, Tooltip } from "antd";
@@ -48,12 +48,12 @@ import {
   RightGaugeButton,
   RightGaugeContent,
   RightGaugeToggler,
-  RightGaugeWrapper
+  RightGaugeWrapper,
 } from "../gauges";
 import {
   AfterWrapper,
   BlurWrapper as BlurWrapperTmpl,
-  ContentWrapper as ContentWrapperTmpl
+  ContentWrapper as ContentWrapperTmpl,
 } from "../layouts";
 import { FocusedTitle, MainTitle } from "../typography";
 
@@ -459,9 +459,18 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
                         <CardContentWrapper>
                           <div>
                             <Text strong>
-                              <FontAwesomeIcon icon={faMobile} /> 16{" "}
+                              <FontAwesomeIcon icon={faMobile} />{" "}
+                              {
+                                resources.nodes.filter(
+                                  (node) => node.group !== 1 // No nodes here
+                                ).length
+                              }{" "}
                             </Text>
-                            {t("resource", { count: 16 })}
+                            {t("resource", {
+                              count: resources.nodes.filter(
+                                (node) => node.group !== 1 // No nodes here
+                              ).length,
+                            })}
                           </div>
 
                           <Space>
@@ -639,9 +648,10 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
                         <CardContentWrapper>
                           <div>
                             <Text strong>
-                              <FontAwesomeIcon icon={faMobile} /> 4{" "}
+                              <FontAwesomeIcon icon={faMobile} />{" "}
+                              {network.nodes.length}{" "}
                             </Text>
-                            {t("node", { count: 4 })}
+                            {t("node", { count: network.nodes.length })}
                           </div>
 
                           <Space>
