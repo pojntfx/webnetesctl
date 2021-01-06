@@ -531,7 +531,12 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
                     onClick={() => setLeftGaugeOpen(true)}
                   >
                     <Text strong>
-                      <FontAwesomeIcon icon={faCube} /> 16
+                      <FontAwesomeIcon icon={faCube} />{" "}
+                      {
+                        resources.nodes.filter(
+                          (node) => node.group !== NODE_GID // No nodes here
+                        ).length
+                      }
                     </Text>
                   </LeftGaugeButton>
                 )}
@@ -710,7 +715,7 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
                     onClick={() => setRightGaugeOpen(true)}
                   >
                     <Text strong>
-                      <FontAwesomeIcon icon={faMobile} /> 4
+                      <FontAwesomeIcon icon={faMobile} /> {network.nodes.length}
                     </Text>
                   </RightGaugeButton>
                 )}
