@@ -18,7 +18,7 @@ import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { nodeId } from "../data/node-config";
 import { Modal } from "./create-resource-modal";
-import { IClusterResource } from "./pages/explorer";
+import { IClusterResource } from "../hooks/use-webnetes";
 
 export interface ICreateFileModalProps {
   open: boolean;

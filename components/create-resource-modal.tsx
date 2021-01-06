@@ -22,9 +22,9 @@ import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { TitleSpace } from "./layouts";
-import { IClusterNode } from "./pages/explorer";
 import ResourceEditorTmpl from "./resource-editor";
 import { BareLink, MoreLink } from "./typography";
+import { IClusterNode } from "../hooks/use-webnetes";
 
 export interface ICreateResourceModalProps {
   open: boolean;

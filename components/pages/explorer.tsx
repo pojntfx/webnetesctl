@@ -16,7 +16,7 @@ import {
   faShapes,
   faTerminal,
   faTrash,
-  faWifi
+  faWifi,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -27,7 +27,7 @@ import {
   List,
   Menu,
   Space,
-  Tooltip
+  Tooltip,
 } from "antd";
 import Text from "antd/lib/typography/Text";
 import yaml from "js-yaml";
@@ -37,37 +37,21 @@ import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { useHistory, useLocation } from "react-router-dom";
 import styled from "styled-components";
+import {
+  IClusterNode,
+  IClusterResource,
+  INodeScore,
+} from "../../hooks/use-webnetes";
 import { filterKeys } from "../../utils/filter-keys";
 import {
   parseResourceKey,
-  stringifyResourceKey
+  stringifyResourceKey,
 } from "../../utils/resource-key";
 import { ManagerWrapper, TitleSpace, WideSpace } from "../layouts";
 import { ResourceItem as ResourceItemTmpl } from "../lists";
 import ResourceEditorTmpl from "../resource-editor";
 import Table from "../tables";
 import { BareTitle } from "../typography";
-
-export interface IClusterNode {
-  privateIP: string;
-  publicIP: string;
-  location: string;
-  latitude: number;
-  longitude: number;
-  size: number;
-}
-
-export interface IClusterResource {
-  kind: string;
-  name: string;
-  label: string;
-  node: string;
-}
-
-export interface INodeScore {
-  ip: string;
-  score: number;
-}
 
 export interface IExplorerPageProps {
   cluster: {
@@ -683,7 +667,12 @@ export const ExplorerPage: React.FC<IExplorerPageProps> = ({
                       const record = rawRecord as typeof resourcesDataSource[0];
 
                       return (
-                        <ResourceEditor one data={yaml.safeDump(record)} />
+                        <ResourceEditor
+                          one
+                          data={yaml.safeDump(
+                            JSON.parse(JSON.parse(record.src))
+                          )}
+                        />
                       );
                     },
                     expandedRowKeys: (() => {

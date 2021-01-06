@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { stringifyResourceKey } from "../utils/resource-key";
 import { Modal as ModalTmpl } from "./create-resource-modal";
 import { SearchInput } from "./navbar";
-import { IClusterNode, IClusterResource } from "./pages/explorer";
+import { IClusterNode, IClusterResource } from "../hooks/use-webnetes";
 
 export interface ISearchModalProps {
   open: boolean;

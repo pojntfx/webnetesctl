@@ -4,13 +4,6 @@ import getPublicIp from "public-ip";
 import { useCallback, useEffect, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
-import {
-  IClusterNode,
-  IClusterResource,
-  INodeScore,
-} from "../components/pages/explorer";
-import { IGraph } from "../components/pages/join";
-import { IConnections } from "../components/pages/overview";
 import graphClusterData from "../data/cluster.json";
 import clusterNodesData from "../data/network-cluster.json";
 import clusterConnectionsData from "../data/network-connections.json";
@@ -20,6 +13,42 @@ import clusterResourcesData from "../data/resources-cluster.json";
 import graphResourcesData from "../data/resources-local.json";
 import statsComputeData from "../data/stats-compute.json";
 import statsNetworkingData from "../data/stats-networking.json";
+
+export interface IConnections {
+  management: number[][][];
+  application: number[][][];
+}
+
+export interface IGraph {
+  nodes: { id: string; group: number }[];
+  links: {
+    source: string;
+    target: string;
+    value: number;
+  }[];
+}
+
+export interface IClusterNode {
+  privateIP: string;
+  publicIP: string;
+  location: string;
+  latitude: number;
+  longitude: number;
+  size: number;
+}
+
+export interface IClusterResource {
+  kind: string;
+  name: string;
+  label: string;
+  node: string;
+  src: string;
+}
+
+export interface INodeScore {
+  ip: string;
+  score: number;
+}
 
 export const useWebnetes = () => {
   // Hooks

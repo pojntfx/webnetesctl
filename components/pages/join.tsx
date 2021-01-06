@@ -34,6 +34,7 @@ import { useHistory, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import SpriteText from "three-spritetext";
 import { useWindowSize } from "use-window-size-hook";
+import { IGraph } from "../../hooks/use-webnetes";
 import glass from "../../styles/glass";
 import { getColorForGraphGroup } from "../../styles/graph-group-color";
 import { urldecodeYAMLAll, urlencodeYAMLAll } from "../../utils/urltranscode";
@@ -100,15 +101,6 @@ const particlesConfig: typeof ParticlesTmpl["arguments"] = {
   },
   retina_detect: true,
 };
-
-export interface IGraph {
-  nodes: { id: string; group: number }[];
-  links: {
-    source: string;
-    target: string;
-    value: number;
-  }[];
-}
 
 export interface IJoinPageProps {
   network: IGraph;

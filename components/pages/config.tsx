@@ -8,15 +8,10 @@ import {
   faThumbtack,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { feature } from "@ideditor/country-coder";
 import { Button, Divider as DividerTmpl, Space } from "antd";
 import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
-import * as Nominatim from "nominatim-browser";
-import getPublicIp from "public-ip";
 import Animate from "rc-animate";
-import { useCallback, useEffect, useState } from "react";
-import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import packageJSON from "../../package.json";

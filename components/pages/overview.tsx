@@ -12,7 +12,7 @@ import {
   faTimes,
   faTrash,
   faWifi,
-  faWindowMinimize,
+  faWindowMinimize
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -26,7 +26,7 @@ import {
   Menu,
   Space,
   Statistic,
-  Tooltip,
+  Tooltip
 } from "antd";
 import Text from "antd/lib/typography/Text";
 import dynamic from "next/dynamic";
@@ -40,17 +40,17 @@ import earthTexture from "three-globe/example/img/earth-night.jpg";
 import earthElevation from "three-globe/example/img/earth-topology.png";
 import universeTexture from "three-globe/example/img/night-sky.png";
 import { useWindowSize } from "use-window-size-hook";
+import {
+  IClusterNode, IClusterResource,
+
+  IConnections,
+  INodeScore
+} from "../../hooks/use-webnetes";
 import { stringifyResourceKey } from "../../utils/resource-key";
 import { ResourceItem, ResourceList } from "../lists";
 import NodeChart from "../node-chart";
 import { InspectorPanel, StatsPanel } from "../panels";
 import { OverviewTray } from "../trays";
-import { IClusterNode, IClusterResource, INodeScore } from "./explorer";
-
-export interface IConnections {
-  management: number[][][];
-  application: number[][][];
-}
 
 export interface IOverviewPageProps {
   cluster: {
