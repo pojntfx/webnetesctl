@@ -28,7 +28,7 @@ import { IClusterNode } from "../hooks/use-webnetes";
 
 export interface ICreateResourceModalProps {
   open: boolean;
-  onCreate: (resources: string, nodeId: string) => void;
+  onCreate: (resources: string, nodeId: string) => Promise<void>;
   onCancel: () => void;
   onMinimize: () => void;
   nodes: IClusterNode[];
@@ -55,6 +55,7 @@ const CreateResourceModal: React.FC<ICreateResourceModalProps> = ({
   const [maximized, setMaximized] = useState(true);
   const [definition, setDefinition] = useState<string>();
   const [node, setNode] = useState<string>();
+  const [creating, setCreating] = useState(false);
 
   const clear = useCallback(
     () =>
@@ -145,10 +146,16 @@ const CreateResourceModal: React.FC<ICreateResourceModalProps> = ({
       centered
       transitionName={maximized ? "fadeandzoom" : "fadeandslide"}
       visible={open}
-      onOk={() => {
-        clear();
+      confirmLoading={creating}
+      onOk={async () => {
+        if (definition && node) {
+          setCreating(true);
 
-        definition && node && onCreate(definition, node);
+          await onCreate(definition, node);
+
+          clear();
+          setCreating(false);
+        }
       }}
       onCancel={() => cancel()}
       okText={
