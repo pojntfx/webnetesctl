@@ -1,3 +1,4 @@
+// Default node config template
 export default `apiVersion: webnetes.felicitas.pojtinger.com/v1alpha1
 kind: Signaler
 metadata:
@@ -66,6 +67,8 @@ metadata:
   label: management_network
 spec:
   network: ""
-  prefix: 127.0.0`;
+  prefix: CLUSTER_ID # This is a template; it will be filled when creating or joining a cluster`;
+
+export const CLUSTER_ID_TEMPLATE_KEY = "CLUSTER_ID";
 
 export const nodeId = "127.0.2.0";

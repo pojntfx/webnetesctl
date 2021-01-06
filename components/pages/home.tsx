@@ -8,6 +8,7 @@ import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
+import { CLUSTER_ID_TEMPLATE_KEY } from "../../data/node-config";
 import bg from "../../img/fernando-rodrigues-sGJUb5HJBqs-unsplash.jpg";
 import glass from "../../styles/glass";
 import { urlencodeYAMLAll } from "../../utils/urltranscode";
@@ -50,11 +51,18 @@ export const HomePage: React.FC<IHomePageProps> = ({
                 try {
                   if (editingWorker) {
                     router.push(
-                      `/join?nodeConfig=${urlencodeYAMLAll(definition)}`
+                      `/join?nodeConfig=${urlencodeYAMLAll(
+                        definition.replace(CLUSTER_ID_TEMPLATE_KEY, clusterId!) // Checked before opening modal
+                      )}`
                     );
                   } else {
                     router.push(
-                      `/created?nodeConfig=${urlencodeYAMLAll(definition)}`
+                      `/created?nodeConfig=${urlencodeYAMLAll(
+                        definition.replace(
+                          CLUSTER_ID_TEMPLATE_KEY,
+                          newClusterId! // Checked before opening modal
+                        )
+                      )}`
                     );
                   }
                 } catch (e) {
@@ -90,9 +98,14 @@ export const HomePage: React.FC<IHomePageProps> = ({
                       onChange={(e) => setNewClusterId(e.target.value)}
                       onKeyDown={(e) =>
                         e.key === "Enter" &&
-                        clusterId &&
+                        newClusterId &&
                         router.push(
-                          `/created?nodeConfig=${urlencodeYAMLAll(nodeConfig)}`
+                          `/created?nodeConfig=${urlencodeYAMLAll(
+                            nodeConfig.replace(
+                              CLUSTER_ID_TEMPLATE_KEY,
+                              newClusterId
+                            )
+                          )}`
                         )
                       }
                     />
@@ -101,7 +114,12 @@ export const HomePage: React.FC<IHomePageProps> = ({
                       onClick={() =>
                         newClusterId &&
                         router.push(
-                          `/created?nodeConfig=${urlencodeYAMLAll(nodeConfig)}`
+                          `/created?nodeConfig=${urlencodeYAMLAll(
+                            nodeConfig.replace(
+                              CLUSTER_ID_TEMPLATE_KEY,
+                              newClusterId
+                            )
+                          )}`
                         )
                       }
                       overlay={
@@ -156,7 +174,12 @@ export const HomePage: React.FC<IHomePageProps> = ({
                         e.key === "Enter" &&
                         clusterId &&
                         router.push(
-                          `/join?nodeConfig=${urlencodeYAMLAll(nodeConfig)}`
+                          `/join?nodeConfig=${urlencodeYAMLAll(
+                            nodeConfig.replace(
+                              CLUSTER_ID_TEMPLATE_KEY,
+                              clusterId
+                            )
+                          )}`
                         )
                       }
                     />
@@ -165,7 +188,12 @@ export const HomePage: React.FC<IHomePageProps> = ({
                       onClick={() =>
                         clusterId &&
                         router.push(
-                          `/join?nodeConfig=${urlencodeYAMLAll(nodeConfig)}`
+                          `/join?nodeConfig=${urlencodeYAMLAll(
+                            nodeConfig.replace(
+                              CLUSTER_ID_TEMPLATE_KEY,
+                              clusterId
+                            )
+                          )}`
                         )
                       }
                       overlay={
