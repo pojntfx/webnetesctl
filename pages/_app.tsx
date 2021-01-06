@@ -33,11 +33,12 @@ body {
   width: 100% !important;
   height: 100% !important;
   margin: 0 !important;
-  overflow-x: hidden;
 }
 
 #arjs-video {
   height: 100% !important;
+  width: 100% !important;
+  margin: 0 !important;
 }
 /* End of AFRAME styles */
 
