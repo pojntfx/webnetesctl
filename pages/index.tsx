@@ -26,6 +26,7 @@ import {
   Tooltip,
 } from "antd";
 import { Content } from "antd/lib/layout/layout";
+import Text from "antd/lib/typography/Text";
 import React, { useEffect, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
@@ -63,7 +64,19 @@ function RoutesPage() {
   const { t } = useTranslation();
   const router = useHistory();
   const location = useLocation();
-  const { graphs, cluster, local, stats, log, node } = useWebnetes();
+  const { graphs, cluster, local, stats, log, node } = useWebnetes({
+    onResourceRejection: async (diagnostics) => {
+      notification.error({
+        message: t("resourceRejected"),
+        description: (
+          <Text>
+            {t("diagnostics")}:<br />
+            <Text code>{JSON.stringify(diagnostics)}</Text>
+          </Text>
+        ),
+      });
+    },
+  });
 
   // State
   const [notificationsOpen, setNotificationsOpen] = useState(false);

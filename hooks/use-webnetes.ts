@@ -48,7 +48,11 @@ export interface INodeScore {
   score: number;
 }
 
-export const useWebnetes = () => {
+export const useWebnetes = ({
+  onResourceRejection,
+}: {
+  onResourceRejection: (diagnostics: any) => Promise<void>;
+}) => {
   // Hooks
   const { t } = useTranslation();
 
@@ -379,7 +383,9 @@ export const useWebnetes = () => {
           }
         },
         async (frame) => {
-          console.log("Rejected resource", frame);
+          appendToLog(`Rejected resource: ${frame}`);
+
+          await onResourceRejection(frame);
         },
         async (id) => {
           appendToLog(`Management node acknowledged: ${id}`);

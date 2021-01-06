@@ -117,4 +117,6 @@ export default {
   hiroTracker: "Hiro Tracker",
   createCluster: "Create Cluster",
   newClusterId: "New Cluster ID",
+  resourceRejected: "Resource Rejected",
+  diagnostics: "Diagnostics",
 };
