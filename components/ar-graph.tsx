@@ -1,10 +1,12 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ForceGraphAR } from "react-force-graph";
 
 export const ARGraph = ({ forwardRef, ...otherProps }: any) => {
+  const [arJS, setArJS] = useState();
+
   useEffect(() => {
-    typeof window !== "undefined" && require("ar.js");
+    typeof window !== "undefined" && setArJS(require("ar.js"));
   }, []);
 
-  return <ForceGraphAR {...otherProps} ref={forwardRef} />;
+  return arJS ? <ForceGraphAR {...otherProps} ref={forwardRef} /> : null;
 };
