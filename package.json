@@ -14,7 +14,7 @@
     "build:app:node": "rollup -c && chmod +x dist/nodeApp/main.js",
     "build:app:web": "next build && next export -o dist/webApp",
     "build:diagram": "mkdir -p dist/media && tplant -p tsconfig.json -i 'lib/**/*.ts*' --output 'dist/media/diagram.svg'",
-    "build:docs": "mkdir -p dist/docs && typedoc --tsconfig tsconfig.json --mode file --outDir dist/docs --out dist/docs --media dist/media --exclude '+(node_modules|dist|rollup.config.js|app)' .",
+    "build:docs": "mkdir -p dist/docs && typedoc --tsconfig tsconfig.json --mode file --outDir dist/docs --out dist/docs --media dist/media --exclude '+(node_modules|dist|rollup.config.js|app|.next)' .",
     "test": "jest || exit 0",
     "test:update": "jest --updateSnapshot || exit 0",
     "dev:tests": "jest ---watchAll",
