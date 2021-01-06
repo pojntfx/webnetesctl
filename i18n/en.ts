@@ -111,4 +111,8 @@ export default {
   noNotifications: "No notifications yet.",
   openInAugmentedReality: "Open in Augmented Reality",
   back: "Back",
+  arRequiresATracker: "AR requires a tracker",
+  trackerLinkInfo:
+    "Open this tracker on another device and hold it into the camera:",
+  hiroTracker: "Hiro Tracker",
 };

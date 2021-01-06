@@ -1,15 +1,16 @@
+import { faArrowLeft, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Button, Popover, Space } from "antd";
+import Text from "antd/lib/typography/Text";
 import dynamic from "next/dynamic";
 import { forwardRef } from "react";
-import { useLocation, useHistory } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useHistory, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import SpriteText from "three-spritetext";
 import { IGraph } from "../../hooks/use-webnetes";
-import { getColorForGraphGroup } from "../../styles/graph-group-color";
-import { Button, Space } from "antd";
-import { useTranslation } from "react-i18next";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import glass from "../../styles/glass";
+import { getColorForGraphGroup } from "../../styles/graph-group-color";
 
 export interface IARPageProps {
   cluster: IGraph;
@@ -33,6 +34,26 @@ export const ARPage: React.FC<IARPageProps> = ({
           {t("back")}
         </Space>
       </BackButton>
+
+      <Popover
+        title={t("arRequiresATracker")}
+        content={
+          <Text>
+            {t("trackerLinkInfo")}{" "}
+            <a
+              href="https://upload.wikimedia.org/wikipedia/commons/4/48/Hiro_marker_ARjs.png"
+              target="_blank"
+            >
+              {t("hiroTracker")}
+            </a>
+          </Text>
+        }
+        placement="bottomRight"
+      >
+        <InfoButton shape="circle">
+          <FontAwesomeIcon icon={faInfoCircle} />
+        </InfoButton>
+      </Popover>
 
       <PageWrapper {...otherProps}>
         <ARGraph
@@ -60,6 +81,15 @@ export const ARPage: React.FC<IARPageProps> = ({
 const BackButton = styled(Button)`
   position: absolute;
   left: 0;
+  top: 0;
+  margin: 1rem;
+  z-index: 999;
+  ${glass}
+`;
+
+const InfoButton = styled(Button)`
+  position: absolute;
+  right: 0;
   top: 0;
   margin: 1rem;
   z-index: 999;
