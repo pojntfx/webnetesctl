@@ -10,7 +10,6 @@ import clusterConnectionsData from "../data/network-connections.json";
 import graphNetworkData from "../data/network-local.json";
 import nodeConfigData, { nodeId as nodeIdData } from "../data/node-config";
 import clusterResourcesData from "../data/resources-cluster.json";
-import graphResourcesData from "../data/resources-local.json";
 import statsComputeData from "../data/stats-compute.json";
 import statsNetworkingData from "../data/stats-networking.json";
 
@@ -85,7 +84,6 @@ export const useWebnetes = () => {
     unstable_batchedUpdates(() => {
       setClusterGraph(graphClusterData);
       setNetworkGraph(graphNetworkData);
-      setResourceGraph(graphResourcesData);
 
       setComputeStats(statsComputeData);
       setNetworkingStats(statsNetworkingData);
@@ -98,6 +96,53 @@ export const useWebnetes = () => {
       setNodeId(nodeIdData);
     });
   }, []);
+
+  useEffect(() => {
+    if (clusterResources && nodeId) {
+      const nodeGID = 0;
+
+      // Parse serialized resources
+      const resources = clusterResources
+        .filter((resource) => resource.node === nodeId)
+        .map((resource) => JSON.parse(JSON.parse(resource.src)));
+
+      // Group by kinds
+      const kinds = new Map<string, { gid: number; items: string[] }>();
+      kinds.set("Node", { gid: nodeGID, items: [nodeId] });
+      resources.forEach((resource) => {
+        !kinds.has(resource.kind) &&
+          kinds.set(resource.kind, { gid: kinds.size, items: [] });
+
+        kinds.get(resource.kind)!.items.push(resource.metadata.label); // We set abolve
+      });
+
+      // Collect to nodes
+      const nodes: any[] = [];
+      kinds.forEach((res, kind) =>
+        res.items.forEach((label) =>
+          nodes.push({ group: res.gid, id: `${kind}/${label}` })
+        )
+      );
+
+      // Connect everything but the root node itself to the root node
+      const links: any[] = [];
+      nodes.forEach(
+        (node) =>
+          node.group !== nodeGID && // Don't connect nodes to each other
+          nodes
+            .filter((candidate) => candidate.group === nodeGID)
+            .forEach((nodeResource) =>
+              links.push({
+                source: nodeResource.id,
+                target: node.id,
+                value: 1,
+              })
+            )
+      );
+
+      setResourceGraph({ nodes, links });
+    }
+  }, [clusterResources, nodeId]);
 
   useEffect(() => {
     // Get the public IPv6 address
