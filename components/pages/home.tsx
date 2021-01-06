@@ -32,6 +32,7 @@ export const HomePage: React.FC<IHomePageProps> = ({
 
   // State
   const [clusterId, setClusterId] = useState<string>();
+  const [newClusterId, setNewClusterId] = useState<string>();
   const [editNodeConfigModalOpen, setEditNodeConfigModalOpen] = useState(false);
   const [editingWorker, setEditingWorker] = useState(false);
 
@@ -82,29 +83,51 @@ export const HomePage: React.FC<IHomePageProps> = ({
 
                   <Text>{t("createClusterDescription")}</Text>
 
-                  <Dropdown.Button
-                    onClick={() =>
-                      router.push(
-                        `/created?nodeConfig=${urlencodeYAMLAll(nodeConfig)}`
-                      )
-                    }
-                    overlay={
-                      <Menu>
-                        <Menu.Item
-                          key="cluster"
-                          onClick={() => setEditNodeConfigModalOpen(true)}
-                        >
-                          <Space>
-                            <FontAwesomeIcon fixedWidth icon={faCogs} />
-                            {t("advancedNodeConfig")}
-                          </Space>
-                        </Menu.Item>
-                      </Menu>
-                    }
-                    type="primary"
-                  >
-                    {t("create")} {t("cluster")}
-                  </Dropdown.Button>
+                  <Space>
+                    <Input
+                      placeholder={t("newClusterId")}
+                      value={newClusterId}
+                      onChange={(e) => setNewClusterId(e.target.value)}
+                      onKeyDown={(e) =>
+                        e.key === "Enter" &&
+                        clusterId &&
+                        router.push(
+                          `/created?nodeConfig=${urlencodeYAMLAll(nodeConfig)}`
+                        )
+                      }
+                    />
+
+                    <Dropdown.Button
+                      onClick={() =>
+                        newClusterId &&
+                        router.push(
+                          `/created?nodeConfig=${urlencodeYAMLAll(nodeConfig)}`
+                        )
+                      }
+                      overlay={
+                        <Menu>
+                          <Menu.Item
+                            key="cluster"
+                            onClick={() => {
+                              newClusterId &&
+                                unstable_batchedUpdates(() => {
+                                  setEditingWorker(false);
+                                  setEditNodeConfigModalOpen(true);
+                                });
+                            }}
+                          >
+                            <Space>
+                              <FontAwesomeIcon fixedWidth icon={faCogs} />
+                              {t("advancedNodeConfig")}
+                            </Space>
+                          </Menu.Item>
+                        </Menu>
+                      }
+                      type="primary"
+                    >
+                      {t("createCluster")}
+                    </Dropdown.Button>
+                  </Space>
                 </Action>
 
                 {/* Main divider */}

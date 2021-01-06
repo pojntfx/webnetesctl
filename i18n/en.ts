@@ -115,4 +115,6 @@ export default {
   trackerLinkInfo:
     "Open this tracker on another device and hold it into the camera:",
   hiroTracker: "Hiro Tracker",
+  createCluster: "Create Cluster",
+  newClusterId: "New Cluster ID",
 };
