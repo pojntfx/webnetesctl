@@ -11,7 +11,7 @@ import {
   faProjectDiagram,
   faSearch,
   faTerminal,
-  faTimes
+  faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -23,7 +23,7 @@ import {
   notification,
   Popover,
   Space,
-  Tooltip
+  Tooltip,
 } from "antd";
 import { Content } from "antd/lib/layout/layout";
 import React, { useEffect, useState } from "react";
@@ -39,7 +39,7 @@ import Navbar, {
   DesktopHeader,
   MobileHeader,
   MobileTabs,
-  SearchInput
+  SearchInput,
 } from "../components/navbar";
 import { ARPage } from "../components/pages/ar";
 import { ConfigPage } from "../components/pages/config";
@@ -273,8 +273,8 @@ function RoutesPage() {
             nodeCoordinatesLoading={local.location.loading}
             nodeFlag={local.location.flag || ""}
             refreshNodeLocation={local.location.refreshLocation}
-            openNode={node.open}
             nodeId={local.nodeId}
+            node={node}
           />
         )}
       </Route>

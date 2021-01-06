@@ -113,8 +113,12 @@ export interface IJoinPageProps {
   longitude: number;
   nodeAddress: string;
   nodeFlag: string;
-  openNode: (config: string) => Promise<void>;
   nodeId?: string;
+
+  node: {
+    open: (config: string) => Promise<void>;
+    close: () => Promise<void>;
+  };
 }
 
 /**
@@ -132,8 +136,8 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
   longitude,
   nodeAddress,
   nodeFlag,
-  openNode,
   nodeId,
+  node,
   ...otherProps
 }) => {
   // Hooks
@@ -247,7 +251,7 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
       try {
         const config = urldecodeYAMLAll(rawNodeConfig as string);
 
-        openNode(config);
+        node.open(config);
       } catch (e) {
         console.log("could not decode node config", e);
       }
@@ -275,7 +279,11 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
           try {
             router.push(`/join?nodeConfig=${urlencodeYAMLAll(definition)}`);
 
-            typeof window !== "undefined" && window.location.reload();
+            node
+              .close()
+              .then(
+                () => typeof window !== "undefined" && window.location.reload()
+              );
           } catch (e) {
             console.error("could not parse definition", e);
           }

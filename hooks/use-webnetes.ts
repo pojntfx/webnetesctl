@@ -432,7 +432,8 @@ export const useWebnetes = () => {
     },
     log,
     node: {
-      open: async (config: string) => node && (await node.open(config)),
+      open: async (config: string) => await node?.open(config),
+      close: async () => await node?.close(),
     },
   };
 };
