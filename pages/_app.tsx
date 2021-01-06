@@ -26,11 +26,20 @@ body {
   > #__next, > * > section, .ant-layout-content {
     height: 100%;
   }
-
-  /* A-Frame */
-  margin: 0px;
-  overflow: hidden;
 }
+
+/* AFRAME styles */
+body {
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  overflow-x: hidden;
+}
+
+#arjs-video {
+  height: 100% !important;
+}
+/* End of AFRAME styles */
 
 .ant-modal-mask {
   ${frostedGlass}
