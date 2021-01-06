@@ -37,7 +37,7 @@ const InviteModal: React.FC<IInviteModalProps> = ({
         typeof window !== "undefined" && window.location.origin
       }/join?nodeConfig=${urlencodeYAMLAll(nodeConfig)}`
     );
-  }, []);
+  }, [nodeConfig]);
 
   return (
     <Modal
