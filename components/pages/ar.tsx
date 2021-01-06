@@ -1,7 +1,9 @@
 import dynamic from "next/dynamic";
 import { forwardRef } from "react";
 import styled from "styled-components";
+import SpriteText from "three-spritetext";
 import { IGraph } from "../../hooks/use-webnetes";
+import { getColorForGraphGroup } from "../../styles/graph-group-color";
 
 export interface IARPageProps {
   graph: IGraph;
@@ -10,7 +12,21 @@ export interface IARPageProps {
 export const ARPage: React.FC<IARPageProps> = ({ graph, ...otherProps }) => {
   return typeof window === undefined ? null : (
     <PageWrapper {...otherProps}>
-      <ARGraph graphData={graph} />
+      <ARGraph
+        warmupTicks={500}
+        graphData={graph}
+        showNavInfo={false}
+        nodeThreeObject={(node: any) => {
+          const sprite = new SpriteText(node.id?.toString());
+
+          sprite.color = "#ffffff";
+          sprite.textHeight = 2;
+          sprite.backgroundColor = getColorForGraphGroup(node.group) + "F0";
+          sprite.padding = 2;
+
+          return sprite;
+        }}
+      />
     </PageWrapper>
   );
 };
