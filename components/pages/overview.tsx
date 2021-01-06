@@ -12,7 +12,7 @@ import {
   faTimes,
   faTrash,
   faWifi,
-  faWindowMinimize
+  faWindowMinimize,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -26,7 +26,7 @@ import {
   Menu,
   Space,
   Statistic,
-  Tooltip
+  Tooltip,
 } from "antd";
 import Text from "antd/lib/typography/Text";
 import dynamic from "next/dynamic";
@@ -41,12 +41,13 @@ import earthElevation from "three-globe/example/img/earth-topology.png";
 import universeTexture from "three-globe/example/img/night-sky.png";
 import { useWindowSize } from "use-window-size-hook";
 import {
-  IClusterNode, IClusterResource,
-
+  IClusterNode,
+  IClusterResource,
   IConnections,
-  INodeScore
+  INodeScore,
 } from "../../hooks/use-webnetes";
 import { stringifyResourceKey } from "../../utils/resource-key";
+import { urldecodeYAMLAll } from "../../utils/urltranscode";
 import { ResourceItem, ResourceList } from "../lists";
 import NodeChart from "../node-chart";
 import { InspectorPanel, StatsPanel } from "../panels";
@@ -67,6 +68,10 @@ export interface IOverviewPageProps {
   nodeCoordinatesLoading: boolean;
   latitude: number;
   longitude: number;
+  node: {
+    open: (config: string) => Promise<void>;
+    opened: boolean;
+  };
 }
 
 /**
@@ -82,6 +87,7 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
   nodeCoordinatesLoading,
   latitude,
   longitude,
+  node,
   ...otherProps
 }) => {
   // Hooks
@@ -174,6 +180,25 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
       }
     }
   }, [ref, location.search]);
+
+  useEffect(() => {
+    if (!node.opened) {
+      // Map the nodeConfig query parameter to state
+      const rawNodeConfig = new URLSearchParams(location.search).get(
+        "nodeConfig"
+      );
+
+      if (rawNodeConfig) {
+        try {
+          const config = urldecodeYAMLAll(rawNodeConfig as string);
+
+          node.open(config);
+        } catch (e) {
+          console.log("could not decode node config", e);
+        }
+      }
+    }
+  }, [location.search, node.opened]);
 
   const refreshLocation = useCallback(() => {
     // Get a user's coordinates and set the globe position accordingly

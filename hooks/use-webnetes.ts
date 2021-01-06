@@ -89,6 +89,7 @@ export const useWebnetes = ({
   const [log, setLog] = useState<string[]>([]);
 
   const [node, setNode] = useState<Node>();
+  const [nodeOpened, setNodeOpened] = useState(false);
 
   // Callbacks
   const getResourceGraphForNode = useCallback(
@@ -516,8 +517,13 @@ export const useWebnetes = ({
     },
     log,
     node: {
-      open: async (config: string) => await node?.open(config),
+      open: async (config: string) => {
+        await node?.open(config);
+
+        setNodeOpened(true);
+      },
       close: async () => await node?.close(),
+      opened: nodeOpened,
     },
   };
 };

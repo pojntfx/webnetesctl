@@ -8,6 +8,7 @@ import Confetti from "react-dom-confetti";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
+import { urldecodeYAMLAll, urlencodeYAMLAll } from "../../utils/urltranscode";
 import { CreatedFooterBar, CreatedHeaderBar } from "../bars";
 import { AfterWrapper, BlurWrapper, ContentWrapper } from "../layouts";
 import { QRLink } from "../qr-link";
@@ -46,8 +47,10 @@ function CreatedPage() {
     setLink(
       `${
         typeof window !== "undefined" && window.location.origin
-      }/join?nodeConfig=${new URLSearchParams(location.search).get(
-        "nodeConfig"
+      }/join?nodeConfig=${urlencodeYAMLAll(
+        urldecodeYAMLAll(
+          new URLSearchParams(location.search).get("nodeConfig")!
+        )
       )}`
     );
   }, []);
@@ -81,7 +84,13 @@ function CreatedPage() {
 
             {/* Footer */}
             <CreatedFooterBar>
-              <Link to="/overview">
+              <Link
+                to={`/overview?nodeConfig=${urlencodeYAMLAll(
+                  urldecodeYAMLAll(
+                    new URLSearchParams(location.search).get("nodeConfig")!
+                  )
+                )}`}
+              >
                 <ActionButton type="primary">
                   <Space>
                     <FontAwesomeIcon icon={faArrowRight} />
