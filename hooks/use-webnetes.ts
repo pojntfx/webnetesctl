@@ -7,11 +7,12 @@ import { useTranslation } from "react-i18next";
 import graphClusterData from "../data/cluster.json";
 import clusterNodesData from "../data/network-cluster.json";
 import clusterConnectionsData from "../data/network-connections.json";
-import graphNetworkData from "../data/network-local.json";
 import nodeConfigData, { nodeId as nodeIdData } from "../data/node-config";
 import clusterResourcesData from "../data/resources-cluster.json";
 import statsComputeData from "../data/stats-compute.json";
 import statsNetworkingData from "../data/stats-networking.json";
+
+const NODE_GID = 0;
 
 export interface IConnections {
   management: number[][][];
@@ -83,7 +84,6 @@ export const useWebnetes = () => {
   useEffect(() => {
     unstable_batchedUpdates(() => {
       setClusterGraph(graphClusterData);
-      setNetworkGraph(graphNetworkData);
 
       setComputeStats(statsComputeData);
       setNetworkingStats(statsNetworkingData);
@@ -99,8 +99,6 @@ export const useWebnetes = () => {
 
   useEffect(() => {
     if (clusterResources && nodeId) {
-      const nodeGID = 0;
-
       // Parse serialized resources
       const resources = clusterResources
         .filter((resource) => resource.node === nodeId)
@@ -108,7 +106,7 @@ export const useWebnetes = () => {
 
       // Group by kinds
       const kinds = new Map<string, { gid: number; items: string[] }>();
-      kinds.set("Node", { gid: nodeGID, items: [nodeId] });
+      kinds.set("Node", { gid: NODE_GID, items: [nodeId] });
       resources.forEach((resource) => {
         !kinds.has(resource.kind) &&
           kinds.set(resource.kind, { gid: kinds.size, items: [] });
@@ -128,9 +126,9 @@ export const useWebnetes = () => {
       const links: any[] = [];
       nodes.forEach(
         (node) =>
-          node.group !== nodeGID && // Don't connect nodes to each other
+          node.group !== NODE_GID && // Don't connect nodes to each other
           nodes
-            .filter((candidate) => candidate.group === nodeGID)
+            .filter((candidate) => candidate.group === NODE_GID)
             .forEach((nodeResource) =>
               links.push({
                 source: nodeResource.id,
@@ -143,6 +141,32 @@ export const useWebnetes = () => {
       setResourceGraph({ nodes, links });
     }
   }, [clusterResources, nodeId]);
+
+  useEffect(() => {
+    if (clusterNodes) {
+      // Transform into graph-internal node format
+      const nodes = clusterNodes.map((node) => ({
+        id: `Node/${node.privateIP}`,
+        group: NODE_GID,
+      }));
+
+      // Connect every node to every other node except for itself
+      const links: any[] = [];
+      nodes.forEach((node) =>
+        nodes
+          .filter((candidate) => candidate.id !== node.id)
+          .forEach((peer) =>
+            links.push({
+              source: node.id,
+              target: peer.id,
+              value: 1,
+            })
+          )
+      );
+
+      setNetworkGraph({ nodes, links });
+    }
+  }, [clusterNodes]);
 
   useEffect(() => {
     // Get the public IPv6 address
