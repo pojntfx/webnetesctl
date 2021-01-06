@@ -94,16 +94,16 @@ export const useWebnetes = () => {
     });
   }, []);
 
-  useEffect(() => {
-    if (clusterResources && nodeId) {
+  const getResourceGraphForNode = useCallback(
+    (nodeIdFilter: string) => {
       // Parse serialized resources
-      const resources = clusterResources
-        .filter((resource) => resource.node === nodeId)
+      const resources = clusterResources!
+        .filter((resource) => resource.node === nodeIdFilter)
         .map((resource) => JSON.parse(JSON.parse(resource.src)));
 
       // Group by kinds
       const kinds = new Map<string, { gid: number; items: string[] }>();
-      kinds.set("Node", { gid: NODE_GID, items: [nodeId] });
+      kinds.set("Node", { gid: NODE_GID, items: [nodeIdFilter] });
       resources.forEach((resource) => {
         !kinds.has(resource.kind) &&
           kinds.set(resource.kind, { gid: kinds.size, items: [] });
@@ -135,7 +135,14 @@ export const useWebnetes = () => {
             )
       );
 
-      setResourceGraph({ nodes, links });
+      return { nodes, links };
+    },
+    [clusterResources]
+  );
+
+  useEffect(() => {
+    if (clusterResources && nodeId) {
+      setResourceGraph(getResourceGraphForNode(nodeId));
     }
   }, [clusterResources, nodeId]);
 
