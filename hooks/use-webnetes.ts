@@ -362,7 +362,9 @@ export const useWebnetes = () => {
           console.log("Rejected resource", frame);
         },
         async (id) => {
-          console.log("Management node acknowledged", id);
+          appendToLog(`Management node acknowledged: ${id}`);
+
+          setNodeId(id);
         },
         async (id) => {
           console.log("Management node joined", id);

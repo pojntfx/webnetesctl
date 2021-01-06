@@ -49,9 +49,7 @@ export const HomePage: React.FC<IHomePageProps> = ({
                 try {
                   if (editingWorker) {
                     router.push(
-                      `/join?id=${clusterId}&nodeConfig=${urlencodeYAMLAll(
-                        definition
-                      )}`
+                      `/join?nodeConfig=${urlencodeYAMLAll(definition)}`
                     );
                   } else {
                     router.push(
@@ -135,9 +133,7 @@ export const HomePage: React.FC<IHomePageProps> = ({
                         e.key === "Enter" &&
                         clusterId &&
                         router.push(
-                          `/join?id=${clusterId}&nodeConfig=${urlencodeYAMLAll(
-                            nodeConfig
-                          )}`
+                          `/join?nodeConfig=${urlencodeYAMLAll(nodeConfig)}`
                         )
                       }
                     />
@@ -146,9 +142,7 @@ export const HomePage: React.FC<IHomePageProps> = ({
                       onClick={() =>
                         clusterId &&
                         router.push(
-                          `/join?id=${clusterId}&nodeConfig=${urlencodeYAMLAll(
-                            nodeConfig
-                          )}`
+                          `/join?nodeConfig=${urlencodeYAMLAll(nodeConfig)}`
                         )
                       }
                       overlay={

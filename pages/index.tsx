@@ -11,7 +11,7 @@ import {
   faProjectDiagram,
   faSearch,
   faTerminal,
-  faTimes,
+  faTimes
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -23,7 +23,7 @@ import {
   notification,
   Popover,
   Space,
-  Tooltip,
+  Tooltip
 } from "antd";
 import { Content } from "antd/lib/layout/layout";
 import React, { useEffect, useState } from "react";
@@ -39,15 +39,15 @@ import Navbar, {
   DesktopHeader,
   MobileHeader,
   MobileTabs,
-  SearchInput,
+  SearchInput
 } from "../components/navbar";
+import { ARPage } from "../components/pages/ar";
 import { ConfigPage } from "../components/pages/config";
 import CreatedPage from "../components/pages/created";
 import { ExplorerPage } from "../components/pages/explorer";
 import { HomePage } from "../components/pages/home";
 import { JoinPage } from "../components/pages/join";
 import { OverviewPage } from "../components/pages/overview";
-import { ARPage } from "../components/pages/ar";
 import SearchModal from "../components/search-modal";
 import TerminalModal from "../components/terminal-modal";
 import { AppTray } from "../components/trays";
@@ -274,6 +274,7 @@ function RoutesPage() {
             nodeFlag={local.location.flag || ""}
             refreshNodeLocation={local.location.refreshLocation}
             openNode={node.open}
+            nodeId={local.nodeId}
           />
         )}
       </Route>

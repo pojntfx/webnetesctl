@@ -46,7 +46,7 @@ function CreatedPage() {
     setLink(
       `${
         typeof window !== "undefined" && window.location.origin
-      }/join?id=127.0.2&nodeConfig=${new URLSearchParams(location.search).get(
+      }/join?nodeConfig=${new URLSearchParams(location.search).get(
         "nodeConfig"
       )}`
     );

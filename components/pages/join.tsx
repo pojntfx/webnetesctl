@@ -18,7 +18,7 @@ import {
   faRecordVinyl,
   faThumbsUp,
   faTimes,
-  faVrCardboard
+  faVrCardboard,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, notification, Space, Tooltip } from "antd";
@@ -50,12 +50,12 @@ import {
   RightGaugeButton,
   RightGaugeContent,
   RightGaugeToggler,
-  RightGaugeWrapper
+  RightGaugeWrapper,
 } from "../gauges";
 import {
   AfterWrapper,
   BlurWrapper as BlurWrapperTmpl,
-  ContentWrapper as ContentWrapperTmpl
+  ContentWrapper as ContentWrapperTmpl,
 } from "../layouts";
 import { FocusedTitle, MainTitle } from "../typography";
 
@@ -114,6 +114,7 @@ export interface IJoinPageProps {
   nodeAddress: string;
   nodeFlag: string;
   openNode: (config: string) => Promise<void>;
+  nodeId?: string;
 }
 
 /**
@@ -132,6 +133,7 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
   nodeAddress,
   nodeFlag,
   openNode,
+  nodeId,
   ...otherProps
 }) => {
   // Hooks
@@ -271,11 +273,9 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
           setEditNodeConfigModalOpen(false);
 
           try {
-            router.push(
-              `/join?id=${new URLSearchParams(location.search).get(
-                "id"
-              )}&nodeConfig=${urlencodeYAMLAll(definition)}`
-            );
+            router.push(`/join?nodeConfig=${urlencodeYAMLAll(definition)}`);
+
+            typeof window !== "undefined" && window.location.reload();
           } catch (e) {
             console.error("could not parse definition", e);
           }
@@ -578,9 +578,7 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
                     icon={<FontAwesomeIcon icon={faLocationArrow} fixedWidth />}
                   />
 
-                  <Title level={1}>
-                    {new URLSearchParams(location.search).get("id")}
-                  </Title>
+                  <Title level={1}>{nodeId || t("loading")}</Title>
                 </TitleWrapper>
 
                 {/* Node location */}
