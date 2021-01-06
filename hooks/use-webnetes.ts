@@ -362,7 +362,17 @@ export const useWebnetes = () => {
           }
         },
         async (resource) => {
-          console.log("Deleted resource", resource);
+          appendToLog(`Deleted resource: ${resource}`);
+
+          setClusterResources((oldClusterResources) =>
+            oldClusterResources.filter(
+              (candidate) =>
+                !(
+                  candidate.kind === resource.kind &&
+                  candidate.label === resource.metadata.label
+                )
+            )
+          );
 
           if (resource.kind === EResourceKind.WORKLOAD) {
             window.location.reload();
