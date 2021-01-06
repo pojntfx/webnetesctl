@@ -105,4 +105,8 @@ export default {
   application: "Application",
   loading: "Loading ...",
   notSet: "Not set.",
+  requestedLocation: "Requested location.",
+  resolvedLocation: "Resolved location.",
+  deniedLocationAccess: "Denied location access.",
+  noNotifications: "No notifications yet.",
 };

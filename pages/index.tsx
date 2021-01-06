@@ -17,6 +17,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Button,
   Dropdown,
+  Empty,
   List,
   Menu,
   notification,
@@ -61,7 +62,7 @@ function RoutesPage() {
   const { t } = useTranslation();
   const router = useHistory();
   const location = useLocation();
-  const { graphs, cluster, local, stats } = useWebnetes();
+  const { graphs, cluster, local, stats, log } = useWebnetes();
 
   // State
   const [notificationsOpen, setNotificationsOpen] = useState(false);
@@ -432,8 +433,12 @@ function RoutesPage() {
                   onVisibleChange={(open) => setNotificationsOpen(open)}
                   content={
                     <List>
-                      <List.Item>Example notification 1</List.Item>
-                      <List.Item>Example notification 2</List.Item>
+                      {log.length === 0 && (
+                        <Empty description={t("noNotifications")} />
+                      )}
+                      {log.map((line, i) => (
+                        <List.Item key={i}>{line}</List.Item>
+                      ))}
                     </List>
                   }
                 >
@@ -545,8 +550,12 @@ function RoutesPage() {
                   onVisibleChange={(open) => setNotificationsOpen(open)}
                   content={
                     <List>
-                      <List.Item>Example notification 1</List.Item>
-                      <List.Item>Example notification 2</List.Item>
+                      {log.length === 0 && (
+                        <Empty description={t("noNotifications")} />
+                      )}
+                      {log.map((line, i) => (
+                        <List.Item key={i}>{line}</List.Item>
+                      ))}
                     </List>
                   }
                 >

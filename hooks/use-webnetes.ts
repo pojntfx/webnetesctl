@@ -1,6 +1,9 @@
+import { feature } from "@ideditor/country-coder";
+import * as Nominatim from "nominatim-browser";
 import getPublicIp from "public-ip";
 import { useCallback, useEffect, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
+import { useTranslation } from "react-i18next";
 import {
   IClusterNode,
   IClusterResource,
@@ -17,10 +20,11 @@ import clusterResourcesData from "../data/resources-cluster.json";
 import graphResourcesData from "../data/resources-local.json";
 import statsComputeData from "../data/stats-compute.json";
 import statsNetworkingData from "../data/stats-networking.json";
-import * as Nominatim from "nominatim-browser";
-import { feature } from "@ideditor/country-coder";
 
 export const useWebnetes = () => {
+  // Hooks
+  const { t } = useTranslation();
+
   // State
   const [clusterGraph, setClusterGraph] = useState<IGraph>();
   const [networkGraph, setNetworkGraph] = useState<IGraph>();
@@ -44,6 +48,8 @@ export const useWebnetes = () => {
   const [nodeCoordinatesLoading, setNodeCoordinatesLoading] = useState(false);
   const [nodeAddress, setNodeAddress] = useState<string>();
   const [nodeFlag, setNodeFlag] = useState<string>();
+
+  const [log, setLog] = useState<string[]>([]);
 
   // Effects
   useEffect(() => {
@@ -92,9 +98,20 @@ export const useWebnetes = () => {
     });
   }, [nodeCoordinates]);
 
+  const appendToLog = useCallback(
+    (msg) => {
+      setLog((oldLog) => [
+        ...oldLog,
+        `${new Date().toLocaleTimeString()}: ${msg}`,
+      ]);
+    },
+    [log]
+  );
+
   const refreshNodeLocation = useCallback(() => {
     // Get a user's coordinates and set them
     setNodeCoordinatesLoading(true);
+    appendToLog(t("requestedLocation"));
 
     typeof window !== "undefined" &&
       navigator.geolocation.getCurrentPosition(
@@ -105,6 +122,7 @@ export const useWebnetes = () => {
               position.coords.longitude,
             ]);
             setNodeCoordinatesLoading(false);
+            appendToLog(t("resolvedLocation"));
           });
         },
         (e) => {
@@ -115,6 +133,7 @@ export const useWebnetes = () => {
 
           setNodeCoordinates([0, 0]);
           setNodeCoordinatesLoading(false);
+          appendToLog(t("deniedLocationAccess"));
         }
       );
   }, []);
@@ -149,5 +168,6 @@ export const useWebnetes = () => {
         flag: nodeFlag,
       },
     },
+    log,
   };
 };
