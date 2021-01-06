@@ -10,6 +10,7 @@ import nodeConfigData, { nodeId as nodeIdData } from "../data/node-config";
 import clusterResourcesData from "../data/resources-cluster.json";
 import statsComputeData from "../data/stats-compute.json";
 import statsNetworkingData from "../data/stats-networking.json";
+import { EResourceKind, Node } from "@pojntfx/webnetes";
 
 const NODE_GID = 0;
 
@@ -83,6 +84,8 @@ export const useWebnetes = () => {
   const [nodeFlag, setNodeFlag] = useState<string>();
 
   const [log, setLog] = useState<string[]>([]);
+
+  const [node, setNode] = useState<Node>();
 
   // Callbacks
   const getResourceGraphForNode = useCallback(
@@ -342,6 +345,58 @@ export const useWebnetes = () => {
     });
   }, [nodeCoordinates]);
 
+  useEffect(() => {
+    setNode(
+      new Node(
+        async (resource) => {
+          console.log("Created resource", resource);
+        },
+        async (resource) => {
+          console.log("Deleted resource", resource);
+
+          if (resource.kind === EResourceKind.WORKLOAD) {
+            window.location.reload();
+          }
+        },
+        async (frame) => {
+          console.log("Rejected resource", frame);
+        },
+        async (id) => {
+          console.log("Management node acknowledged", id);
+        },
+        async (id) => {
+          console.log("Management node joined", id);
+        },
+        async (id) => {
+          console.log("Management node left", id);
+        },
+        async (metadata, spec, id) => {
+          console.log("Resource node acknowledged", metadata, spec, id);
+        },
+        async (metadata, spec, id) => {
+          console.log("Resource node joined", metadata, spec, id);
+        },
+        async (metadata, spec, id) => {
+          console.log("Resource node left", metadata, spec, id);
+        },
+        async (onStdin: (key: string) => Promise<void>, id) => {
+          console.log("Creating terminal (STDOUT only)", id);
+        },
+        async (id, msg) => {
+          console.log("Writing to terminal (STDOUT only)", id, msg);
+        },
+        async (id) => {
+          console.log("Deleting terminal", id);
+        },
+        (id) => {
+          console.error("STDIN is not supported on this node");
+
+          return null;
+        }
+      )
+    );
+  }, []);
+
   return {
     graphs: {
       cluster: clusterGraph,
@@ -374,5 +429,8 @@ export const useWebnetes = () => {
       },
     },
     log,
+    node: {
+      open: async (config: string) => node && (await node.open(config)),
+    },
   };
 };

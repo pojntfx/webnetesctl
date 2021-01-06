@@ -63,7 +63,7 @@ function RoutesPage() {
   const { t } = useTranslation();
   const router = useHistory();
   const location = useLocation();
-  const { graphs, cluster, local, stats, log } = useWebnetes();
+  const { graphs, cluster, local, stats, log, node } = useWebnetes();
 
   // State
   const [notificationsOpen, setNotificationsOpen] = useState(false);
@@ -273,6 +273,7 @@ function RoutesPage() {
             nodeCoordinatesLoading={local.location.loading}
             nodeFlag={local.location.flag || ""}
             refreshNodeLocation={local.location.refreshLocation}
+            openNode={node.open}
           />
         )}
       </Route>

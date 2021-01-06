@@ -18,7 +18,7 @@ import {
   faRecordVinyl,
   faThumbsUp,
   faTimes,
-  faVrCardboard,
+  faVrCardboard
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, notification, Space, Tooltip } from "antd";
@@ -50,12 +50,12 @@ import {
   RightGaugeButton,
   RightGaugeContent,
   RightGaugeToggler,
-  RightGaugeWrapper,
+  RightGaugeWrapper
 } from "../gauges";
 import {
   AfterWrapper,
   BlurWrapper as BlurWrapperTmpl,
-  ContentWrapper as ContentWrapperTmpl,
+  ContentWrapper as ContentWrapperTmpl
 } from "../layouts";
 import { FocusedTitle, MainTitle } from "../typography";
 
@@ -113,6 +113,7 @@ export interface IJoinPageProps {
   longitude: number;
   nodeAddress: string;
   nodeFlag: string;
+  openNode: (config: string) => Promise<void>;
 }
 
 /**
@@ -130,6 +131,7 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
   longitude,
   nodeAddress,
   nodeFlag,
+  openNode,
   ...otherProps
 }) => {
   // Hooks
@@ -150,8 +152,6 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
   } = useDimensions();
 
   // State
-  const [nodeConfig, setNodeConfig] = useState<string>();
-
   const [rightGaugeOpen, setRightGaugeOpen] = useState(
     width ? (width > 821 ? true : false) : false
   );
@@ -243,7 +243,9 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
 
     if (rawNodeConfig) {
       try {
-        setNodeConfig(urldecodeYAMLAll(rawNodeConfig as string));
+        const config = urldecodeYAMLAll(rawNodeConfig as string);
+
+        openNode(config);
       } catch (e) {
         console.log("could not decode node config", e);
       }
