@@ -1,4 +1,5 @@
 import { feature } from "@ideditor/country-coder";
+import { EResourceKind, Node } from "@pojntfx/webnetes";
 import * as Nominatim from "nominatim-browser";
 import getPublicIp from "public-ip";
 import { useCallback, useEffect, useState } from "react";
@@ -9,7 +10,6 @@ import nodeConfigData, { nodeId as nodeIdData } from "../data/node-config";
 import clusterResourcesData from "../data/resources-cluster.json";
 import statsComputeData from "../data/stats-compute.json";
 import statsNetworkingData from "../data/stats-networking.json";
-import { EResourceKind, Node } from "@pojntfx/webnetes";
 
 const NODE_GID = 0;
 
@@ -376,7 +376,7 @@ export const useWebnetes = () => {
           ]);
         },
         async (id) => {
-          console.log("Management node joined", id);
+          appendToLog(`Management node joined: ${id}`);
 
           setClusterNodes((oldClusterNodes) => [
             ...oldClusterNodes,
@@ -391,16 +391,50 @@ export const useWebnetes = () => {
           ]);
         },
         async (id) => {
-          console.log("Management node left", id);
+          appendToLog(`Management node left: ${id}`);
+
+          setClusterNodes((oldClusterNodes) =>
+            oldClusterNodes.filter((candidate) => candidate.privateIP !== id)
+          );
         },
         async (metadata, spec, id) => {
-          console.log("Resource node acknowledged", metadata, spec, id);
+          appendToLog(
+            `Resource node acknowledged: ${metadata}, ${spec}, ${id}`
+          );
+
+          setClusterNodes((oldClusterNodes) => [
+            ...oldClusterNodes,
+            {
+              privateIP: id,
+              publicIP: "NOT_IMPLEMENTED",
+              location: "NOT_IMPLEMENTED",
+              latitude: 0,
+              longitude: 0,
+              size: 10000000,
+            },
+          ]);
         },
         async (metadata, spec, id) => {
-          console.log("Resource node joined", metadata, spec, id);
+          appendToLog(`Resource node joined: ${metadata}, ${spec}, ${id}`);
+
+          setClusterNodes((oldClusterNodes) => [
+            ...oldClusterNodes,
+            {
+              privateIP: id,
+              publicIP: "NOT_IMPLEMENTED",
+              location: "NOT_IMPLEMENTED",
+              latitude: 0,
+              longitude: 0,
+              size: 10000000,
+            },
+          ]);
         },
         async (metadata, spec, id) => {
-          console.log("Resource node left", metadata, spec, id);
+          appendToLog(`Resource node left: ${metadata}, ${spec}, ${id}`);
+
+          setClusterNodes((oldClusterNodes) =>
+            oldClusterNodes.filter((candidate) => candidate.privateIP !== id)
+          );
         },
         async (onStdin: (key: string) => Promise<void>, id) => {
           console.log("Creating terminal (STDOUT only)", id);
