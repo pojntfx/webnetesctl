@@ -47,6 +47,7 @@ import { ExplorerPage } from "../components/pages/explorer";
 import { HomePage } from "../components/pages/home";
 import { JoinPage } from "../components/pages/join";
 import { OverviewPage } from "../components/pages/overview";
+import { ARPage } from "../components/pages/ar";
 import SearchModal from "../components/search-modal";
 import TerminalModal from "../components/terminal-modal";
 import { AppTray } from "../components/trays";
@@ -274,6 +275,10 @@ function RoutesPage() {
             refreshNodeLocation={local.location.refreshLocation}
           />
         )}
+      </Route>
+
+      <Route path="/ar">
+        {graphs.cluster && <ARPage graph={graphs.cluster} />}
       </Route>
 
       <Route path="/created">
