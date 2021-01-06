@@ -2,16 +2,15 @@ import { feature } from "@ideditor/country-coder";
 import { EResourceKind, Node } from "@pojntfx/webnetes";
 import * as Nominatim from "nominatim-browser";
 import getPublicIp from "public-ip";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import clusterConnectionsData from "../data/network-connections.json";
 import nodeConfigData, { nodeId as nodeIdData } from "../data/node-config";
-import clusterResourcesData from "../data/resources-cluster.json";
 import statsComputeData from "../data/stats-compute.json";
 import statsNetworkingData from "../data/stats-networking.json";
 
-const NODE_GID = 0;
+export const NODE_GID = 0;
 
 export interface IConnections {
   management: number[][][];
@@ -68,12 +67,13 @@ export const useWebnetes = () => {
 
   const [clusterConnections, setClusterConnections] = useState<IConnections>();
   const [clusterNodes, setClusterNodes] = useState<IClusterNode[]>([]);
-  const [clusterResources, setClusterResources] = useState<
-    IClusterResource[]
-  >();
+  const [clusterResources, setClusterResources] = useState<IClusterResource[]>(
+    []
+  );
 
   const [nodeConfig, setNodeConfig] = useState<string>();
   const [nodeId, setNodeId] = useState<string>();
+  const nodeIdRef = useRef<string>();
 
   const [nodePublicIPv6, setNodePublicIPv6] = useState<string>();
 
@@ -217,7 +217,6 @@ export const useWebnetes = () => {
       setNetworkingStats(statsNetworkingData);
 
       setClusterConnections(clusterConnectionsData);
-      setClusterResources(clusterResourcesData);
 
       setNodeConfig(nodeConfigData);
       setNodeId(nodeIdData);
@@ -347,7 +346,20 @@ export const useWebnetes = () => {
     setNode(
       new Node(
         async (resource) => {
-          console.log("Created resource", resource);
+          appendToLog(`Created resource: ${resource}`);
+
+          if (nodeIdRef.current) {
+            setClusterResources((oldClusterResources) => [
+              ...oldClusterResources,
+              {
+                kind: resource.kind,
+                name: resource.metadata.name || resource.metadata.label,
+                label: resource.metadata.label,
+                node: nodeIdRef.current!, // We check above
+                src: JSON.stringify(JSON.stringify(resource)),
+              },
+            ]);
+          }
         },
         async (resource) => {
           console.log("Deleted resource", resource);
@@ -363,6 +375,7 @@ export const useWebnetes = () => {
           appendToLog(`Management node acknowledged: ${id}`);
 
           setNodeId(id);
+          nodeIdRef.current = id;
           setClusterNodes((oldClusterNodes) => [
             ...oldClusterNodes,
             {

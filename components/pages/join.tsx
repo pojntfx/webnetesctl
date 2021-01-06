@@ -35,7 +35,7 @@ import { Link, useHistory, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import SpriteText from "three-spritetext";
 import { useWindowSize } from "use-window-size-hook";
-import { IGraph } from "../../hooks/use-webnetes";
+import { IGraph, NODE_GID } from "../../hooks/use-webnetes";
 import glass from "../../styles/glass";
 import { getColorForGraphGroup } from "../../styles/graph-group-color";
 import { urldecodeYAMLAll, urlencodeYAMLAll } from "../../utils/urltranscode";
@@ -476,13 +476,13 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
                               <FontAwesomeIcon icon={faMobile} />{" "}
                               {
                                 resources.nodes.filter(
-                                  (node) => node.group !== 1 // No nodes here
+                                  (node) => node.group !== NODE_GID // No nodes here
                                 ).length
                               }{" "}
                             </Text>
                             {t("resource", {
                               count: resources.nodes.filter(
-                                (node) => node.group !== 1 // No nodes here
+                                (node) => node.group !== NODE_GID // No nodes here
                               ).length,
                             })}
                           </div>
