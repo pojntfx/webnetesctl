@@ -109,4 +109,6 @@ export default {
   resolvedLocation: "Resolved location.",
   deniedLocationAccess: "Denied location access.",
   noNotifications: "No notifications yet.",
+  openInAugmentedReality: "Open in Augmented Reality",
+  back: "Back",
 };

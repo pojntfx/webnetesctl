@@ -278,7 +278,9 @@ function RoutesPage() {
       </Route>
 
       <Route path="/ar">
-        {graphs.cluster && <ARPage graph={graphs.cluster} />}
+        {graphs.cluster && graphs.local && (
+          <ARPage cluster={graphs.cluster} local={graphs.local} />
+        )}
       </Route>
 
       <Route path="/created">

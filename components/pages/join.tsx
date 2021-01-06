@@ -18,6 +18,7 @@ import {
   faRecordVinyl,
   faThumbsUp,
   faTimes,
+  faVrCardboard,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, notification, Space, Tooltip } from "antd";
@@ -30,7 +31,7 @@ import useDimensions from "react-cool-dimensions";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import ParticlesTmpl from "react-particles-js";
-import { useHistory, useLocation } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import SpriteText from "three-spritetext";
 import { useWindowSize } from "use-window-size-hook";
@@ -321,15 +322,25 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
       <JoinHeaderBar>
         <Logo alt={t("webnetesLogo")} src="/logo.svg" />
 
-        <Tooltip title={t("advancedNodeConfig")} placement="left">
-          <Button
-            type="text"
-            shape="circle"
-            onClick={() => setEditNodeConfigModalOpen(true)}
-          >
-            <FontAwesomeIcon icon={faCogs} />
-          </Button>
-        </Tooltip>
+        <Space>
+          <Tooltip title={t("openInAugmentedReality")} placement="left">
+            <Link to="/ar?local=true">
+              <Button type="text" shape="circle">
+                <FontAwesomeIcon icon={faVrCardboard} />
+              </Button>
+            </Link>
+          </Tooltip>
+
+          <Tooltip title={t("advancedNodeConfig")} placement="left">
+            <Button
+              type="text"
+              shape="circle"
+              onClick={() => setEditNodeConfigModalOpen(true)}
+            >
+              <FontAwesomeIcon icon={faCogs} />
+            </Button>
+          </Tooltip>
+        </Space>
       </JoinHeaderBar>
 
       {/* Cluster graph */}

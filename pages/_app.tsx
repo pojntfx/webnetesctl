@@ -26,6 +26,10 @@ body {
   > #__next, > * > section, .ant-layout-content {
     height: 100%;
   }
+
+  /* A-Frame */
+  margin: 0px;
+  overflow: hidden;
 }
 
 .ant-modal-mask {
