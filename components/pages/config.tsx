@@ -13,9 +13,11 @@ import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
 import Animate from "rc-animate";
 import { useTranslation } from "react-i18next";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import packageJSON from "../../package.json";
 import glass from "../../styles/glass";
+import { urlencodeYAMLAll } from "../../utils/urltranscode";
 import { LocationButton } from "../buttons";
 import { ManagerWrapper, TitleSpace } from "../layouts";
 import ResourceEditorTmpl from "../resource-editor";
@@ -53,6 +55,7 @@ export const ConfigPage: React.FC<IConfigPageProps> = ({
 }) => {
   // Hooks
   const { t } = useTranslation();
+  const router = useHistory();
 
   return (
     <ManagerWrapper {...otherProps}>
@@ -152,7 +155,15 @@ export const ConfigPage: React.FC<IConfigPageProps> = ({
           <TitleSpace align="center">
             <Title level={2}>{t("nodeConfig")}</Title>
 
-            <Button>
+            <Button
+              onClick={() => {
+                router.push(
+                  `/overview?nodeConfig=${urlencodeYAMLAll(nodeConfig)}`
+                );
+
+                typeof window !== "undefined" && window.location.reload();
+              }}
+            >
               <Space>
                 <FontAwesomeIcon icon={faSave} />
                 {t("applyAndReload")}
