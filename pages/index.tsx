@@ -322,20 +322,24 @@ function RoutesPage() {
               />
             )}
 
-            {cluster.resources && (
+            {cluster.resources && local.nodeId && (
               <CreateFileModal
                 open={createFileModalOpen && createFileModalMaximized}
                 onCreate={() => setCreateFileModalOpen(false)}
                 onCancel={() => setCreateFileModalOpen(false)}
                 onMinimize={() => setCreateFileModalMaximized(false)}
                 resources={cluster.resources}
+                nodeId={local.nodeId}
               />
             )}
 
-            <InviteModal
-              open={inviteModalOpen}
-              onDone={() => setInviteModalOpen(false)}
-            />
+            {local.nodeConfig && (
+              <InviteModal
+                open={inviteModalOpen}
+                onDone={() => setInviteModalOpen(false)}
+                nodeConfig={local.nodeConfig}
+              />
+            )}
 
             <GraphModal
               open={graphModalOpen}

@@ -5,13 +5,13 @@ import Text from "antd/lib/typography/Text";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import node from "../data/node-config";
 import { urlencodeYAMLAll } from "../utils/urltranscode";
 import { Modal as ModalTmpl } from "./create-resource-modal";
 import { QRLink } from "./qr-link";
 
 export interface IInviteModalProps {
   open: boolean;
+  nodeConfig: string;
   onDone: () => void;
 }
 
@@ -23,6 +23,7 @@ export interface IInviteModalProps {
  */
 const InviteModal: React.FC<IInviteModalProps> = ({
   open,
+  nodeConfig,
   onDone,
   ...otherProps
 }) => {
@@ -34,7 +35,7 @@ const InviteModal: React.FC<IInviteModalProps> = ({
     setLink(
       `${
         typeof window !== "undefined" && window.location.origin
-      }/join?nodeConfig=${urlencodeYAMLAll(node)}`
+      }/join?nodeConfig=${urlencodeYAMLAll(nodeConfig)}`
     );
   }, []);
 

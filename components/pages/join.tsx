@@ -172,6 +172,7 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
   const [editNodeConfigModalOpen, setEditNodeConfigModalOpen] = useState(false);
 
   const [currentTitle, setCurrentTitle] = useState(-1);
+  const [nodeConfig, setNodeConfig] = useState<string>();
 
   // Effects
   useEffect(() => {
@@ -252,6 +253,8 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
         const config = urldecodeYAMLAll(rawNodeConfig as string);
 
         node.open(config);
+
+        setNodeConfig(config);
       } catch (e) {
         console.log("could not decode node config", e);
       }
@@ -271,26 +274,30 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
       <Particles params={particlesConfig} />
 
       {/* Node config editor */}
-      <EditNodeConfigModal
-        open={editNodeConfigModalOpen}
-        onDone={(definition) => {
-          setEditNodeConfigModalOpen(false);
+      {nodeConfig && (
+        <EditNodeConfigModal
+          open={editNodeConfigModalOpen}
+          onDone={(definition) => {
+            setEditNodeConfigModalOpen(false);
 
-          try {
-            router.push(`/join?nodeConfig=${urlencodeYAMLAll(definition)}`);
+            try {
+              router.push(`/join?nodeConfig=${urlencodeYAMLAll(definition)}`);
 
-            node
-              .close()
-              .then(
-                () => typeof window !== "undefined" && window.location.reload()
-              );
-          } catch (e) {
-            console.error("could not parse definition", e);
-          }
-        }}
-        onCancel={() => setEditNodeConfigModalOpen(false)}
-        skipConfirmation
-      />
+              node
+                .close()
+                .then(
+                  () =>
+                    typeof window !== "undefined" && window.location.reload()
+                );
+            } catch (e) {
+              console.error("could not parse definition", e);
+            }
+          }}
+          onCancel={() => setEditNodeConfigModalOpen(false)}
+          nodeConfig={nodeConfig}
+          skipConfirmation
+        />
+      )}
 
       {/* Titles */}
       <MainTitleAnimator transitionName="fadeandzoom" transitionAppear>

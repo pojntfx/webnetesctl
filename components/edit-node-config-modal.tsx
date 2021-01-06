@@ -13,7 +13,6 @@ import { useCallback, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
-import node from "../data/node-config";
 import ResourceEditorTmpl from "./resource-editor";
 import { BareLink, MoreLink } from "./typography";
 
@@ -21,6 +20,7 @@ export interface IEditNodeConfigModalProps {
   open: boolean;
   onDone: (definition: string) => void;
   onCancel: () => void;
+  nodeConfig: string;
   skipConfirmation?: boolean;
 }
 
@@ -34,17 +34,18 @@ const EditNodeConfigModal: React.FC<IEditNodeConfigModalProps> = ({
   open,
   onDone,
   onCancel,
+  nodeConfig,
   skipConfirmation,
   ...otherProps
 }) => {
   const { t } = useTranslation();
 
-  const [definition, setDefinition] = useState(node);
+  const [definition, setDefinition] = useState(nodeConfig);
 
   const clear = useCallback(
     () =>
       unstable_batchedUpdates(() => {
-        setDefinition(node);
+        setDefinition(nodeConfig);
       }),
     []
   );

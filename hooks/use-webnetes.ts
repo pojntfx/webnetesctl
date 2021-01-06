@@ -518,6 +518,8 @@ export const useWebnetes = ({
     log,
     node: {
       open: async (config: string) => {
+        setNodeConfig(config);
+
         await node?.open(config);
 
         setNodeOpened(true);

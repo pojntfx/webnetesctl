@@ -16,7 +16,6 @@ import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { nodeId } from "../data/node-config";
 import { Modal } from "./create-resource-modal";
 import { IClusterResource } from "../hooks/use-webnetes";
 
@@ -25,6 +24,7 @@ export interface ICreateFileModalProps {
   onCreate: () => void;
   onCancel: () => void;
   onMinimize: () => void;
+  nodeId: string;
   resources: IClusterResource[];
 }
 
@@ -40,6 +40,7 @@ const CreateFileModal: React.FC<ICreateFileModalProps> = ({
   onCancel,
   onMinimize,
   resources,
+  nodeId,
   ...otherProps
 }) => {
   const { t } = useTranslation();

@@ -75,6 +75,7 @@ export const HomePage: React.FC<IHomePageProps> = ({
                   setEditNodeConfigModalOpen(false);
                 });
               }}
+              nodeConfig={nodeConfig}
             />
 
             {/* Logo */}
