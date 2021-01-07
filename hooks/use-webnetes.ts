@@ -9,6 +9,7 @@ import clusterConnectionsData from "../data/network-connections.json";
 import nodeConfigData, { nodeId as nodeIdData } from "../data/node-config";
 import statsComputeData from "../data/stats-compute.json";
 import statsNetworkingData from "../data/stats-networking.json";
+import { getCoordinates } from "../utils/get-coordinates";
 
 export const NODE_GID = 0;
 
@@ -190,18 +191,15 @@ export const useWebnetes = ({
     appendToLog(t("requestedLocation"));
 
     typeof window !== "undefined" &&
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
+      getCoordinates()
+        .then(({ latitude, longitude }) =>
           unstable_batchedUpdates(() => {
-            setNodeCoordinates([
-              position.coords.latitude,
-              position.coords.longitude,
-            ]);
+            setNodeCoordinates([latitude, longitude]);
             setNodeCoordinatesLoading(false);
             appendToLog(t("resolvedLocation"));
-          });
-        },
-        (e) => {
+          })
+        )
+        .catch((e) => {
           console.error(
             "could not get user location, falling back to [0, 0]",
             e
@@ -210,8 +208,7 @@ export const useWebnetes = ({
           setNodeCoordinates([0, 0]);
           setNodeCoordinatesLoading(false);
           appendToLog(t("deniedLocationAccess"));
-        }
-      );
+        });
   }, []);
 
   // Effects
@@ -350,8 +347,8 @@ export const useWebnetes = ({
   useEffect(() => {
     setNode(
       new Node(
-        async (resource) => {
-          appendToLog(`Created resource: ${resource}`);
+        async (nodeId, resource) => {
+          appendToLog(`Created resource: ${resource}@${nodeId}`);
 
           if (nodeIdRef.current) {
             setClusterResources((oldClusterResources) => [
@@ -360,22 +357,22 @@ export const useWebnetes = ({
                 kind: resource.kind,
                 name: resource.metadata.name || resource.metadata.label,
                 label: resource.metadata.label,
-                node: nodeIdRef.current!, // We check above
+                node: nodeId === "localhost" ? nodeIdRef.current! : nodeId, // We check above
                 src: JSON.stringify(JSON.stringify(resource)),
               },
             ]);
           }
         },
-        async (resource) => {
-          appendToLog(`Deleted resource: ${resource}`);
+        async (nodeId, resource) => {
+          appendToLog(`Deleted resource: ${resource}@${nodeId}`);
 
           setClusterResources((oldClusterResources) =>
             oldClusterResources.filter(
               (candidate) =>
-                !(
-                  candidate.kind === resource.kind &&
-                  candidate.label === resource.metadata.label
-                )
+                !(candidate.node ===
+                  (nodeId === "localhost" ? nodeIdRef.current! : nodeId),
+                candidate.kind === resource.kind &&
+                  candidate.label === resource.metadata.label)
             )
           );
 
