@@ -317,7 +317,7 @@ export const useWebnetes = ({
 
       setClusterGraph(mergedGraph);
     }
-  }, [clusterNodes, networkGraph]);
+  }, [clusterNodes, clusterResources, networkGraph]);
 
   useEffect(() => {
     // Get the public IPv6 address
