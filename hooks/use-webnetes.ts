@@ -374,6 +374,24 @@ export const useWebnetes = ({
             `Created resource: ${JSON.stringify(resource)}@${nodeId}`
           );
 
+          if (resource.kind === "Coordinates") {
+            setClusterNodes((oldClusterNodes) => {
+              const newClusterNodes = oldClusterNodes.map((clusterNode) =>
+                clusterNode.privateIP === nodeId
+                  ? {
+                      ...clusterNode,
+                      latitude: resource.spec.latitude,
+                      longitude: resource.spec.longitude,
+                    }
+                  : clusterNode
+              );
+
+              clusterNodesRef.current = newClusterNodes;
+
+              return newClusterNodes;
+            });
+          }
+
           if (nodeIdRef.current) {
             setClusterResources((oldClusterResources) => [
               ...oldClusterResources,
