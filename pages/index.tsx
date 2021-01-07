@@ -330,7 +330,16 @@ function RoutesPage() {
             {cluster.resources && local.nodeId && (
               <CreateFileModal
                 open={createFileModalOpen && createFileModalMaximized}
-                onCreate={() => setCreateFileModalOpen(false)}
+                onCreate={async (
+                  label: string,
+                  name: string,
+                  repository: string,
+                  fileInstance: Uint8Array
+                ) => {
+                  node.seedFile(label, name, repository, fileInstance);
+
+                  setCreateFileModalOpen(false);
+                }}
                 onCancel={() => setCreateFileModalOpen(false)}
                 onMinimize={() => setCreateFileModalMaximized(false)}
                 resources={cluster.resources}

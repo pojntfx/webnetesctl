@@ -21,7 +21,12 @@ import { IClusterResource } from "../hooks/use-webnetes";
 
 export interface ICreateFileModalProps {
   open: boolean;
-  onCreate: () => void;
+  onCreate: (
+    label: string,
+    name: string,
+    repo: string,
+    content: Uint8Array
+  ) => Promise<void>;
   onCancel: () => void;
   onMinimize: () => void;
   nodeId: string;
@@ -51,6 +56,7 @@ const CreateFileModal: React.FC<ICreateFileModalProps> = ({
   const [fileLabel, setFileLabel] = useState<string>();
   const [fileName, setFileName] = useState<string>();
   const [fileRepo, setFileRepo] = useState<string>();
+  const [fileContent, setFileContent] = useState<Uint8Array>();
 
   const clear = useCallback(
     () =>
@@ -58,6 +64,7 @@ const CreateFileModal: React.FC<ICreateFileModalProps> = ({
         setFileLabel(undefined);
         setFileName(undefined);
         setFileRepo(undefined);
+        setFileContent(undefined);
         setMaximized(true);
       }),
     []
@@ -142,9 +149,11 @@ const CreateFileModal: React.FC<ICreateFileModalProps> = ({
       transitionName={maximized ? "fadeandzoom" : "fadeandslide"}
       visible={open}
       onOk={() => {
-        clear();
+        if (fileLabel && fileName && fileRepo && fileContent) {
+          clear();
 
-        onCreate();
+          onCreate(fileLabel, fileName, fileRepo, fileContent);
+        }
       }}
       onCancel={() => cancel()}
       okText={
@@ -160,7 +169,14 @@ const CreateFileModal: React.FC<ICreateFileModalProps> = ({
     >
       <ModalContentWrapper size="middle" direction="vertical">
         {/* File input */}
-        <Upload.Dragger multiple={false} beforeUpload={() => false}>
+        <Upload.Dragger
+          multiple={false}
+          beforeUpload={(e) => {
+            e.arrayBuffer().then((buf) => setFileContent(new Uint8Array(buf)));
+
+            return false;
+          }}
+        >
           <div>
             <FontAwesomeIcon icon={faPlus} />
 

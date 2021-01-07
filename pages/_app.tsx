@@ -69,6 +69,12 @@ body {
 .ant-popover, .ant-dropdown {
   z-index: 9999;
 }
+
+/* Don't cause body overflows for popovers */
+.ant-popover-inner-content {
+  max-height: 60vh;
+  overflow-y: auto;
+}
 `;
 
 // Theme provider configuration

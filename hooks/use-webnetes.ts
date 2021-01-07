@@ -528,6 +528,12 @@ export const useWebnetes = ({
       opened: nodeOpened,
       createResources: async (resources: string, nodeId: string) =>
         await node?.createResources(resources, nodeId),
+      seedFile: async (
+        label: string,
+        name: string,
+        repository: string,
+        fileInstance: Uint8Array
+      ) => await node?.seedFile(label, name, repository, fileInstance),
     },
   };
 };
