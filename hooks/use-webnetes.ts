@@ -1,5 +1,5 @@
 import { feature } from "@ideditor/country-coder";
-import { EResourceKind, Node } from "@pojntfx/webnetes";
+import { API_VERSION, EResourceKind, Node } from "@pojntfx/webnetes";
 import * as Nominatim from "nominatim-browser";
 import getPublicIp from "public-ip";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -72,6 +72,7 @@ export const useWebnetes = ({
 
   const [clusterConnections, setClusterConnections] = useState<IConnections>();
   const [clusterNodes, setClusterNodes] = useState<IClusterNode[]>([]);
+  const clusterNodesRef = useRef<IClusterNode[]>();
   const [clusterResources, setClusterResources] = useState<IClusterResource[]>(
     []
   );
@@ -197,6 +198,27 @@ export const useWebnetes = ({
             setNodeCoordinates([latitude, longitude]);
             setNodeCoordinatesLoading(false);
             appendToLog(t("resolvedLocation"));
+
+            // In the future, a message would only have to be sent to a designated manager node.
+            clusterNodesRef.current?.forEach(async (clusterNode) => {
+              await node?.createResources(
+                [
+                  {
+                    apiVersion: API_VERSION,
+                    kind: "Coordinates" as EResourceKind,
+                    metadata: {
+                      name: "Node Coordinates",
+                      label: "node_coordinates",
+                    },
+                    spec: {
+                      latitude,
+                      longitude,
+                    },
+                  },
+                ],
+                clusterNode.privateIP
+              );
+            });
           })
         )
         .catch((e) => {
@@ -209,7 +231,7 @@ export const useWebnetes = ({
           setNodeCoordinatesLoading(false);
           appendToLog(t("deniedLocationAccess"));
         });
-  }, []);
+  }, [node]);
 
   // Effects
   useEffect(() => {
@@ -348,7 +370,9 @@ export const useWebnetes = ({
     setNode(
       new Node(
         async (nodeId, resource) => {
-          appendToLog(`Created resource: ${resource}@${nodeId}`);
+          appendToLog(
+            `Created resource: ${JSON.stringify(resource)}@${nodeId}`
+          );
 
           if (nodeIdRef.current) {
             setClusterResources((oldClusterResources) => [
@@ -364,7 +388,9 @@ export const useWebnetes = ({
           }
         },
         async (nodeId, resource) => {
-          appendToLog(`Deleted resource: ${resource}@${nodeId}`);
+          appendToLog(
+            `Deleted resource: ${JSON.stringify(resource)}@${nodeId}`
+          );
 
           setClusterResources((oldClusterResources) =>
             oldClusterResources.filter(
@@ -381,7 +407,7 @@ export const useWebnetes = ({
           }
         },
         async (frame) => {
-          appendToLog(`Rejected resource: ${frame}`);
+          appendToLog(`Rejected resource: ${JSON.stringify(frame)}`);
 
           await onResourceRejection(frame);
         },
@@ -390,78 +416,124 @@ export const useWebnetes = ({
 
           setNodeId(id);
           nodeIdRef.current = id;
-          setClusterNodes((oldClusterNodes) => [
-            ...oldClusterNodes,
-            {
-              privateIP: id,
-              publicIP: "NOT_IMPLEMENTED",
-              location: "NOT_IMPLEMENTED",
-              latitude: 0,
-              longitude: 0,
-              size: 10000000,
-            },
-          ]);
+          setClusterNodes((oldClusterNodes) => {
+            const newClusterNodes = [
+              ...oldClusterNodes,
+              {
+                privateIP: id,
+                publicIP: "NOT_IMPLEMENTED",
+                location: "NOT_IMPLEMENTED",
+                latitude: 0,
+                longitude: 0,
+                size: 10000000,
+              },
+            ];
+
+            clusterNodesRef.current = newClusterNodes;
+
+            return newClusterNodes;
+          });
         },
         async (id) => {
           appendToLog(`Management node joined: ${id}`);
 
-          setClusterNodes((oldClusterNodes) => [
-            ...oldClusterNodes,
-            {
-              privateIP: id,
-              publicIP: "NOT_IMPLEMENTED",
-              location: "NOT_IMPLEMENTED",
-              latitude: 0,
-              longitude: 0,
-              size: 10000000,
-            },
-          ]);
+          setClusterNodes((oldClusterNodes) => {
+            const newClusterNodes = [
+              ...oldClusterNodes,
+              {
+                privateIP: id,
+                publicIP: "NOT_IMPLEMENTED",
+                location: "NOT_IMPLEMENTED",
+                latitude: 0,
+                longitude: 0,
+                size: 10000000,
+              },
+            ];
+
+            clusterNodesRef.current = newClusterNodes;
+
+            return newClusterNodes;
+          });
         },
         async (id) => {
           appendToLog(`Management node left: ${id}`);
 
-          setClusterNodes((oldClusterNodes) =>
-            oldClusterNodes.filter((candidate) => candidate.privateIP !== id)
-          );
+          setClusterNodes((oldClusterNodes) => {
+            const newClusterNodes = oldClusterNodes.filter(
+              (candidate) => candidate.privateIP !== id
+            );
+
+            clusterNodesRef.current = newClusterNodes;
+
+            return newClusterNodes;
+          });
         },
         async (metadata, spec, id) => {
           appendToLog(
-            `Resource node acknowledged: ${metadata}, ${spec}, ${id}`
+            `Resource node acknowledged: ${JSON.stringify(
+              metadata
+            )}, ${JSON.stringify(spec)}, ${id}`
           );
 
-          setClusterNodes((oldClusterNodes) => [
-            ...oldClusterNodes,
-            {
-              privateIP: id,
-              publicIP: "NOT_IMPLEMENTED",
-              location: "NOT_IMPLEMENTED",
-              latitude: 0,
-              longitude: 0,
-              size: 10000000,
-            },
-          ]);
+          setClusterNodes((oldClusterNodes) => {
+            const newClusterNodes = [
+              ...oldClusterNodes,
+              {
+                privateIP: id,
+                publicIP: "NOT_IMPLEMENTED",
+                location: "NOT_IMPLEMENTED",
+                latitude: 0,
+                longitude: 0,
+                size: 10000000,
+              },
+            ];
+
+            clusterNodesRef.current = newClusterNodes;
+
+            return newClusterNodes;
+          });
         },
         async (metadata, spec, id) => {
-          appendToLog(`Resource node joined: ${metadata}, ${spec}, ${id}`);
-
-          setClusterNodes((oldClusterNodes) => [
-            ...oldClusterNodes,
-            {
-              privateIP: id,
-              publicIP: "NOT_IMPLEMENTED",
-              location: "NOT_IMPLEMENTED",
-              latitude: 0,
-              longitude: 0,
-              size: 10000000,
-            },
-          ]);
-        },
-        async (metadata, spec, id) => {
-          appendToLog(`Resource node left: ${metadata}, ${spec}, ${id}`);
-
-          setClusterNodes((oldClusterNodes) =>
-            oldClusterNodes.filter((candidate) => candidate.privateIP !== id)
+          appendToLog(
+            `Resource node joined: ${JSON.stringify(
+              metadata
+            )}, ${JSON.stringify(spec)}, ${id}`
           );
+
+          setClusterNodes((oldClusterNodes) => {
+            const newClusterNodes = [
+              ...oldClusterNodes,
+              {
+                privateIP: id,
+                publicIP: "NOT_IMPLEMENTED",
+                location: "NOT_IMPLEMENTED",
+                latitude: 0,
+                longitude: 0,
+                size: 10000000,
+              },
+            ];
+
+            clusterNodesRef.current = newClusterNodes;
+
+            return newClusterNodes;
+          });
+        },
+        async (metadata, spec, id) => {
+          appendToLog(
+            `Resource node left: ${JSON.stringify(metadata)}, ${JSON.stringify(
+              spec
+            )}, ${id}`
+          );
+
+          setClusterNodes((oldClusterNodes) => {
+            const newClusterNodes = oldClusterNodes.filter(
+              (candidate) => candidate.privateIP !== id
+            );
+
+            clusterNodesRef.current = newClusterNodes;
+
+            return newClusterNodes;
+          });
         },
         async (onStdin: (key: string) => Promise<void>, id) => {
           console.log("Creating terminal (STDOUT only)", id);
