@@ -319,6 +319,7 @@ function RoutesPage() {
                   await node.createResources(resources, nodeId);
 
                   setCreateResourceDialogOpen(false);
+                  setTerminalsModalOpen(true);
                 }}
                 onCancel={() => setCreateResourceDialogOpen(false)}
                 onMinimize={() => setCreateResourceModalMaximized(false)}

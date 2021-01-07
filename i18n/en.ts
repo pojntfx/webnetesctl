@@ -38,6 +38,7 @@ export default {
   name: "Name",
   kind: "Kind",
   openTerminals: "Open Terminals",
+  noTerminalsOpenYet: "No terminals open yet.",
   connected: "Connected",
   coordinates: "Coordinates",
   youAre: "You are",

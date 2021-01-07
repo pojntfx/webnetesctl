@@ -3,7 +3,7 @@ import {
   faWindowMinimize,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Collapse, Space } from "antd";
+import { Button, Collapse, Space, Empty } from "antd";
 import dynamic from "next/dynamic";
 import { forwardRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
@@ -64,6 +64,13 @@ const TerminalModal: React.FC<ITerminalModalProps> = ({
       closable={false}
       {...otherProps}
     >
+      {labels.length === 0 && (
+        <Empty
+          image={Empty.PRESENTED_IMAGE_SIMPLE}
+          description={t("noTerminalsOpenYet")}
+        />
+      )}
+
       <Collapse ghost defaultActiveKey={labels}>
         {labels.map((label) => (
           <Collapse.Panel header={label} key={label}>
