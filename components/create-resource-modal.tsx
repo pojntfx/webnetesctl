@@ -21,10 +21,10 @@ import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
+import { IClusterNode } from "../hooks/use-webnetes";
 import { TitleSpace } from "./layouts";
 import ResourceEditorTmpl from "./resource-editor";
-import { BareLink, MoreLink } from "./typography";
-import { IClusterNode } from "../hooks/use-webnetes";
+import { MoreLink } from "./typography";
 
 export interface ICreateResourceModalProps {
   open: boolean;
@@ -195,12 +195,12 @@ const CreateResourceModal: React.FC<ICreateResourceModalProps> = ({
 
             <MoreLink>
               {t("youCanFindSomeExamplesInThe")}{" "}
-              <BareLink
+              <a
                 href="https://github.com/pojntfx/webnetes/tree/main/examples"
                 target="_blank"
               >
                 GitHub Repository <FontAwesomeIcon icon={faExternalLinkAlt} />
-              </BareLink>
+              </a>
               .
             </MoreLink>
           </div>

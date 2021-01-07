@@ -176,12 +176,12 @@ export const ConfigPage: React.FC<IConfigPageProps> = ({
 
           <MoreLink>
             {t("youCanFindAnExampleInThe")}{" "}
-            <BareLink
+            <a
               href="https://github.com/pojntfx/webnetes/blob/main/app/webnetes_node/node.yaml"
               target="_blank"
             >
               GitHub Repository <FontAwesomeIcon icon={faExternalLinkAlt} />
-            </BareLink>
+            </a>
             .
           </MoreLink>
         </div>

@@ -14,7 +14,7 @@ import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import ResourceEditorTmpl from "./resource-editor";
-import { BareLink, MoreLink } from "./typography";
+import { MoreLink } from "./typography";
 
 export interface IEditNodeConfigModalProps {
   open: boolean;
@@ -139,12 +139,12 @@ const EditNodeConfigModal: React.FC<IEditNodeConfigModalProps> = ({
 
           <MoreLink>
             {t("youCanFindAnExampleInThe")}{" "}
-            <BareLink
+            <a
               href="https://github.com/pojntfx/webnetes/blob/main/app/webnetes_node/node.yaml"
               target="_blank"
             >
               GitHub Repository <FontAwesomeIcon icon={faExternalLinkAlt} />
-            </BareLink>
+            </a>
             .
           </MoreLink>
         </div>
