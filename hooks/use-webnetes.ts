@@ -534,6 +534,8 @@ export const useWebnetes = ({
         repository: string,
         fileInstance: Uint8Array
       ) => await node?.seedFile(label, name, repository, fileInstance),
+      deleteResources: async (resources: string, nodeId: string) =>
+        await node?.deleteResources(resources, nodeId),
     },
   };
 };

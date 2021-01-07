@@ -71,6 +71,7 @@ export interface IOverviewPageProps {
   node: {
     open: (config: string) => Promise<void>;
     opened: boolean;
+    deleteResources: (resources: string, nodeId: string) => Promise<void>;
   };
 }
 
@@ -600,7 +601,19 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
                                     </Space>
                                   </Menu.Item>
 
-                                  <Menu.Item key="delete">
+                                  <Menu.Item
+                                    key="delete"
+                                    onClick={(e) => {
+                                      e.domEvent.stopPropagation();
+
+                                      node.deleteResources(
+                                        JSON.stringify(
+                                          JSON.parse(JSON.parse(resource.src))
+                                        ),
+                                        resource.node
+                                      );
+                                    }}
+                                  >
                                     <Space>
                                       <FontAwesomeIcon
                                         fixedWidth

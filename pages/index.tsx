@@ -673,6 +673,7 @@ function RoutesPage() {
                         networking: stats.networking,
                       }}
                       onOpenTerminal={() => setTerminalsModalOpen(true)}
+                      deleteResources={node.deleteResources}
                     />
                   )}
               </Route>

@@ -63,6 +63,7 @@ export interface IExplorerPageProps {
     networking: INodeScore[];
   };
   onOpenTerminal: (label: string) => void;
+  deleteResources: (resources: string, nodeId: string) => Promise<void>;
 }
 
 /**
@@ -73,6 +74,7 @@ export const ExplorerPage: React.FC<IExplorerPageProps> = ({
   cluster: { nodes, resources },
   stats: { compute, networking },
   onOpenTerminal,
+  deleteResources,
   ...otherProps
 }) => {
   // Hooks
@@ -392,7 +394,17 @@ export const ExplorerPage: React.FC<IExplorerPageProps> = ({
           <Dropdown
             overlay={
               <Menu>
-                <Menu.Item key="delete">
+                <Menu.Item
+                  key="delete"
+                  onClick={(e) => {
+                    e.domEvent.stopPropagation();
+
+                    deleteResources(
+                      JSON.stringify(JSON.parse(JSON.parse(resource.src))),
+                      resource.node
+                    );
+                  }}
+                >
                   <Space>
                     <FontAwesomeIcon fixedWidth icon={faTrash} />
                     {t("delete")}
@@ -515,7 +527,21 @@ export const ExplorerPage: React.FC<IExplorerPageProps> = ({
                                     <Dropdown
                                       overlay={
                                         <Menu>
-                                          <Menu.Item key="delete">
+                                          <Menu.Item
+                                            key="delete"
+                                            onClick={(e) => {
+                                              e.domEvent.stopPropagation();
+
+                                              deleteResources(
+                                                JSON.stringify(
+                                                  JSON.parse(
+                                                    JSON.parse(resource.src)
+                                                  )
+                                                ),
+                                                resource.node
+                                              );
+                                            }}
+                                          >
                                             <Space>
                                               <FontAwesomeIcon
                                                 fixedWidth
