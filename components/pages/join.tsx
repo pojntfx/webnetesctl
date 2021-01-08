@@ -602,7 +602,7 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
                 </TitleWrapper>
 
                 {/* Node location */}
-                <Text>
+                <CenteredText>
                   <Space>
                     <FontAwesomeIcon icon={faMapMarkerAlt} />
                     <Tooltip
@@ -622,7 +622,7 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
                       {`${nodeFlag ? " " + nodeFlag : ""}`}
                     </Tooltip>
                   </Space>
-                </Text>
+                </CenteredText>
               </Space>
 
               {/* Right gauge */}
@@ -815,4 +815,11 @@ const LocationButton = styled(LocationButtonTmpl)`
 const ExpandButton = styled(Button)`
   background: transparent !important;
   backdrop-filter: none !important;
+`;
+
+// Typography components
+const CenteredText = styled(Text)`
+  text-align: center;
+  padding-left: 1rem;
+  padding-right: 1rem;
 `;
