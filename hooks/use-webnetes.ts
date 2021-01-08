@@ -544,12 +544,7 @@ export const useWebnetes = ({
                   clusterNode.privateIP === resource.spec.describes
                     ? {
                         ...clusterNode,
-                        location: address
-                          ? address
-                              .split(", ")
-                              .filter((_: string, i: number) => i <= 3)
-                              .join(", ")
-                          : t("notSet"),
+                        location: address ? address : t("notSet"),
                         latitude: resource.spec.latitude,
                         longitude: resource.spec.longitude,
                       }

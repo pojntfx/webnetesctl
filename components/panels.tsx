@@ -13,6 +13,7 @@ export const InspectorPanel = styled(Card)`
   right: 0;
   margin: 0;
   ${glass}
+  max-width: 100%;
 
   .ant-card-head {
     border-bottom: 0;
@@ -29,6 +30,7 @@ export const InspectorPanel = styled(Card)`
     right: 50px;
     margin: 1rem;
     margin-right: 0;
+    max-width: calc(5rem * 5);
   }
 `;
 

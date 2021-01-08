@@ -8,7 +8,7 @@ import {
   faThumbtack,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Divider as DividerTmpl, Space } from "antd";
+import { Button, Divider as DividerTmpl, Space, Tooltip } from "antd";
 import Text from "antd/lib/typography/Text";
 import Title from "antd/lib/typography/Title";
 import Animate from "rc-animate";
@@ -133,8 +133,22 @@ export const ConfigPage: React.FC<IConfigPageProps> = ({
                   <FontAwesomeIcon icon={faMapMarkerAlt} /> {t("location")}
                 </dt>
                 <dd>
-                  {nodeAddress ? nodeAddress : t("notSet")}
-                  {`${nodeFlag ? " " + nodeFlag : ""}`}
+                  <Tooltip
+                    title={`${nodeAddress ? nodeAddress : t("notSet")}
+                      ${nodeFlag ? " " + nodeFlag : ""}`}
+                  >
+                    {nodeAddress
+                      ? `${nodeAddress
+                          .split(", ")
+                          .filter((_, i) => i <= 1)
+                          .join(", ")}, ${
+                          nodeAddress.split(", ")[
+                            nodeAddress.split(", ").length - 1
+                          ]
+                        }`
+                      : t("notSet")}
+                    {`${nodeFlag ? " " + nodeFlag : ""}`}
+                  </Tooltip>
                 </dd>
 
                 <dt>

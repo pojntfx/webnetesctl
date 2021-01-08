@@ -610,10 +610,14 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
                       ${nodeFlag ? " " + nodeFlag : ""}`}
                     >
                       {nodeAddress
-                        ? nodeAddress
+                        ? `${nodeAddress
                             .split(", ")
-                            .filter((_, i) => i <= 3)
-                            .join(", ")
+                            .filter((_, i) => i <= 1)
+                            .join(", ")}, ${
+                            nodeAddress.split(", ")[
+                              nodeAddress.split(", ").length - 1
+                            ]
+                          }`
                         : t("notSet")}
                       {`${nodeFlag ? " " + nodeFlag : ""}`}
                     </Tooltip>

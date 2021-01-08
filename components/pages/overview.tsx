@@ -248,7 +248,12 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
           labelText={(d: any) => {
             const node = d as typeof nodes[0];
 
-            return `${node.privateIP} (${node.location}, ${node.publicIP})`;
+            return `${node.privateIP} (${node.location
+              .split(", ")
+              .filter((_: string, i: number) => i <= 1)
+              .join(", ")}, ${
+              node.location.split(", ")[node.location.split(", ").length - 1]
+            }, ${node.publicIP})`;
           }}
           labelSize={(d: any) => Math.sqrt((d as typeof nodes[0]).size) * 3e-4}
           labelDotRadius={(d: any) =>
@@ -309,7 +314,7 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
               </Button>
             }
           >
-            <StatsPanelWrapper>
+            <StatsPanelWrapperHorizontal>
               <Statistic
                 title={t("node", { count: nodes.length })}
                 value={nodes.length}
@@ -320,11 +325,11 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
                 value={resources.length}
                 prefix={<FontAwesomeIcon fixedWidth icon={faCube} />}
               />
-            </StatsPanelWrapper>
+            </StatsPanelWrapperHorizontal>
 
             <StatsPanelDivider />
 
-            <StatsPanelWrapper $long>
+            <StatsPanelWrapperHorizontal $long>
               <Statistic
                 title={
                   <Space>
@@ -350,18 +355,22 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
                     {t("network")}
                   </Space>
                 }
-                value={[...networking.values()].reduce(
-                  (all, curr) => all + curr,
-                  0
-                )}
-                suffix={t("kbps", {
-                  count: [...networking.values()].reduce(
+                value={Math.floor(
+                  [...networking.values()].reduce(
                     (all, curr) => all + curr,
                     0
+                  ) / (networking.size === 0 ? 1 : networking.size)
+                )}
+                suffix={t("kbps", {
+                  count: Math.floor(
+                    [...networking.values()].reduce(
+                      (all, curr) => all + curr,
+                      0
+                    ) / (networking.size === 0 ? 1 : networking.size)
                   ),
                 })}
               />
-            </StatsPanelWrapper>
+            </StatsPanelWrapperHorizontal>
 
             <Collapse defaultActiveKey={[]} ghost destroyInactivePanel>
               <Collapse.Panel
@@ -467,20 +476,35 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
               </Space>
             }
           >
-            <StatsPanelWrapper $long>
+            <StatsPanelWrapperVertical $long>
               <Space>
                 <FontAwesomeIcon icon={faMapMarkerAlt} size="lg" />
-                {selectedNode.location}
+                <Tooltip
+                  title={`${
+                    selectedNode.location ? selectedNode.location : t("notSet")
+                  }`}
+                >
+                  {selectedNode.location
+                    ? `${selectedNode.location
+                        .split(", ")
+                        .filter((_: string, i: number) => i <= 1)
+                        .join(", ")}, ${
+                        selectedNode.location.split(", ")[
+                          selectedNode.location.split(", ").length - 1
+                        ]
+                      }`
+                    : t("notSet")}
+                </Tooltip>
               </Space>
               <Space>
                 <FontAwesomeIcon icon={faGlobe} size="lg" />
                 {selectedNode.publicIP}
               </Space>
-            </StatsPanelWrapper>
+            </StatsPanelWrapperVertical>
 
             <StatsPanelDivider />
 
-            <StatsPanelWrapper $long>
+            <StatsPanelWrapperHorizontal $long>
               <Statistic
                 title={
                   <Space>
@@ -511,7 +535,7 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
                   count: networking.get(selectedNode?.privateIP) || 0,
                 })}
               />
-            </StatsPanelWrapper>
+            </StatsPanelWrapperHorizontal>
 
             <StatsPanelDivider />
 
@@ -707,15 +731,28 @@ const GlobeWrapper = styled.div<{ $hoverable: boolean }>`
 `;
 
 // Stats panel components
-const StatsPanelWrapper = styled.div<{ $long?: boolean }>`
+const StatsPanelWrapperHorizontal = styled.div<{ $long?: boolean }>`
   display: grid;
   grid-template-columns: 1fr 1fr;
   padding: 12px 16px;
+  grid-gap: 1rem;
+
+  > * {
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
 
   ${(props) =>
     props.$long
       ? ".ant-statistic-content { font-size: 18px !important; }"
       : "padding-bottom: 6px;"}
+`;
+
+const StatsPanelWrapperVertical = styled(StatsPanelWrapperHorizontal)`
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr;
 `;
 
 const StatsPanelDivider = styled(Divider)`
