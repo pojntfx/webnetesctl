@@ -1,6 +1,4 @@
-import { feature } from "@ideditor/country-coder";
 import { API_VERSION, EResourceKind, Node } from "@pojntfx/webnetes";
-import * as Nominatim from "nominatim-browser";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
@@ -10,6 +8,7 @@ import statsComputeData from "../data/stats-compute.json";
 import statsNetworkingData from "../data/stats-networking.json";
 import { getCoordinates } from "../utils/get-coordinates";
 import { getIP } from "../utils/get-ip";
+import { getLocation } from "../utils/get-location";
 
 export const NODE_GID = 0;
 
@@ -375,22 +374,19 @@ export const useWebnetes = ({
 
   useEffect(() => {
     // Map coordinates to an address
-    Nominatim.reverseGeocode({
-      lat: nodeCoordinates[0].toString(),
-      lon: nodeCoordinates[1].toString(),
-      addressdetails: true,
-    }).then((res: any) => {
-      if (res.address?.country_code) {
-        const feat = feature(res.address?.country_code as string);
+    if (nodeCoordinates) {
+      (async () => {
+        const { address, flag } = await getLocation({
+          latitude: nodeCoordinates[0].toString(),
+          longitude: nodeCoordinates[1].toString(),
+        });
 
-        if (feat) {
-          unstable_batchedUpdates(() => {
-            setNodeAddress(res.display_name);
-            setNodeFlag(feat.properties.emojiFlag!);
-          });
-        }
-      }
-    });
+        unstable_batchedUpdates(() => {
+          setNodeAddress(address);
+          setNodeFlag(flag);
+        });
+      })();
+    }
   }, [nodeCoordinates]);
 
   useEffect(() => {
