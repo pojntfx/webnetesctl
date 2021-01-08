@@ -93,8 +93,6 @@ export const useWebnetes = ({
   const [nodeId, setNodeId] = useState<string>();
   const nodeIdRef = useRef<string>();
 
-  const [nodePublicIPv6, setNodePublicIPv6] = useState<string>();
-
   const [nodeCoordinates, setNodeCoordinates] = useState<number[]>([0, 0]);
   const [nodeCoordinatesLoading, setNodeCoordinatesLoading] = useState(false);
   const [nodeAddress, setNodeAddress] = useState<string>();
@@ -109,6 +107,11 @@ export const useWebnetes = ({
 
   const [localCPUScore, setLocalCPUScore] = useState<number>();
   const [localNetworkScore, setLocalNetworkScore] = useState<number>();
+  const [nodePublicIPv6, setNodePublicIPv6] = useState<string>();
+
+  const cpuBenchmarkRunningRef = useRef<boolean>();
+  const networkBenchmarkRunningRef = useRef<boolean>();
+  const ipLookupRunningRef = useRef<boolean>();
 
   // Callbacks
   const getResourceGraphForNode = useCallback(
@@ -264,9 +267,11 @@ export const useWebnetes = ({
 
   useEffect(() => {
     // Run a short CPU benchmark and send it
-    if (node && nodeOpened) {
+    if (!cpuBenchmarkRunningRef.current && node && nodeOpened) {
       (async () => {
         try {
+          cpuBenchmarkRunningRef.current = true;
+
           const done = onCPUBenchmarking();
 
           const cpuScore = localCPUScore || (await getCPUScore());
@@ -305,6 +310,8 @@ export const useWebnetes = ({
           });
         } catch (e) {
           console.error("could not get CPU benchmark", e);
+        } finally {
+          cpuBenchmarkRunningRef.current = false;
         }
       })();
     }
@@ -312,9 +319,11 @@ export const useWebnetes = ({
 
   useEffect(() => {
     // Run a short network benchmark and send it
-    if (node && nodeOpened) {
+    if (!networkBenchmarkRunningRef.current && node && nodeOpened) {
       (async () => {
         try {
+          networkBenchmarkRunningRef.current = true;
+
           const done = onNetworkBenchmarking();
 
           const netScore = localNetworkScore || (await getNetScore(100000));
@@ -353,6 +362,8 @@ export const useWebnetes = ({
           });
         } catch (e) {
           console.error("could not get network benchmark", e);
+        } finally {
+          networkBenchmarkRunningRef.current = false;
         }
       })();
     }
@@ -363,6 +374,8 @@ export const useWebnetes = ({
     if (node && nodeOpened) {
       (async () => {
         try {
+          ipLookupRunningRef.current = true;
+
           const ip = nodePublicIPv6 || (await getIP());
 
           if (ip !== nodePublicIPv6) setNodePublicIPv6(ip);
@@ -395,7 +408,9 @@ export const useWebnetes = ({
             );
           });
         } catch (e) {
-          console.log("could not get public IPv6", e);
+          console.error("could not get public IPv6", e);
+        } finally {
+          ipLookupRunningRef.current = false;
         }
       })();
     }
