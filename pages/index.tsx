@@ -669,6 +669,7 @@ function RoutesPage() {
                       nodeCoordinatesLoading={local.location.loading}
                       refreshNodeLocation={local.location.refreshLocation}
                       node={node}
+                      nodeId={local.nodeId || ""}
                     />
                   )}
               </Route>

@@ -72,6 +72,7 @@ export interface IOverviewPageProps {
     opened: boolean;
     deleteResources: (resources: string, nodeId: string) => Promise<void>;
   };
+  nodeId: string;
 }
 
 /**
@@ -88,6 +89,7 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
   latitude,
   longitude,
   node,
+  nodeId,
   ...otherProps
 }) => {
   // Hooks
@@ -107,7 +109,6 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
 
   const [resourcesFilter, setResourcesFilter] = useState("");
 
-  const [clusterId, setClusterId] = useState<string>();
   const [connectionPaths, setConnectionPaths] = useState<any[]>([]);
 
   // Effects
@@ -123,8 +124,6 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
         properties: { name: t("application"), color: "#1890ff" },
       })),
     ]);
-
-    setClusterId("127.0.2");
   }, []);
 
   useEffect(() => {
@@ -301,7 +300,12 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
             title={
               <Space>
                 <FontAwesomeIcon fixedWidth icon={faNetworkWired} />
-                {t("cluster") + " " + clusterId}
+                {t("cluster") +
+                  " " +
+                  nodeId
+                    .split(".")
+                    .filter((_, i) => i <= 2)
+                    .join(".")}
               </Space>
             }
             extra={
