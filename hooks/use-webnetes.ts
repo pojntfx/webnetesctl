@@ -107,6 +107,8 @@ export const useWebnetes = ({
 
   const [refreshNodeInformation, setRefreshNodeInformation] = useState(false);
 
+  const [localCPUScore, setLocalCPUScore] = useState<number>();
+
   // Callbacks
   const getResourceGraphForNode = useCallback(
     (nodeIdFilter: string) => {
@@ -266,12 +268,21 @@ export const useWebnetes = ({
         try {
           const done = onCPUBenchmarking();
 
-          const cpuScore = await getCPUScore();
+          const cpuScore = localCPUScore || (await getCPUScore());
+
+          if (cpuScore !== localCPUScore) setLocalCPUScore(cpuScore);
 
           done();
 
           // In the future, a message would only have to be sent to a designated manager node.
           clusterNodesRef.current?.forEach(async (clusterNode) => {
+            if (
+              clusterNode.privateIP === nodeIdRef.current &&
+              cpuScore === localCPUScore
+            ) {
+              return;
+            }
+
             await node?.createResources(
               [
                 {
@@ -296,7 +307,7 @@ export const useWebnetes = ({
         }
       })();
     }
-  }, [node, nodeOpened, refreshNodeInformation]);
+  }, [node, nodeOpened, refreshNodeInformation, localCPUScore]);
 
   useEffect(() => {
     // Run a short network benchmark and send it
