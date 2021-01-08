@@ -698,14 +698,28 @@ export const useWebnetes = ({
         async (id) => {
           appendToLog(`Management node left: ${id}`);
 
-          setClusterNodes((oldClusterNodes) => {
-            const newClusterNodes = oldClusterNodes.filter(
-              (candidate) => candidate.privateIP !== id
-            );
+          unstable_batchedUpdates(() => {
+            setClusterNodes((oldClusterNodes) => {
+              const newClusterNodes = oldClusterNodes.filter(
+                (candidate) => candidate.privateIP !== id
+              );
 
-            clusterNodesRef.current = newClusterNodes;
+              clusterNodesRef.current = newClusterNodes;
 
-            return newClusterNodes;
+              return newClusterNodes;
+            });
+
+            setComputeStats((oldComputeStats) => {
+              oldComputeStats.delete(id);
+
+              return oldComputeStats;
+            });
+
+            setNetworkingStats((oldNetworkingStats) => {
+              oldNetworkingStats.delete(id);
+
+              return oldNetworkingStats;
+            });
           });
         },
         async (metadata, spec, id) => {
@@ -765,14 +779,28 @@ export const useWebnetes = ({
             )}, ${id}`
           );
 
-          setClusterNodes((oldClusterNodes) => {
-            const newClusterNodes = oldClusterNodes.filter(
-              (candidate) => candidate.privateIP !== id
-            );
+          unstable_batchedUpdates(() => {
+            setClusterNodes((oldClusterNodes) => {
+              const newClusterNodes = oldClusterNodes.filter(
+                (candidate) => candidate.privateIP !== id
+              );
 
-            clusterNodesRef.current = newClusterNodes;
+              clusterNodesRef.current = newClusterNodes;
 
-            return newClusterNodes;
+              return newClusterNodes;
+            });
+
+            setComputeStats((oldComputeStats) => {
+              oldComputeStats.delete(id);
+
+              return oldComputeStats;
+            });
+
+            setNetworkingStats((oldNetworkingStats) => {
+              oldNetworkingStats.delete(id);
+
+              return oldNetworkingStats;
+            });
           });
         },
         async (onStdin: (key: string) => Promise<void>, id) => {
