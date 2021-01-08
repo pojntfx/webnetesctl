@@ -71,7 +71,7 @@ const TerminalModal: React.FC<ITerminalModalProps> = ({
         />
       )}
 
-      <Collapse ghost defaultActiveKey={labels}>
+      <Collapse ghost activeKey={labels}>
         {labels.map((label) => (
           <Collapse.Panel header={label} key={label}>
             <Terminal

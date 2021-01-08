@@ -28,10 +28,11 @@ import {
 } from "antd";
 import { Content } from "antd/lib/layout/layout";
 import Text from "antd/lib/typography/Text";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { Route, Switch, useHistory, useLocation } from "react-router-dom";
+import { XTerm } from "xterm-for-react";
 import CreateFileModal from "../components/create-file-modal";
 import CreateResourceModal from "../components/create-resource-modal";
 import GraphModal from "../components/graph-modal";
@@ -65,6 +66,12 @@ function RoutesPage() {
   const { t } = useTranslation();
   const router = useHistory();
   const location = useLocation();
+
+  const [terminalLabels, setTerminalLabels] = useState<string[]>([]);
+  const terminalRefs = useRef<Map<string, XTerm>>(new Map());
+  const terminalStdinHandlersRef = useRef<
+    Map<string, (key: string) => Promise<void>>
+  >(new Map());
   const { graphs, cluster, local, stats, log, node } = useWebnetes({
     onResourceRejection: async (diagnostics) => {
       notification.error({
@@ -86,6 +93,23 @@ function RoutesPage() {
       const hide = message.loading(t("benchmarkingYourNetwork"), 0);
 
       return hide;
+    },
+    onCreateTerminal: async (onStdin, id) => {
+      setTerminalLabels((oldTerminalLabels) => [...oldTerminalLabels, id]);
+
+      terminalStdinHandlersRef.current?.set(id, onStdin);
+    },
+    onWriteToTerminal: async (id, msg) => {
+      const terminal = terminalRefs.current?.get(id);
+
+      console.log(msg);
+
+      terminal && terminal.terminal.write(msg.replace(/\n/g, "\n\r"));
+    },
+    onDeleteTerminal: async (id) => {
+      setTerminalLabels((oldTerminalLabels) =>
+        oldTerminalLabels.filter((candidate) => candidate !== id)
+      );
     },
   });
 
@@ -382,15 +406,16 @@ function RoutesPage() {
                 open={terminalsModalOpen}
                 onDone={() => setTerminalsModalOpen(false)}
                 onTerminalCreated={(label, xterm) =>
-                  setInterval(
-                    () => xterm.terminal.writeln(`${label} Hello, world!`),
-                    1000
-                  )
+                  terminalRefs.current?.set(label, xterm)
                 }
-                onStdin={(label, key) => console.log(label, key)}
-                labels={cluster.resources
-                  .filter((resource) => resource.kind === "Workload")
-                  .map((resource) => resource.label)}
+                onStdin={(label, key) => {
+                  const stdinHandler = terminalStdinHandlersRef.current?.get(
+                    label
+                  );
+
+                  stdinHandler && stdinHandler(key);
+                }}
+                labels={terminalLabels}
               />
             )}
 

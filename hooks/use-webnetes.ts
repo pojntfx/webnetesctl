@@ -57,10 +57,19 @@ export const useWebnetes = ({
   onResourceRejection,
   onCPUBenchmarking,
   onNetworkBenchmarking,
+  onCreateTerminal,
+  onWriteToTerminal,
+  onDeleteTerminal,
 }: {
   onResourceRejection: (diagnostics: any) => Promise<void>;
   onCPUBenchmarking: () => () => any;
   onNetworkBenchmarking: () => () => any;
+  onCreateTerminal: (
+    onStdin: (key: string) => Promise<void>,
+    id: string
+  ) => Promise<void>;
+  onWriteToTerminal: (id: string, msg: string) => Promise<void>;
+  onDeleteTerminal: (id: string) => Promise<void>;
 }) => {
   // Hooks
   const { t } = useTranslation();
@@ -799,16 +808,18 @@ export const useWebnetes = ({
           });
         },
         async (onStdin: (key: string) => Promise<void>, id) => {
-          console.log("Creating terminal (STDOUT only)", id);
+          await onCreateTerminal(onStdin, id);
         },
         async (id, msg) => {
-          console.log("Writing to terminal (STDOUT only)", id, msg);
+          await onWriteToTerminal(id, msg);
         },
         async (id) => {
-          console.log("Deleting terminal", id);
+          await onDeleteTerminal(id);
         },
         (id) => {
-          console.error("STDIN is not supported on this node");
+          const rawInput = prompt(`Please enter standard input for ${id}\n`);
+
+          if (rawInput) return new TextEncoder().encode(rawInput);
 
           return null;
         }
