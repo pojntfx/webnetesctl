@@ -20,6 +20,7 @@ import {
   Empty,
   List,
   Menu,
+  message,
   notification,
   Popover,
   Space,
@@ -75,6 +76,11 @@ function RoutesPage() {
           </Text>
         ),
       });
+    },
+    onBenchmarking: () => {
+      const hide = message.loading(t("benchmarkingYourDevice"), 0);
+
+      return hide;
     },
   });
 

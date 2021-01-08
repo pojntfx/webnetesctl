@@ -47,6 +47,13 @@ module.exports = withPlugins(
         };
       }
 
+      config.module = {
+        ...config.module,
+        ...{
+          noParse: [/benchmark/],
+        },
+      };
+
       return config;
     },
     async rewrites() {

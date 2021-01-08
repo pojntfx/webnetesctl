@@ -120,4 +120,6 @@ export default {
   newClusterId: "New Cluster ID",
   resourceRejected: "Resource Rejected",
   diagnostics: "Diagnostics",
+  benchmarkingYourDevice:
+    "Benchmarking your device. You might experience performance degradation.",
 };

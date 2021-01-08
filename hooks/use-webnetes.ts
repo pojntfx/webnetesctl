@@ -1,4 +1,9 @@
-import { API_VERSION, EResourceKind, Node } from "@pojntfx/webnetes";
+import {
+  API_VERSION,
+  EResourceKind,
+  EBenchmarkKind,
+  Node,
+} from "@pojntfx/webnetes";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
@@ -7,6 +12,7 @@ import nodeConfigData, { nodeId as nodeIdData } from "../data/node-config";
 import statsComputeData from "../data/stats-compute.json";
 import statsNetworkingData from "../data/stats-networking.json";
 import { getCoordinates } from "../utils/get-coordinates";
+import { getCPUScore } from "../utils/get-cpu-score";
 import { getIP } from "../utils/get-ip";
 import { getLocation } from "../utils/get-location";
 
@@ -50,8 +56,10 @@ export interface INodeScore {
 
 export const useWebnetes = ({
   onResourceRejection,
+  onBenchmarking,
 }: {
   onResourceRejection: (diagnostics: any) => Promise<void>;
+  onBenchmarking: () => () => any;
 }) => {
   // Hooks
   const { t } = useTranslation();
@@ -92,7 +100,7 @@ export const useWebnetes = ({
   const [node, setNode] = useState<Node>();
   const [nodeOpened, setNodeOpened] = useState(false);
 
-  const [handlePublicIP, setHandlePublicIP] = useState(false);
+  const [refreshNodeInformation, setRefreshNodeInformation] = useState(false);
 
   // Callbacks
   const getResourceGraphForNode = useCallback(
@@ -249,37 +257,77 @@ export const useWebnetes = ({
   }, []);
 
   useEffect(() => {
+    // Run a short CPU benchmark send it
+    if (node && nodeOpened) {
+      (async () => {
+        try {
+          const done = onBenchmarking();
+
+          const cpuScore = await getCPUScore();
+
+          done();
+
+          // In the future, a message would only have to be sent to a designated manager node.
+          clusterNodesRef.current?.forEach(async (clusterNode) => {
+            await node?.createResources(
+              [
+                {
+                  apiVersion: API_VERSION,
+                  kind: EResourceKind.BENCHMARK_SCORE,
+                  metadata: {
+                    name: "CPU Benchmark",
+                    label: "cpu_benchmark",
+                  },
+                  spec: {
+                    kind: EBenchmarkKind.CPU,
+                    score: cpuScore,
+                  },
+                },
+              ],
+              clusterNode.privateIP
+            );
+          });
+        } catch (e) {
+          console.error("could not get CPU benchmark", e);
+        }
+      })();
+    }
+  }, [node, nodeOpened, refreshNodeInformation]);
+
+  useEffect(() => {
     // Get the public IPv6 address
-    (async () => {
-      try {
-        const ip = await getIP();
+    if (node && nodeOpened) {
+      (async () => {
+        try {
+          const ip = await getIP();
 
-        setNodePublicIPv6(ip);
+          setNodePublicIPv6(ip);
 
-        // In the future, a message would only have to be sent to a designated manager node.
-        clusterNodesRef.current?.forEach(async (clusterNode) => {
-          await node?.createResources(
-            [
-              {
-                apiVersion: API_VERSION,
-                kind: EResourceKind.PUBLIC_IP,
-                metadata: {
-                  name: "Public IP",
-                  label: "public_ip",
+          // In the future, a message would only have to be sent to a designated manager node.
+          clusterNodesRef.current?.forEach(async (clusterNode) => {
+            await node?.createResources(
+              [
+                {
+                  apiVersion: API_VERSION,
+                  kind: EResourceKind.PUBLIC_IP,
+                  metadata: {
+                    name: "Public IP",
+                    label: "public_ip",
+                  },
+                  spec: {
+                    publicIP: ip,
+                  },
                 },
-                spec: {
-                  publicIP: ip,
-                },
-              },
-            ],
-            clusterNode.privateIP
-          );
-        });
-      } catch (e) {
-        console.log("could not get public IPv6", e);
-      }
-    })();
-  }, [node, handlePublicIP]);
+              ],
+              clusterNode.privateIP
+            );
+          });
+        } catch (e) {
+          console.log("could not get public IPv6", e);
+        }
+      })();
+    }
+  }, [node, nodeOpened, refreshNodeInformation]);
 
   useEffect(() => {
     // Create the resource graph
@@ -498,7 +546,7 @@ export const useWebnetes = ({
 
             clusterNodesRef.current = newClusterNodes;
 
-            setHandlePublicIP((handleIP) => !handleIP);
+            setRefreshNodeInformation((handleIP) => !handleIP);
 
             return newClusterNodes;
           });
@@ -521,7 +569,7 @@ export const useWebnetes = ({
 
             clusterNodesRef.current = newClusterNodes;
 
-            setHandlePublicIP((handleIP) => !handleIP);
+            setRefreshNodeInformation((handleIP) => !handleIP);
 
             return newClusterNodes;
           });
