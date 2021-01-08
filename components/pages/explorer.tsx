@@ -211,7 +211,7 @@ export const ExplorerPage: React.FC<IExplorerPageProps> = ({
         count: computeScore || 0,
       })}`,
       networkingScore: `${networkingScore || t("loading").toString()} ${t(
-        "mbps",
+        "kbps",
         {
           count: networkingScore || 0,
         }

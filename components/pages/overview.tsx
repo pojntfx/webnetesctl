@@ -346,7 +346,7 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
                   </Space>
                 }
                 value={networking.reduce((all, curr) => all + curr.score, 0)}
-                suffix={t("mbps", {
+                suffix={t("kbps", {
                   count: networking.reduce((all, curr) => all + curr.score, 0),
                 })}
               />
@@ -495,7 +495,7 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
                     (candidate) => candidate.ip === selectedNode?.privateIP
                   )?.score || t("loading").toString()
                 }
-                suffix={t("mbps", {
+                suffix={t("kbps", {
                   count:
                     networking.find(
                       (candidate) => candidate.ip === selectedNode?.privateIP

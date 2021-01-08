@@ -1,7 +1,7 @@
 import {
   API_VERSION,
-  EResourceKind,
   EBenchmarkKind,
+  EResourceKind,
   Node,
 } from "@pojntfx/webnetes";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -9,12 +9,11 @@ import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import clusterConnectionsData from "../data/network-connections.json";
 import nodeConfigData, { nodeId as nodeIdData } from "../data/node-config";
-import statsComputeData from "../data/stats-compute.json";
-import statsNetworkingData from "../data/stats-networking.json";
 import { getCoordinates } from "../utils/get-coordinates";
 import { getCPUScore } from "../utils/get-cpu-score";
 import { getIP } from "../utils/get-ip";
 import { getLocation } from "../utils/get-location";
+import { getNetScore } from "../utils/get-net-score";
 
 export const NODE_GID = 0;
 
@@ -56,10 +55,12 @@ export interface INodeScore {
 
 export const useWebnetes = ({
   onResourceRejection,
-  onBenchmarking,
+  onCPUBenchmarking,
+  onNetworkBenchmarking,
 }: {
   onResourceRejection: (diagnostics: any) => Promise<void>;
-  onBenchmarking: () => () => any;
+  onCPUBenchmarking: () => () => any;
+  onNetworkBenchmarking: () => () => any;
 }) => {
   // Hooks
   const { t } = useTranslation();
@@ -254,11 +255,11 @@ export const useWebnetes = ({
   }, []);
 
   useEffect(() => {
-    // Run a short CPU benchmark send it
+    // Run a short CPU benchmark and send it
     if (node && nodeOpened) {
       (async () => {
         try {
-          const done = onBenchmarking();
+          const done = onCPUBenchmarking();
 
           const cpuScore = await getCPUScore();
 
@@ -286,6 +287,44 @@ export const useWebnetes = ({
           });
         } catch (e) {
           console.error("could not get CPU benchmark", e);
+        }
+      })();
+    }
+  }, [node, nodeOpened, refreshNodeInformation]);
+
+  useEffect(() => {
+    // Run a short network benchmark and send it
+    if (node && nodeOpened) {
+      (async () => {
+        try {
+          const done = onNetworkBenchmarking();
+
+          const netScore = await getNetScore(100000);
+
+          done();
+
+          // In the future, a message would only have to be sent to a designated manager node.
+          clusterNodesRef.current?.forEach(async (clusterNode) => {
+            await node?.createResources(
+              [
+                {
+                  apiVersion: API_VERSION,
+                  kind: EResourceKind.BENCHMARK_SCORE,
+                  metadata: {
+                    name: "Network Benchmark",
+                    label: "net_benchmark",
+                  },
+                  spec: {
+                    kind: EBenchmarkKind.NET,
+                    score: netScore,
+                  },
+                },
+              ],
+              clusterNode.privateIP
+            );
+          });
+        } catch (e) {
+          console.error("could not get network benchmark", e);
         }
       })();
     }
@@ -487,30 +526,69 @@ export const useWebnetes = ({
               return newClusterNodes;
             });
           } else if (resource.kind === EResourceKind.BENCHMARK_SCORE) {
-            if (resource.spec.kind === EBenchmarkKind.CPU) {
-              setComputeStats((oldComputeStats) => {
-                const found = oldComputeStats.find(
-                  (candidate) =>
-                    candidate.ip ===
-                    (nodeId === "localhost" ? nodeIdRef.current! : nodeId)
-                );
-
-                const newResource = {
-                  ip: nodeId,
-                  score: resource.spec.score,
-                };
-
-                if (found) {
-                  return oldComputeStats.map((candidate) =>
-                    candidate.ip ===
-                    (nodeId === "localhost" ? nodeIdRef.current! : nodeId)
-                      ? newResource
-                      : candidate
+            switch (resource.spec.kind) {
+              case EBenchmarkKind.CPU: {
+                setComputeStats((oldComputeStats) => {
+                  const found = oldComputeStats.find(
+                    (candidate) =>
+                      candidate.ip ===
+                      (nodeId === "localhost" ? nodeIdRef.current! : nodeId)
                   );
-                } else {
-                  return [...oldComputeStats, newResource];
-                }
-              });
+
+                  const newResource = {
+                    ip: nodeId,
+                    score: resource.spec.score,
+                  };
+
+                  if (found) {
+                    return oldComputeStats.map((candidate) =>
+                      candidate.ip ===
+                      (nodeId === "localhost" ? nodeIdRef.current! : nodeId)
+                        ? newResource
+                        : candidate
+                    );
+                  } else {
+                    return [...oldComputeStats, newResource];
+                  }
+                });
+
+                break;
+              }
+
+              case EBenchmarkKind.NET: {
+                setNetworkingStats((oldNetworkingStats) => {
+                  const found = oldNetworkingStats.find(
+                    (candidate) =>
+                      candidate.ip ===
+                      (nodeId === "localhost" ? nodeIdRef.current! : nodeId)
+                  );
+
+                  const newResource = {
+                    ip: nodeId,
+                    score: resource.spec.score,
+                  };
+
+                  if (found) {
+                    return oldNetworkingStats.map((candidate) =>
+                      candidate.ip ===
+                      (nodeId === "localhost" ? nodeIdRef.current! : nodeId)
+                        ? newResource
+                        : candidate
+                    );
+                  } else {
+                    return [...oldNetworkingStats, newResource];
+                  }
+                });
+
+                break;
+              }
+
+              default: {
+                console.error(
+                  "could not process unknown benchmark type",
+                  resource.spec.kind
+                );
+              }
             }
           } else if (nodeIdRef.current) {
             setClusterResources((oldClusterResources) => {

@@ -77,8 +77,13 @@ function RoutesPage() {
         ),
       });
     },
-    onBenchmarking: () => {
-      const hide = message.loading(t("benchmarkingYourDevice"), 0);
+    onCPUBenchmarking: () => {
+      const hide = message.loading(t("benchmarkingYourCPU"), 0);
+
+      return hide;
+    },
+    onNetworkBenchmarking: () => {
+      const hide = message.loading(t("benchmarkingYourNetwork"), 0);
 
       return hide;
     },

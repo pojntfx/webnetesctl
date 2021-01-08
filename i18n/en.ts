@@ -18,8 +18,8 @@ export default {
   point: "Pt",
   point_plural: "Pts",
   network: "Network",
-  mbps: "MBit/s",
-  mbps_plural: "MBit/s",
+  kbps: "kBit/s",
+  kbps_plural: "kBit/s",
   filterResources: "Filter resources",
   filterNodes: "Filter nodes",
   openInExplorer: "Open in Explorer",
@@ -120,6 +120,8 @@ export default {
   newClusterId: "New Cluster ID",
   resourceRejected: "Resource Rejected",
   diagnostics: "Diagnostics",
-  benchmarkingYourDevice:
-    "Benchmarking your device. You might experience performance degradation.",
+  benchmarkingYourCPU:
+    "Benchmarking your CPU. You might temporarily experience performance degradation.",
+  benchmarkingYourNetwork:
+    "Benchmarking your network. You might temporarily experience connection problems.",
 };
