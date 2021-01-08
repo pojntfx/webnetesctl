@@ -28,6 +28,7 @@ import {
 } from "antd";
 import { Content } from "antd/lib/layout/layout";
 import Text from "antd/lib/typography/Text";
+import Emittery from "emittery";
 import React, { useEffect, useRef, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
@@ -67,11 +68,13 @@ function RoutesPage() {
   const router = useHistory();
   const location = useLocation();
 
+  // Webnetes Hook
   const [terminalLabels, setTerminalLabels] = useState<string[]>([]);
   const terminalRefs = useRef<Map<string, XTerm>>(new Map());
   const terminalStdinHandlersRef = useRef<
     Map<string, (key: string) => Promise<void>>
   >(new Map());
+  const terminalBus = useRef<Emittery>();
   const { graphs, cluster, local, stats, log, node } = useWebnetes({
     onResourceRejection: async (diagnostics) => {
       notification.error({
@@ -100,13 +103,26 @@ function RoutesPage() {
       terminalStdinHandlersRef.current?.set(id, onStdin);
     },
     onWriteToTerminal: async (id, msg) => {
-      const terminal = terminalRefs.current?.get(id);
+      let terminal = terminalRefs.current?.get(id);
+      if (!terminal) {
+        await terminalBus.current?.once(id);
 
-      console.log(msg);
+        terminal = terminalRefs.current?.get(id);
+      }
 
-      terminal && terminal.terminal.write(msg.replace(/\n/g, "\n\r"));
+      terminal?.terminal.write(msg.replace(/\n/g, "\n\r"));
     },
     onDeleteTerminal: async (id) => {
+      let terminal = terminalRefs.current?.get(id);
+      if (!terminal) {
+        await terminalBus.current?.once(id);
+
+        terminal = terminalRefs.current?.get(id);
+      }
+
+      terminalRefs.current?.delete(id);
+      terminalStdinHandlersRef.current?.delete(id);
+
       setTerminalLabels((oldTerminalLabels) =>
         oldTerminalLabels.filter((candidate) => candidate !== id)
       );
@@ -207,6 +223,11 @@ function RoutesPage() {
 
       wb.register();
     }
+  }, []);
+
+  useEffect(() => {
+    // Create the terminal bus
+    terminalBus.current = new Emittery();
   }, []);
 
   useEffect(() => {
@@ -405,9 +426,10 @@ function RoutesPage() {
               <TerminalModal
                 open={terminalsModalOpen}
                 onDone={() => setTerminalsModalOpen(false)}
-                onTerminalCreated={(label, xterm) =>
-                  terminalRefs.current?.set(label, xterm)
-                }
+                onTerminalCreated={(label, xterm) => {
+                  terminalRefs.current?.set(label, xterm);
+                  terminalBus.current?.emit(label, true);
+                }}
                 onStdin={(label, key) => {
                   const stdinHandler = terminalStdinHandlersRef.current?.get(
                     label
