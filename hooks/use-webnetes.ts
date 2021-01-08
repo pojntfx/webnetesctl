@@ -108,6 +108,7 @@ export const useWebnetes = ({
   const [refreshNodeInformation, setRefreshNodeInformation] = useState(false);
 
   const [localCPUScore, setLocalCPUScore] = useState<number>();
+  const [localNetworkScore, setLocalNetworkScore] = useState<number>();
 
   // Callbacks
   const getResourceGraphForNode = useCallback(
@@ -316,12 +317,21 @@ export const useWebnetes = ({
         try {
           const done = onNetworkBenchmarking();
 
-          const netScore = await getNetScore(100000);
+          const netScore = localNetworkScore || (await getNetScore(100000));
+
+          if (netScore !== localNetworkScore) setLocalNetworkScore(netScore);
 
           done();
 
           // In the future, a message would only have to be sent to a designated manager node.
           clusterNodesRef.current?.forEach(async (clusterNode) => {
+            if (
+              clusterNode.privateIP === nodeIdRef.current &&
+              netScore === localNetworkScore
+            ) {
+              return;
+            }
+
             await node?.createResources(
               [
                 {
@@ -346,19 +356,26 @@ export const useWebnetes = ({
         }
       })();
     }
-  }, [node, nodeOpened, refreshNodeInformation]);
+  }, [node, nodeOpened, refreshNodeInformation, localCPUScore]);
 
   useEffect(() => {
     // Get the public IPv6 address
     if (node && nodeOpened) {
       (async () => {
         try {
-          const ip = await getIP();
+          const ip = nodePublicIPv6 || (await getIP());
 
-          setNodePublicIPv6(ip);
+          if (ip !== nodePublicIPv6) setNodePublicIPv6(ip);
 
           // In the future, a message would only have to be sent to a designated manager node.
           clusterNodesRef.current?.forEach(async (clusterNode) => {
+            if (
+              clusterNode.privateIP === nodeIdRef.current &&
+              ip === nodePublicIPv6
+            ) {
+              return;
+            }
+
             await node?.createResources(
               [
                 {
@@ -382,7 +399,7 @@ export const useWebnetes = ({
         }
       })();
     }
-  }, [node, nodeOpened, refreshNodeInformation]);
+  }, [node, nodeOpened, refreshNodeInformation, nodePublicIPv6]);
 
   useEffect(() => {
     // Create the resource graph
