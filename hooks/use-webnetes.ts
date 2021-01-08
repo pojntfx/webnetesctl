@@ -490,16 +490,37 @@ export const useWebnetes = ({
               return newClusterNodes;
             });
           } else if (nodeIdRef.current) {
-            setClusterResources((oldClusterResources) => [
-              ...oldClusterResources,
-              {
+            setClusterResources((oldClusterResources) => {
+              const found = oldClusterResources.find(
+                (candidate) => (
+                  candidate.node ===
+                    (nodeId === "localhost" ? nodeIdRef.current! : nodeId),
+                  candidate.kind === resource.kind &&
+                    candidate.label === resource.metadata.label
+                )
+              );
+
+              const newResource = {
                 kind: resource.kind,
                 name: resource.metadata.name || resource.metadata.label,
                 label: resource.metadata.label,
                 node: nodeId === "localhost" ? nodeIdRef.current! : nodeId, // We check above
                 src: JSON.stringify(JSON.stringify(resource)),
-              },
-            ]);
+              };
+
+              if (found) {
+                return oldClusterResources.map((candidate) =>
+                  (candidate.node ===
+                    (nodeId === "localhost" ? nodeIdRef.current! : nodeId),
+                  candidate.kind === resource.kind &&
+                    candidate.label === resource.metadata.label)
+                    ? newResource
+                    : candidate
+                );
+              } else {
+                return [...oldClusterResources, newResource];
+              }
+            });
           }
         },
         async (nodeId, resource) => {
