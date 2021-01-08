@@ -1619,10 +1619,10 @@
     ws "^7.4.0"
     yargs "^16.1.0"
 
-"@pojntfx/webnetes@^0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@pojntfx/webnetes/-/webnetes-0.0.6.tgz#da3c1e8e6f925dc1bd0870fb25b1f5b86579e8a0"
-  integrity sha512-Go6ZgmeeQhD9nwuQ+rzASc1p7HNk2r+koPf+i4HKtG/1idpFlnBi/9G3niqWNGp0wdlOgGukPYEuUsajCDQr2Q==
+"@pojntfx/webnetes@^0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@pojntfx/webnetes/-/webnetes-0.0.7.tgz#24d4f63552ba4b9a8da5b70ed4bca9872a708869"
+  integrity sha512-IY5NpqWNiRROrWz18qvXHOhwapUvQrm5gSGKSxmDHHxQBqHivV69Drom3SQgz3jDbqQDwrRPTc66gDVPXR74xw==
   dependencies:
     "@pojntfx/unisockets" "^0.0.23"
     "@wasmer/wasi" "^0.12.0"

@@ -1,7 +1,6 @@
 import { feature } from "@ideditor/country-coder";
 import { API_VERSION, EResourceKind, Node } from "@pojntfx/webnetes";
 import * as Nominatim from "nominatim-browser";
-import getPublicIp from "public-ip";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
@@ -10,6 +9,7 @@ import nodeConfigData, { nodeId as nodeIdData } from "../data/node-config";
 import statsComputeData from "../data/stats-compute.json";
 import statsNetworkingData from "../data/stats-networking.json";
 import { getCoordinates } from "../utils/get-coordinates";
+import { getIP } from "../utils/get-ip";
 
 export const NODE_GID = 0;
 
@@ -92,6 +92,8 @@ export const useWebnetes = ({
 
   const [node, setNode] = useState<Node>();
   const [nodeOpened, setNodeOpened] = useState(false);
+
+  const [handlePublicIP, setHandlePublicIP] = useState(false);
 
   // Callbacks
   const getResourceGraphForNode = useCallback(
@@ -205,7 +207,7 @@ export const useWebnetes = ({
                 [
                   {
                     apiVersion: API_VERSION,
-                    kind: "Coordinates" as EResourceKind,
+                    kind: EResourceKind.COORDINATES,
                     metadata: {
                       name: "Node Coordinates",
                       label: "node_coordinates",
@@ -246,6 +248,39 @@ export const useWebnetes = ({
       setNodeId(nodeIdData);
     });
   }, []);
+
+  useEffect(() => {
+    // Get the public IPv6 address
+    (async () => {
+      try {
+        const ip = await getIP();
+
+        setNodePublicIPv6(ip);
+
+        // In the future, a message would only have to be sent to a designated manager node.
+        clusterNodesRef.current?.forEach(async (clusterNode) => {
+          await node?.createResources(
+            [
+              {
+                apiVersion: API_VERSION,
+                kind: EResourceKind.PUBLIC_IP,
+                metadata: {
+                  name: "Public IP",
+                  label: "public_ip",
+                },
+                spec: {
+                  publicIP: ip,
+                },
+              },
+            ],
+            clusterNode.privateIP
+          );
+        });
+      } catch (e) {
+        console.log("could not get public IPv6", e);
+      }
+    })();
+  }, [node, handlePublicIP]);
 
   useEffect(() => {
     // Create the resource graph
@@ -339,14 +374,6 @@ export const useWebnetes = ({
   }, [clusterNodes, clusterResources, networkGraph]);
 
   useEffect(() => {
-    // Get the public IPv6 address
-    getPublicIp
-      .v6()
-      .then((ip) => setNodePublicIPv6(ip))
-      .catch((e) => console.log("could not get public IPv6", e));
-  }, []);
-
-  useEffect(() => {
     // Map coordinates to an address
     Nominatim.reverseGeocode({
       lat: nodeCoordinates[0].toString(),
@@ -374,7 +401,7 @@ export const useWebnetes = ({
             `Created resource: ${JSON.stringify(resource)}@${nodeId}`
           );
 
-          if (resource.kind === "Coordinates") {
+          if (resource.kind === EResourceKind.COORDINATES) {
             setClusterNodes((oldClusterNodes) => {
               const newClusterNodes = oldClusterNodes.map((clusterNode) =>
                 clusterNode.privateIP === nodeId
@@ -390,9 +417,22 @@ export const useWebnetes = ({
 
               return newClusterNodes;
             });
-          }
+          } else if (resource.kind === EResourceKind.PUBLIC_IP) {
+            setClusterNodes((oldClusterNodes) => {
+              const newClusterNodes = oldClusterNodes.map((clusterNode) =>
+                clusterNode.privateIP === nodeId
+                  ? {
+                      ...clusterNode,
+                      publicIP: resource.spec.publicIP,
+                    }
+                  : clusterNode
+              );
 
-          if (nodeIdRef.current) {
+              clusterNodesRef.current = newClusterNodes;
+
+              return newClusterNodes;
+            });
+          } else if (nodeIdRef.current) {
             setClusterResources((oldClusterResources) => [
               ...oldClusterResources,
               {
@@ -439,8 +479,8 @@ export const useWebnetes = ({
               ...oldClusterNodes,
               {
                 privateIP: id,
-                publicIP: "NOT_IMPLEMENTED",
-                location: "NOT_IMPLEMENTED",
+                publicIP: t("loading"),
+                location: t("loading"),
                 latitude: 0,
                 longitude: 0,
                 size: 10000000,
@@ -448,6 +488,8 @@ export const useWebnetes = ({
             ];
 
             clusterNodesRef.current = newClusterNodes;
+
+            setHandlePublicIP((handleIP) => !handleIP);
 
             return newClusterNodes;
           });
@@ -460,8 +502,8 @@ export const useWebnetes = ({
               ...oldClusterNodes,
               {
                 privateIP: id,
-                publicIP: "NOT_IMPLEMENTED",
-                location: "NOT_IMPLEMENTED",
+                publicIP: t("loading"),
+                location: t("loading"),
                 latitude: 0,
                 longitude: 0,
                 size: 10000000,
@@ -469,6 +511,8 @@ export const useWebnetes = ({
             ];
 
             clusterNodesRef.current = newClusterNodes;
+
+            setHandlePublicIP((handleIP) => !handleIP);
 
             return newClusterNodes;
           });
@@ -498,8 +542,8 @@ export const useWebnetes = ({
               ...oldClusterNodes,
               {
                 privateIP: id,
-                publicIP: "NOT_IMPLEMENTED",
-                location: "NOT_IMPLEMENTED",
+                publicIP: t("loading"),
+                location: t("loading"),
                 latitude: 0,
                 longitude: 0,
                 size: 10000000,
@@ -523,8 +567,8 @@ export const useWebnetes = ({
               ...oldClusterNodes,
               {
                 privateIP: id,
-                publicIP: "NOT_IMPLEMENTED",
-                location: "NOT_IMPLEMENTED",
+                publicIP: t("loading"),
+                location: t("loading"),
                 latitude: 0,
                 longitude: 0,
                 size: 10000000,
