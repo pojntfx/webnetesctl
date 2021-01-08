@@ -59,8 +59,8 @@ export interface IExplorerPageProps {
     resources: IClusterResource[];
   };
   stats: {
-    compute: INodeScore[];
-    networking: INodeScore[];
+    compute: Map<string, number>;
+    networking: Map<string, number>;
   };
   onOpenTerminal: (label: string) => void;
   deleteResources: (resources: string, nodeId: string) => Promise<void>;
@@ -198,12 +198,8 @@ export const ExplorerPage: React.FC<IExplorerPageProps> = ({
 
   // Data sources
   const nodesDataSource = nodes.map((node) => {
-    const computeScore = compute.find(
-      (candidate) => candidate.ip === node.privateIP
-    )?.score;
-    const networkingScore = networking.find(
-      (candidate) => candidate.ip === node.privateIP
-    )?.score;
+    const computeScore = compute.get(node.privateIP);
+    const networkingScore = networking.get(node.privateIP);
 
     return {
       ...node,

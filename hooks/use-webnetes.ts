@@ -75,8 +75,12 @@ export const useWebnetes = ({
   ] = useState<IGraph>();
   const [resourceGraph, setResourceGraph] = useState<IGraph>();
 
-  const [computeStats, setComputeStats] = useState<INodeScore[]>([]);
-  const [networkingStats, setNetworkingStats] = useState<INodeScore[]>([]);
+  const [computeStats, setComputeStats] = useState<Map<string, number>>(
+    new Map()
+  );
+  const [networkingStats, setNetworkingStats] = useState<Map<string, number>>(
+    new Map()
+  );
 
   const [clusterConnections, setClusterConnections] = useState<IConnections>();
   const [clusterNodes, setClusterNodes] = useState<IClusterNode[]>([]);
@@ -221,6 +225,7 @@ export const useWebnetes = ({
                       label: "node_coordinates",
                     },
                     spec: {
+                      describes: nodeIdRef.current,
                       latitude,
                       longitude,
                     },
@@ -277,6 +282,7 @@ export const useWebnetes = ({
                     label: "cpu_benchmark",
                   },
                   spec: {
+                    describes: nodeIdRef.current,
                     kind: EBenchmarkKind.CPU,
                     score: cpuScore,
                   },
@@ -315,6 +321,7 @@ export const useWebnetes = ({
                     label: "net_benchmark",
                   },
                   spec: {
+                    describes: nodeIdRef.current,
                     kind: EBenchmarkKind.NET,
                     score: netScore,
                   },
@@ -351,6 +358,7 @@ export const useWebnetes = ({
                     label: "public_ip",
                   },
                   spec: {
+                    describes: nodeIdRef.current,
                     publicIP: ip,
                   },
                 },
@@ -490,7 +498,7 @@ export const useWebnetes = ({
 
               setClusterNodes((oldClusterNodes) => {
                 const newClusterNodes = oldClusterNodes.map((clusterNode) =>
-                  clusterNode.privateIP === nodeId
+                  clusterNode.privateIP === resource.spec.describes
                     ? {
                         ...clusterNode,
                         location: address
@@ -513,7 +521,7 @@ export const useWebnetes = ({
           } else if (resource.kind === EResourceKind.PUBLIC_IP) {
             setClusterNodes((oldClusterNodes) => {
               const newClusterNodes = oldClusterNodes.map((clusterNode) =>
-                clusterNode.privateIP === nodeId
+                clusterNode.privateIP === resource.spec.describes
                   ? {
                       ...clusterNode,
                       publicIP: resource.spec.publicIP,
@@ -529,27 +537,12 @@ export const useWebnetes = ({
             switch (resource.spec.kind) {
               case EBenchmarkKind.CPU: {
                 setComputeStats((oldComputeStats) => {
-                  const found = oldComputeStats.find(
-                    (candidate) =>
-                      candidate.ip ===
-                      (nodeId === "localhost" ? nodeIdRef.current! : nodeId)
+                  oldComputeStats.set(
+                    resource.spec.describes,
+                    resource.spec.score
                   );
 
-                  const newResource = {
-                    ip: nodeId,
-                    score: resource.spec.score,
-                  };
-
-                  if (found) {
-                    return oldComputeStats.map((candidate) =>
-                      candidate.ip ===
-                      (nodeId === "localhost" ? nodeIdRef.current! : nodeId)
-                        ? newResource
-                        : candidate
-                    );
-                  } else {
-                    return [...oldComputeStats, newResource];
-                  }
+                  return oldComputeStats;
                 });
 
                 break;
@@ -557,27 +550,12 @@ export const useWebnetes = ({
 
               case EBenchmarkKind.NET: {
                 setNetworkingStats((oldNetworkingStats) => {
-                  const found = oldNetworkingStats.find(
-                    (candidate) =>
-                      candidate.ip ===
-                      (nodeId === "localhost" ? nodeIdRef.current! : nodeId)
+                  oldNetworkingStats.set(
+                    resource.spec.describes,
+                    resource.spec.score
                   );
 
-                  const newResource = {
-                    ip: nodeId,
-                    score: resource.spec.score,
-                  };
-
-                  if (found) {
-                    return oldNetworkingStats.map((candidate) =>
-                      candidate.ip ===
-                      (nodeId === "localhost" ? nodeIdRef.current! : nodeId)
-                        ? newResource
-                        : candidate
-                    );
-                  } else {
-                    return [...oldNetworkingStats, newResource];
-                  }
+                  return oldNetworkingStats;
                 });
 
                 break;
@@ -591,37 +569,16 @@ export const useWebnetes = ({
               }
             }
           } else if (nodeIdRef.current) {
-            setClusterResources((oldClusterResources) => {
-              const found = oldClusterResources.find(
-                (candidate) => (
-                  candidate.node ===
-                    (nodeId === "localhost" ? nodeIdRef.current! : nodeId),
-                  candidate.kind === resource.kind &&
-                    candidate.label === resource.metadata.label
-                )
-              );
-
-              const newResource = {
+            setClusterResources((oldClusterResources) => [
+              ...oldClusterResources,
+              {
                 kind: resource.kind,
                 name: resource.metadata.name || resource.metadata.label,
                 label: resource.metadata.label,
-                node: nodeId === "localhost" ? nodeIdRef.current! : nodeId, // We check above
+                node: nodeId, // We check above
                 src: JSON.stringify(JSON.stringify(resource)),
-              };
-
-              if (found) {
-                return oldClusterResources.map((candidate) =>
-                  (candidate.node ===
-                    (nodeId === "localhost" ? nodeIdRef.current! : nodeId),
-                  candidate.kind === resource.kind &&
-                    candidate.label === resource.metadata.label)
-                    ? newResource
-                    : candidate
-                );
-              } else {
-                return [...oldClusterResources, newResource];
-              }
-            });
+              },
+            ]);
           }
         },
         async (nodeId, resource) => {
@@ -632,8 +589,7 @@ export const useWebnetes = ({
           setClusterResources((oldClusterResources) =>
             oldClusterResources.filter(
               (candidate) =>
-                !(candidate.node ===
-                  (nodeId === "localhost" ? nodeIdRef.current! : nodeId),
+                !(candidate.node === nodeId,
                 candidate.kind === resource.kind &&
                   candidate.label === resource.metadata.label)
             )

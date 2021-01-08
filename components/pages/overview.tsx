@@ -44,7 +44,6 @@ import {
   IClusterNode,
   IClusterResource,
   IConnections,
-  INodeScore,
 } from "../../hooks/use-webnetes";
 import { stringifyResourceKey } from "../../utils/resource-key";
 import { urldecodeYAMLAll } from "../../utils/urltranscode";
@@ -60,8 +59,8 @@ export interface IOverviewPageProps {
     connections: IConnections;
   };
   stats: {
-    compute: INodeScore[];
-    networking: INodeScore[];
+    compute: Map<string, number>;
+    networking: Map<string, number>;
   };
   onOpenTerminal: (label: string) => void;
   refreshNodeLocation: () => void;
@@ -333,9 +332,15 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
                     {t("compute")}
                   </Space>
                 }
-                value={compute.reduce((all, curr) => all + curr.score, 0)}
+                value={[...compute.values()].reduce(
+                  (all, curr) => all + curr,
+                  0
+                )}
                 suffix={t("point", {
-                  count: compute.reduce((all, curr) => all + curr.score, 0),
+                  count: [...compute.values()].reduce(
+                    (all, curr) => all + curr,
+                    0
+                  ),
                 })}
               />
               <Statistic
@@ -345,9 +350,15 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
                     {t("network")}
                   </Space>
                 }
-                value={networking.reduce((all, curr) => all + curr.score, 0)}
+                value={[...networking.values()].reduce(
+                  (all, curr) => all + curr,
+                  0
+                )}
                 suffix={t("kbps", {
-                  count: networking.reduce((all, curr) => all + curr.score, 0),
+                  count: [...networking.values()].reduce(
+                    (all, curr) => all + curr,
+                    0
+                  ),
                 })}
               />
             </StatsPanelWrapper>
@@ -358,7 +369,10 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
                 key="computeDistribution"
               >
                 <NodeChart
-                  data={compute}
+                  data={[...compute.entries()].map(([key, value]) => ({
+                    ip: key,
+                    score: value,
+                  }))}
                   colors={[
                     "#1890ff",
                     "#096dd9",
@@ -385,7 +399,10 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
                 key="networkingDistribution"
               >
                 <NodeChart
-                  data={networking}
+                  data={[...networking.entries()].map(([key, value]) => ({
+                    ip: key,
+                    score: value,
+                  }))}
                   colors={[
                     "#faad14",
                     "#d48806",
@@ -472,15 +489,11 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
                   </Space>
                 }
                 value={
-                  compute.find(
-                    (candidate) => candidate.ip === selectedNode?.privateIP
-                  )?.score || t("loading").toString()
+                  compute.get(selectedNode?.privateIP) ||
+                  t("loading").toString()
                 }
                 suffix={t("point", {
-                  count:
-                    compute.find(
-                      (candidate) => candidate.ip === selectedNode?.privateIP
-                    )?.score || 0,
+                  count: compute.get(selectedNode?.privateIP) || 0,
                 })}
               />
               <Statistic
@@ -491,15 +504,11 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
                   </Space>
                 }
                 value={
-                  networking.find(
-                    (candidate) => candidate.ip === selectedNode?.privateIP
-                  )?.score || t("loading").toString()
+                  networking.get(selectedNode?.privateIP) ||
+                  t("loading").toString()
                 }
                 suffix={t("kbps", {
-                  count:
-                    networking.find(
-                      (candidate) => candidate.ip === selectedNode?.privateIP
-                    )?.score || 0,
+                  count: networking.get(selectedNode?.privateIP) || 0,
                 })}
               />
             </StatsPanelWrapper>
