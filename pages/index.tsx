@@ -133,6 +133,8 @@ function RoutesPage() {
                 onClick={async () => {
                   wb.addEventListener("controlling", () => {
                     setTimeout(() => {
+                      router.push("/");
+
                       window.location.reload();
                     }, 2000);
                   });
@@ -148,6 +150,8 @@ function RoutesPage() {
                   notification.close(key);
 
                   setTimeout(() => {
+                    router.push("/");
+
                     window.location.reload();
                   }, 2000);
                 }}
