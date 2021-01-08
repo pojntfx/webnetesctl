@@ -398,21 +398,34 @@ export const useWebnetes = ({
           );
 
           if (resource.kind === EResourceKind.COORDINATES) {
-            setClusterNodes((oldClusterNodes) => {
-              const newClusterNodes = oldClusterNodes.map((clusterNode) =>
-                clusterNode.privateIP === nodeId
-                  ? {
-                      ...clusterNode,
-                      latitude: resource.spec.latitude,
-                      longitude: resource.spec.longitude,
-                    }
-                  : clusterNode
-              );
+            (async () => {
+              const { address } = await getLocation({
+                latitude: resource.spec.latitude,
+                longitude: resource.spec.longitude,
+              });
 
-              clusterNodesRef.current = newClusterNodes;
+              setClusterNodes((oldClusterNodes) => {
+                const newClusterNodes = oldClusterNodes.map((clusterNode) =>
+                  clusterNode.privateIP === nodeId
+                    ? {
+                        ...clusterNode,
+                        location: address
+                          ? address
+                              .split(", ")
+                              .filter((_: string, i: number) => i <= 3)
+                              .join(", ")
+                          : t("notSet"),
+                        latitude: resource.spec.latitude,
+                        longitude: resource.spec.longitude,
+                      }
+                    : clusterNode
+                );
 
-              return newClusterNodes;
-            });
+                clusterNodesRef.current = newClusterNodes;
+
+                return newClusterNodes;
+              });
+            })();
           } else if (resource.kind === EResourceKind.PUBLIC_IP) {
             setClusterNodes((oldClusterNodes) => {
               const newClusterNodes = oldClusterNodes.map((clusterNode) =>
