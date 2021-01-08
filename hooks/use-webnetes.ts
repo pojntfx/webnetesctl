@@ -74,8 +74,8 @@ export const useWebnetes = ({
   ] = useState<IGraph>();
   const [resourceGraph, setResourceGraph] = useState<IGraph>();
 
-  const [computeStats, setComputeStats] = useState<INodeScore[]>();
-  const [networkingStats, setNetworkingStats] = useState<INodeScore[]>();
+  const [computeStats, setComputeStats] = useState<INodeScore[]>([]);
+  const [networkingStats, setNetworkingStats] = useState<INodeScore[]>([]);
 
   const [clusterConnections, setClusterConnections] = useState<IConnections>();
   const [clusterNodes, setClusterNodes] = useState<IClusterNode[]>([]);
@@ -246,9 +246,6 @@ export const useWebnetes = ({
   useEffect(() => {
     // Set initial state
     unstable_batchedUpdates(() => {
-      setComputeStats(statsComputeData);
-      setNetworkingStats(statsNetworkingData);
-
       setClusterConnections(clusterConnectionsData);
 
       setNodeConfig(nodeConfigData);
@@ -489,6 +486,32 @@ export const useWebnetes = ({
 
               return newClusterNodes;
             });
+          } else if (resource.kind === EResourceKind.BENCHMARK_SCORE) {
+            if (resource.spec.kind === EBenchmarkKind.CPU) {
+              setComputeStats((oldComputeStats) => {
+                const found = oldComputeStats.find(
+                  (candidate) =>
+                    candidate.ip ===
+                    (nodeId === "localhost" ? nodeIdRef.current! : nodeId)
+                );
+
+                const newResource = {
+                  ip: nodeId,
+                  score: resource.spec.score,
+                };
+
+                if (found) {
+                  return oldComputeStats.map((candidate) =>
+                    candidate.ip ===
+                    (nodeId === "localhost" ? nodeIdRef.current! : nodeId)
+                      ? newResource
+                      : candidate
+                  );
+                } else {
+                  return [...oldComputeStats, newResource];
+                }
+              });
+            }
           } else if (nodeIdRef.current) {
             setClusterResources((oldClusterResources) => {
               const found = oldClusterResources.find(

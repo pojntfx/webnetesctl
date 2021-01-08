@@ -207,12 +207,15 @@ export const ExplorerPage: React.FC<IExplorerPageProps> = ({
 
     return {
       ...node,
-      computeScore: `${computeScore} ${t("point", {
-        count: computeScore,
+      computeScore: `${computeScore || t("loading").toString()} ${t("point", {
+        count: computeScore || 0,
       })}`,
-      networkingScore: `${networkingScore} ${t("mbps", {
-        count: networkingScore,
-      })}`,
+      networkingScore: `${networkingScore || t("loading").toString()} ${t(
+        "mbps",
+        {
+          count: networkingScore || 0,
+        }
+      )}`,
       key: node.privateIP,
     };
   });

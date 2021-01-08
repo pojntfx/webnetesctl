@@ -18,7 +18,9 @@ export const getCPUScore = async () => {
         const score = Math.floor(
           this.reduce((all: number, curr: any) => {
             return all + curr.hz;
-          }, 0) / this.length
+          }, 0) /
+            this.length /
+            100000
         );
 
         res(score);

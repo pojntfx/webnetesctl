@@ -474,12 +474,13 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
                 value={
                   compute.find(
                     (candidate) => candidate.ip === selectedNode?.privateIP
-                  )?.score
+                  )?.score || t("loading").toString()
                 }
                 suffix={t("point", {
-                  count: compute.find(
-                    (candidate) => candidate.ip === selectedNode?.privateIP
-                  )?.score,
+                  count:
+                    compute.find(
+                      (candidate) => candidate.ip === selectedNode?.privateIP
+                    )?.score || 0,
                 })}
               />
               <Statistic
@@ -492,12 +493,13 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
                 value={
                   networking.find(
                     (candidate) => candidate.ip === selectedNode?.privateIP
-                  )?.score
+                  )?.score || t("loading").toString()
                 }
                 suffix={t("mbps", {
-                  count: networking.find(
-                    (candidate) => candidate.ip === selectedNode?.privateIP
-                  )?.score,
+                  count:
+                    networking.find(
+                      (candidate) => candidate.ip === selectedNode?.privateIP
+                    )?.score || 0,
                 })}
               />
             </StatsPanelWrapper>
