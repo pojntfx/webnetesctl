@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dropdown, Input, Menu, Space } from "antd";
 import Text from "antd/lib/typography/Text";
 import Animate from "rc-animate";
-import { useState } from "react";
+import { createRef, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
@@ -36,6 +36,10 @@ export const HomePage: React.FC<IHomePageProps> = ({
   const [newClusterId, setNewClusterId] = useState<string>();
   const [editNodeConfigModalOpen, setEditNodeConfigModalOpen] = useState(false);
   const [editingWorker, setEditingWorker] = useState(false);
+
+  // Refs
+  const newClusterIdRef = createRef<Input>();
+  const clusterIdRef = createRef<Input>();
 
   return (
     <HomeAfterWrapper {...otherProps}>
@@ -97,42 +101,54 @@ export const HomePage: React.FC<IHomePageProps> = ({
                       placeholder={t("newClusterId")}
                       value={newClusterId}
                       onChange={(e) => setNewClusterId(e.target.value)}
-                      onKeyDown={(e) =>
-                        e.key === "Enter" &&
-                        newClusterId &&
-                        router.push(
-                          `/created?nodeConfig=${urlencodeYAMLAll(
-                            nodeConfig.replace(
-                              CLUSTER_ID_TEMPLATE_KEY,
-                              newClusterId
-                            )
-                          )}`
-                        )
-                      }
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          if (newClusterId) {
+                            router.push(
+                              `/created?nodeConfig=${urlencodeYAMLAll(
+                                nodeConfig.replace(
+                                  CLUSTER_ID_TEMPLATE_KEY,
+                                  newClusterId
+                                )
+                              )}`
+                            );
+                          } else {
+                            newClusterIdRef.current?.focus();
+                          }
+                        }
+                      }}
+                      required
+                      ref={newClusterIdRef}
                     />
 
                     <Dropdown.Button
-                      onClick={() =>
-                        newClusterId &&
-                        router.push(
-                          `/created?nodeConfig=${urlencodeYAMLAll(
-                            nodeConfig.replace(
-                              CLUSTER_ID_TEMPLATE_KEY,
-                              newClusterId
-                            )
-                          )}`
-                        )
-                      }
+                      onClick={() => {
+                        if (newClusterId) {
+                          router.push(
+                            `/created?nodeConfig=${urlencodeYAMLAll(
+                              nodeConfig.replace(
+                                CLUSTER_ID_TEMPLATE_KEY,
+                                newClusterId
+                              )
+                            )}`
+                          );
+                        } else {
+                          newClusterIdRef.current?.focus();
+                        }
+                      }}
                       overlay={
                         <Menu>
                           <Menu.Item
                             key="cluster"
                             onClick={() => {
-                              newClusterId &&
+                              if (newClusterId) {
                                 unstable_batchedUpdates(() => {
                                   setEditingWorker(false);
                                   setEditNodeConfigModalOpen(true);
                                 });
+                              } else {
+                                newClusterIdRef.current?.focus();
+                              }
                             }}
                           >
                             <Space>
@@ -171,42 +187,53 @@ export const HomePage: React.FC<IHomePageProps> = ({
                       placeholder={t("clusterId")}
                       value={clusterId}
                       onChange={(e) => setClusterId(e.target.value)}
-                      onKeyDown={(e) =>
-                        e.key === "Enter" &&
-                        clusterId &&
-                        router.push(
-                          `/join?nodeConfig=${urlencodeYAMLAll(
-                            nodeConfig.replace(
-                              CLUSTER_ID_TEMPLATE_KEY,
-                              clusterId
-                            )
-                          )}`
-                        )
-                      }
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          if (clusterId) {
+                            router.push(
+                              `/join?nodeConfig=${urlencodeYAMLAll(
+                                nodeConfig.replace(
+                                  CLUSTER_ID_TEMPLATE_KEY,
+                                  clusterId
+                                )
+                              )}`
+                            );
+                          } else {
+                            clusterIdRef.current?.focus();
+                          }
+                        }
+                      }}
+                      ref={clusterIdRef}
                     />
 
                     <Dropdown.Button
-                      onClick={() =>
-                        clusterId &&
-                        router.push(
-                          `/join?nodeConfig=${urlencodeYAMLAll(
-                            nodeConfig.replace(
-                              CLUSTER_ID_TEMPLATE_KEY,
-                              clusterId
-                            )
-                          )}`
-                        )
-                      }
+                      onClick={() => {
+                        if (clusterId) {
+                          router.push(
+                            `/join?nodeConfig=${urlencodeYAMLAll(
+                              nodeConfig.replace(
+                                CLUSTER_ID_TEMPLATE_KEY,
+                                clusterId
+                              )
+                            )}`
+                          );
+                        } else {
+                          clusterIdRef.current?.focus();
+                        }
+                      }}
                       overlay={
                         <Menu>
                           <Menu.Item
                             key="cluster"
                             onClick={() => {
-                              clusterId &&
+                              if (clusterId) {
                                 unstable_batchedUpdates(() => {
                                   setEditingWorker(true);
                                   setEditNodeConfigModalOpen(true);
                                 });
+                              } else {
+                                clusterIdRef.current?.focus();
+                              }
                             }}
                           >
                             <Space>
