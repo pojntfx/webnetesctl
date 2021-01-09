@@ -496,7 +496,7 @@ export const useWebnetes = ({
 
       setLocalGraph(mergedGraph);
     }
-  }, [nodeId, networkGraphForLocalGraph]);
+  }, [nodeId, clusterNodes, clusterResources, networkGraphForLocalGraph]);
 
   useEffect(() => {
     // Create cluster-wide resource graph
