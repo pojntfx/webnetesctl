@@ -84,7 +84,7 @@
     "@fortawesome/react-fontawesome": "^0.1.14",
     "@ideditor/country-coder": "^4.0.0",
     "@monaco-editor/react": "^3.7.4",
-    "@alphahorizonio/webnetes": "^0.0.11",
+    "@alphahorizonio/webnetes": "^0.1.0",
     "aframe": "1.0.0",
     "antd": "^4.9.4",
     "ar.js": "^2.2.2",

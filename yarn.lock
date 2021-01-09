@@ -31,6 +31,45 @@
     three-forcegraph "^1.37.0"
     three-render-objects "^1.24.6"
 
+"@alphahorizonio/unisockets@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@alphahorizonio/unisockets/-/unisockets-0.1.1.tgz#313cca90ddf536603427070e2b11c128911bb312"
+  integrity sha512-H0f5UR7+89KsfWQUqJtNV3rVOZ3lSarX51rOZMnf+tyrCibcEfnhkf8KjUFJNME6x5Ez46zodryuaOcIfG8T5Q==
+  dependencies:
+    "@wasmer/wasi" "^0.12.0"
+    "@wasmer/wasm-transformer" "^0.12.0"
+    "@wasmer/wasmfs" "^0.12.0"
+    async-mutex "^0.2.6"
+    asyncify-wasm "^1.1.1"
+    emittery "^0.7.2"
+    isomorphic-ws "^4.0.1"
+    serve "^11.3.2"
+    uuid "^8.3.1"
+    winston "^3.3.3"
+    wrtc "^0.4.6"
+    ws "^7.4.0"
+    yargs "^16.1.0"
+
+"@alphahorizonio/webnetes@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@alphahorizonio/webnetes/-/webnetes-0.1.0.tgz#8471652da6caee510d1d60e519420be692a4ac5c"
+  integrity sha512-rpO6i9vYugUEUPzeaRpjsCXOYjT1ZGFgmD929QffgeLd9nKwa00XqoNQsrkY+Y0UkXagNyuI17wsP4h3Pm3Y4Q==
+  dependencies:
+    "@alphahorizonio/unisockets" "^0.1.1"
+    "@wasmer/wasi" "^0.12.0"
+    "@wasmer/wasm-transformer" "^0.12.0"
+    "@wasmer/wasmfs" "^0.12.0"
+    async-mutex "^0.2.6"
+    asyncify-wasm "^1.1.1"
+    emittery "^0.7.2"
+    js-yaml "^3.14.1"
+    uuid "^8.3.2"
+    webtorrent "^0.112.0"
+    webtorrent-hybrid "^4.0.3"
+    winston "^3.3.3"
+    xterm "^4.9.0"
+    yargs "^16.2.0"
+
 "@ampproject/toolbox-core@2.7.4", "@ampproject/toolbox-core@^2.7.1-alpha.0":
   version "2.7.4"
   resolved "https://registry.yarnpkg.com/@ampproject/toolbox-core/-/toolbox-core-2.7.4.tgz#8355136f16301458ce942acf6c55952c9a415627"
@@ -1599,45 +1638,6 @@
   version "0.14.0"
   resolved "https://registry.yarnpkg.com/@opentelemetry/context-base/-/context-base-0.14.0.tgz#c67fc20a4d891447ca1a855d7d70fa79a3533001"
   integrity sha512-sDOAZcYwynHFTbLo6n8kIbLiVF3a3BLkrmehJUyEbT9F+Smbi47kLGS2gG2g0fjBLR/Lr1InPD7kXL7FaTqEkw==
-
-"@alphahorizonio/unisockets@^0.0.23":
-  version "0.0.23"
-  resolved "https://registry.yarnpkg.com/@alphahorizonio/unisockets/-/unisockets-0.0.23.tgz#18bb4d611d5b0c6852b39079f48510b11548c2a3"
-  integrity sha512-A2n51VGyTNwDUdIGsJ5AW3QVJo3LMxOg7SKO8WA4DvBtLsAiYkFvPIracCptq95f2mKTgoma5aHFtk/CfxIw8w==
-  dependencies:
-    "@wasmer/wasi" "^0.12.0"
-    "@wasmer/wasm-transformer" "^0.12.0"
-    "@wasmer/wasmfs" "^0.12.0"
-    async-mutex "^0.2.6"
-    asyncify-wasm "^1.1.1"
-    emittery "^0.7.2"
-    isomorphic-ws "^4.0.1"
-    serve "^11.3.2"
-    uuid "^8.3.1"
-    winston "^3.3.3"
-    wrtc "^0.4.6"
-    ws "^7.4.0"
-    yargs "^16.1.0"
-
-"@alphahorizonio/webnetes@^0.0.11":
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/@alphahorizonio/webnetes/-/webnetes-0.0.11.tgz#7712c0ad455bc79b7c6fdd17e4227cc8dd182f76"
-  integrity sha512-LNkbteof5tB3/Y1ED0XOSebRT2U9NyLBhaOaIk3g/zcdHL/xjXhBnYkHil5jhOzV8IPRxISg+7TcWxkLFX67mg==
-  dependencies:
-    "@alphahorizonio/unisockets" "^0.0.23"
-    "@wasmer/wasi" "^0.12.0"
-    "@wasmer/wasm-transformer" "^0.12.0"
-    "@wasmer/wasmfs" "^0.12.0"
-    async-mutex "^0.2.6"
-    asyncify-wasm "^1.1.1"
-    emittery "^0.7.2"
-    js-yaml "^3.14.1"
-    uuid "^8.3.2"
-    webtorrent "^0.112.0"
-    webtorrent-hybrid "^4.0.3"
-    winston "^3.3.3"
-    xterm "^4.9.0"
-    yargs "^16.2.0"
 
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
   version "1.1.2"
