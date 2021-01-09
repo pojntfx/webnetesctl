@@ -3,7 +3,8 @@ import {
   faWindowMinimize,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Collapse, Space, Empty } from "antd";
+import { Button, Empty, Space } from "antd";
+import Title from "antd/lib/typography/Title";
 import dynamic from "next/dynamic";
 import { forwardRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
@@ -71,9 +72,11 @@ const TerminalModal: React.FC<ITerminalModalProps> = ({
         />
       )}
 
-      <Collapse ghost activeKey={labels}>
+      <WideSpace direction="vertical">
         {labels.map((label) => (
-          <Collapse.Panel header={label} key={label}>
+          <div key={label}>
+            <Title level={3}>{label}</Title>
+
             <Terminal
               onData={(key) => {
                 if (key.charCodeAt(0) === 13) {
@@ -88,9 +91,9 @@ const TerminalModal: React.FC<ITerminalModalProps> = ({
               }}
               ref={(xterm) => ref(label, xterm)}
             />
-          </Collapse.Panel>
+          </div>
         ))}
-      </Collapse>
+      </WideSpace>
     </Modal>
   );
 };
@@ -99,11 +102,6 @@ const Modal = styled(ModalTmpl)`
   /* We don't need the cancel button */
   .ant-modal-footer > *:first-child {
     display: none;
-  }
-
-  .ant-modal-body {
-    padding-left: 0;
-    padding-right: 0;
   }
 
   .ant-collapse-content-box {
@@ -126,5 +124,9 @@ const Terminal = forwardRef(
     <TerminalTmpl {...props} forwardRef={ref as React.RefObject<XTerm>} />
   )
 );
+
+const WideSpace = styled(Space)`
+  width: 100%;
+`;
 
 export default TerminalModal;
