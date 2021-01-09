@@ -116,7 +116,9 @@ export interface IJoinPageProps {
   nodeId?: string;
 
   node: {
+    initialized: boolean;
     open: (config: string) => Promise<void>;
+    opened: boolean;
     close: () => Promise<void>;
   };
 }
@@ -243,23 +245,23 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
   }, []);
 
   useEffect(() => {
-    // Map the nodeConfig query parameter to state
-    const rawNodeConfig = new URLSearchParams(location.search).get(
-      "nodeConfig"
-    );
+    if (node.initialized && !node.opened) {
+      // Map the nodeConfig query parameter to state
+      const rawNodeConfig = new URLSearchParams(location.search).get(
+        "nodeConfig"
+      );
 
-    if (rawNodeConfig) {
-      try {
-        const config = urldecodeYAMLAll(rawNodeConfig as string);
+      if (rawNodeConfig) {
+        try {
+          const config = urldecodeYAMLAll(rawNodeConfig as string);
 
-        node.open(config);
-
-        setNodeConfig(config);
-      } catch (e) {
-        console.log("could not decode node config", e);
+          node.open(config);
+        } catch (e) {
+          console.log("could not decode node config", e);
+        }
       }
     }
-  }, [location.search]);
+  }, [node.initialized, location.search, node.opened]);
 
   const graphRef = useCallback((graph) => {
     // Zoom graph into view center

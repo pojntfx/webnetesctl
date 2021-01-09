@@ -70,5 +70,3 @@ spec:
   prefix: CLUSTER_ID # This is a template; it will be filled when creating or joining a cluster`;
 
 export const CLUSTER_ID_TEMPLATE_KEY = "CLUSTER_ID";
-
-export const nodeId = "127.0.2.0";

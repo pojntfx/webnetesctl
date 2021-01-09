@@ -43,7 +43,7 @@ import { useWindowSize } from "use-window-size-hook";
 import {
   IClusterNode,
   IClusterResource,
-  IConnections,
+  TConnections,
 } from "../../hooks/use-webnetes";
 import { stringifyResourceKey } from "../../utils/resource-key";
 import { urldecodeYAMLAll } from "../../utils/urltranscode";
@@ -56,7 +56,7 @@ export interface IOverviewPageProps {
   cluster: {
     nodes: IClusterNode[];
     resources: IClusterResource[];
-    connections: IConnections;
+    connections: TConnections;
   };
   stats: {
     compute: Map<string, number>;
@@ -68,6 +68,7 @@ export interface IOverviewPageProps {
   latitude: number;
   longitude: number;
   node: {
+    initialized: boolean;
     open: (config: string) => Promise<void>;
     opened: boolean;
     deleteResources: (resources: string, nodeId: string) => Promise<void>;
@@ -114,17 +115,13 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
   // Effects
   useEffect(() => {
     // Transform connections into paths
-    setConnectionPaths([
-      ...connections.management.map((conn) => ({
+    setConnectionPaths(
+      connections.map((conn) => ({
         coords: conn,
-        properties: { name: t("management"), color: "#fa8c16" },
-      })),
-      ...connections.application.map((conn) => ({
-        coords: conn,
-        properties: { name: t("application"), color: "#1890ff" },
-      })),
-    ]);
-  }, []);
+        properties: { name: t("connection"), color: "#1890ff" },
+      }))
+    );
+  }, [connections]);
 
   useEffect(() => {
     // Map coordinates to globe position
@@ -181,7 +178,7 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
   }, [ref, location.search]);
 
   useEffect(() => {
-    if (!node.opened) {
+    if (node.initialized && !node.opened) {
       // Map the nodeConfig query parameter to state
       const rawNodeConfig = new URLSearchParams(location.search).get(
         "nodeConfig"
@@ -197,7 +194,7 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
         }
       }
     }
-  }, [location.search, node.opened]);
+  }, [node.initialized, location.search, node.opened]);
 
   const refreshLocation = useCallback(() => {
     // Get a user's coordinates and set the globe position accordingly

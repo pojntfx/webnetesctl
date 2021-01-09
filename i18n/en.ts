@@ -124,4 +124,5 @@ export default {
     "Benchmarking your CPU. You might temporarily experience performance degradation.",
   benchmarkingYourNetwork:
     "Benchmarking your network. You might temporarily experience connection problems.",
+  connection: "Connection",
 };

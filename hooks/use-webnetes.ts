@@ -2,13 +2,12 @@ import {
   API_VERSION,
   EBenchmarkKind,
   EResourceKind,
-  Node,
+  Node
 } from "@pojntfx/webnetes";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useTranslation } from "react-i18next";
-import clusterConnectionsData from "../data/network-connections.json";
-import nodeConfigData, { nodeId as nodeIdData } from "../data/node-config";
+import nodeConfigTemplate from "../data/node-config";
 import { getCoordinates } from "../utils/get-coordinates";
 import { getCPUScore } from "../utils/get-cpu-score";
 import { getIP } from "../utils/get-ip";
@@ -17,10 +16,7 @@ import { getNetScore } from "../utils/get-net-score";
 
 export const NODE_GID = 0;
 
-export interface IConnections {
-  management: number[][][];
-  application: number[][][];
-}
+export type TConnections = number[][][];
 
 export interface IGraph {
   nodes: { id: string; group: number }[];
@@ -91,7 +87,9 @@ export const useWebnetes = ({
     new Map()
   );
 
-  const [clusterConnections, setClusterConnections] = useState<IConnections>();
+  const [clusterConnections, setClusterConnections] = useState<TConnections>(
+    []
+  );
   const [clusterNodes, setClusterNodes] = useState<IClusterNode[]>([]);
   const clusterNodesRef = useRef<IClusterNode[]>();
   const [clusterResources, setClusterResources] = useState<IClusterResource[]>(
@@ -99,7 +97,7 @@ export const useWebnetes = ({
   );
 
   const [nodeConfig, setNodeConfig] = useState<string>();
-  const [nodeId, setNodeId] = useState<string>();
+  const [nodeId, setNodeId] = useState<string>("0.0.0.0");
   const nodeIdRef = useRef<string>();
 
   const [nodeCoordinates, setNodeCoordinates] = useState<number[]>([0, 0]);
@@ -266,12 +264,7 @@ export const useWebnetes = ({
   // Effects
   useEffect(() => {
     // Set initial state
-    unstable_batchedUpdates(() => {
-      setClusterConnections(clusterConnectionsData);
-
-      setNodeConfig(nodeConfigData);
-      setNodeId(nodeIdData);
-    });
+    setNodeConfig(nodeConfigTemplate);
   }, []);
 
   useEffect(() => {
@@ -431,6 +424,22 @@ export const useWebnetes = ({
       setResourceGraph(getResourceGraphForNode(nodeId));
     }
   }, [clusterResources, nodeId]);
+
+  useEffect(() => {
+    // Create the cluster connections
+    const coords = clusterNodes.map((node) => [node.longitude, node.latitude]);
+
+    const links: TConnections = [];
+    coords.forEach((coord) =>
+      coords.forEach((ncoord) => {
+        if (coord[0] !== ncoord[0] && coord[1] !== ncoord[1]) {
+          links.push([coord, ncoord]);
+        }
+      })
+    );
+
+    setClusterConnections(links);
+  }, [clusterNodes]);
 
   useEffect(() => {
     // Create the network graph
@@ -860,12 +869,15 @@ export const useWebnetes = ({
     },
     log,
     node: {
+      initialized: node ? true : false,
       open: async (config: string) => {
         setNodeConfig(config);
 
-        await node?.open(config);
+        if (node) {
+          await node.open(config);
 
-        setNodeOpened(true);
+          setNodeOpened(true);
+        }
       },
       close: async () => await node?.close(),
       opened: nodeOpened,
