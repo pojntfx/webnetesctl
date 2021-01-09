@@ -231,6 +231,19 @@ function RoutesPage() {
   }, []);
 
   useEffect(() => {
+    // Redirect to home if node not open and no node config set
+    if (
+      !node.opened &&
+      !(
+        location.pathname === "/" ||
+        new URLSearchParams(location.search).get("nodeConfig")
+      )
+    ) {
+      if (typeof window !== "undefined") window.location.href = "/";
+    }
+  }, [node.opened, location]);
+
+  useEffect(() => {
     // Map the privateIP query parameter to state
     if (
       new URLSearchParams(location.search).get("privateIP") &&
