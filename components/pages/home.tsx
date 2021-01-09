@@ -1,6 +1,6 @@
 import { faCogs, faHandshake, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Dropdown, Input, Menu, Space } from "antd";
+import { Dropdown, Input, Menu, Space, Tooltip } from "antd";
 import Text from "antd/lib/typography/Text";
 import Animate from "rc-animate";
 import { createRef, useState } from "react";
@@ -97,29 +97,34 @@ export const HomePage: React.FC<IHomePageProps> = ({
                   <Text>{t("createClusterDescription")}</Text>
 
                   <Space>
-                    <Input
-                      placeholder={t("newClusterId")}
-                      value={newClusterId}
-                      onChange={(e) => setNewClusterId(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          if (newClusterId) {
-                            router.push(
-                              `/created?nodeConfig=${urlencodeYAMLAll(
-                                nodeConfig.replace(
-                                  CLUSTER_ID_TEMPLATE_KEY,
-                                  newClusterId
-                                )
-                              )}`
-                            );
-                          } else {
-                            newClusterIdRef.current?.focus();
+                    <Tooltip
+                      title={t("newClusterIdDescription")}
+                      placement="bottom"
+                    >
+                      <Input
+                        placeholder={t("newClusterId")}
+                        value={newClusterId}
+                        onChange={(e) => setNewClusterId(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            if (newClusterId) {
+                              router.push(
+                                `/created?nodeConfig=${urlencodeYAMLAll(
+                                  nodeConfig.replace(
+                                    CLUSTER_ID_TEMPLATE_KEY,
+                                    newClusterId
+                                  )
+                                )}`
+                              );
+                            } else {
+                              newClusterIdRef.current?.focus();
+                            }
                           }
-                        }
-                      }}
-                      required
-                      ref={newClusterIdRef}
-                    />
+                        }}
+                        required
+                        ref={newClusterIdRef}
+                      />
+                    </Tooltip>
 
                     <Dropdown.Button
                       onClick={() => {
@@ -183,28 +188,34 @@ export const HomePage: React.FC<IHomePageProps> = ({
                   <Text>{t("joinClusterDescription")}</Text>
 
                   <Space>
-                    <Input
-                      placeholder={t("clusterId")}
-                      value={clusterId}
-                      onChange={(e) => setClusterId(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          if (clusterId) {
-                            router.push(
-                              `/join?nodeConfig=${urlencodeYAMLAll(
-                                nodeConfig.replace(
-                                  CLUSTER_ID_TEMPLATE_KEY,
-                                  clusterId
-                                )
-                              )}`
-                            );
-                          } else {
-                            clusterIdRef.current?.focus();
+                    <Tooltip
+                      title={t("clusterIdDescription")}
+                      placement="bottom"
+                    >
+                      <Input
+                        placeholder={t("clusterId")}
+                        value={clusterId}
+                        onChange={(e) => setClusterId(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            if (clusterId) {
+                              router.push(
+                                `/join?nodeConfig=${urlencodeYAMLAll(
+                                  nodeConfig.replace(
+                                    CLUSTER_ID_TEMPLATE_KEY,
+                                    clusterId
+                                  )
+                                )}`
+                              );
+                            } else {
+                              clusterIdRef.current?.focus();
+                            }
                           }
-                        }
-                      }}
-                      ref={clusterIdRef}
-                    />
+                        }}
+                        required
+                        ref={clusterIdRef}
+                      />
+                    </Tooltip>
 
                     <Dropdown.Button
                       onClick={() => {

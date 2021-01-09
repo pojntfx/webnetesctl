@@ -125,4 +125,8 @@ export default {
   benchmarkingYourNetwork:
     "Benchmarking your network. You might temporarily experience connection problems.",
   connection: "Connection",
+  newClusterIdDescription:
+    "The virtual subnet to create. Should be the first three octects of an IPv4 address, i.e. 152.134.231",
+  clusterIdDescription:
+    "The virtual subnet to join. Should be the first three octects of an IPv4 address, i.e. 152.134.231",
 };
