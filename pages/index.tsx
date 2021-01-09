@@ -307,14 +307,6 @@ function RoutesPage() {
           {t("resource")}
         </Space>
       </Menu.Item>
-      <Menu.Item key="cluster">
-        <a href="/" target="_blank">
-          <Space>
-            <FontAwesomeIcon fixedWidth icon={faNetworkWired} />
-            {t("cluster")}
-          </Space>
-        </a>
-      </Menu.Item>
       <Menu.Item
         key="file"
         onClick={() => {
@@ -328,6 +320,14 @@ function RoutesPage() {
           <FontAwesomeIcon fixedWidth icon={faFile} />
           {t("file")}
         </Space>
+      </Menu.Item>
+      <Menu.Item key="cluster">
+        <a href="/" target="_blank">
+          <Space>
+            <FontAwesomeIcon fixedWidth icon={faNetworkWired} />
+            {t("cluster")}
+          </Space>
+        </a>
       </Menu.Item>
     </Menu>
   );
@@ -480,22 +480,6 @@ function RoutesPage() {
               !graphModalOpen ||
               !terminalsModalOpen) && (
               <AppTray>
-                {!createResourceModalMaximized && (
-                  <Button
-                    type="text"
-                    onClick={() => setCreateResourceModalMaximized(true)}
-                    icon={<FontAwesomeIcon icon={faCube} />}
-                  />
-                )}
-
-                {!createFileModalMaximized && (
-                  <Button
-                    type="text"
-                    onClick={() => setCreateFileModalMaximized(true)}
-                    icon={<FontAwesomeIcon icon={faFile} />}
-                  />
-                )}
-
                 {!graphModalOpen && (
                   <Button
                     type="text"
@@ -509,6 +493,22 @@ function RoutesPage() {
                     type="text"
                     onClick={() => setTerminalsModalOpen(true)}
                     icon={<FontAwesomeIcon icon={faTerminal} />}
+                  />
+                )}
+
+                {!createResourceModalMaximized && (
+                  <Button
+                    type="text"
+                    onClick={() => setCreateResourceModalMaximized(true)}
+                    icon={<FontAwesomeIcon icon={faCube} />}
+                  />
+                )}
+
+                {!createFileModalMaximized && (
+                  <Button
+                    type="text"
+                    onClick={() => setCreateFileModalMaximized(true)}
+                    icon={<FontAwesomeIcon icon={faFile} />}
                   />
                 )}
               </AppTray>
