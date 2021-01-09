@@ -1600,9 +1600,9 @@
   resolved "https://registry.yarnpkg.com/@opentelemetry/context-base/-/context-base-0.14.0.tgz#c67fc20a4d891447ca1a855d7d70fa79a3533001"
   integrity sha512-sDOAZcYwynHFTbLo6n8kIbLiVF3a3BLkrmehJUyEbT9F+Smbi47kLGS2gG2g0fjBLR/Lr1InPD7kXL7FaTqEkw==
 
-"@pojntfx/unisockets@^0.0.23":
+"@alphahorizonio/unisockets@^0.0.23":
   version "0.0.23"
-  resolved "https://registry.yarnpkg.com/@pojntfx/unisockets/-/unisockets-0.0.23.tgz#18bb4d611d5b0c6852b39079f48510b11548c2a3"
+  resolved "https://registry.yarnpkg.com/@alphahorizonio/unisockets/-/unisockets-0.0.23.tgz#18bb4d611d5b0c6852b39079f48510b11548c2a3"
   integrity sha512-A2n51VGyTNwDUdIGsJ5AW3QVJo3LMxOg7SKO8WA4DvBtLsAiYkFvPIracCptq95f2mKTgoma5aHFtk/CfxIw8w==
   dependencies:
     "@wasmer/wasi" "^0.12.0"
@@ -1619,12 +1619,12 @@
     ws "^7.4.0"
     yargs "^16.1.0"
 
-"@pojntfx/webnetes@^0.0.11":
+"@alphahorizonio/webnetes@^0.0.11":
   version "0.0.11"
-  resolved "https://registry.yarnpkg.com/@pojntfx/webnetes/-/webnetes-0.0.11.tgz#7712c0ad455bc79b7c6fdd17e4227cc8dd182f76"
+  resolved "https://registry.yarnpkg.com/@alphahorizonio/webnetes/-/webnetes-0.0.11.tgz#7712c0ad455bc79b7c6fdd17e4227cc8dd182f76"
   integrity sha512-LNkbteof5tB3/Y1ED0XOSebRT2U9NyLBhaOaIk3g/zcdHL/xjXhBnYkHil5jhOzV8IPRxISg+7TcWxkLFX67mg==
   dependencies:
-    "@pojntfx/unisockets" "^0.0.23"
+    "@alphahorizonio/unisockets" "^0.0.23"
     "@wasmer/wasi" "^0.12.0"
     "@wasmer/wasm-transformer" "^0.12.0"
     "@wasmer/wasmfs" "^0.12.0"

@@ -1,15 +1,15 @@
 // Default node config template
-export default `apiVersion: webnetes.felicitas.pojtinger.com/v1alpha1
+export default `apiVersion: schema.webnetes.dev/v1alpha1
 kind: Signaler
 metadata:
   name: Public unisockets Signaling Server
   label: unisockets_public
 spec:
   urls:
-    - wss://unisockets.herokuapp.com
+    - wss://signaler.webnetes.dev
   retryAfter: 1000
 ---
-apiVersion: webnetes.felicitas.pojtinger.com/v1alpha1
+apiVersion: schema.webnetes.dev/v1alpha1
 kind: StunServer
 metadata:
   name: Google STUN Server
@@ -18,7 +18,7 @@ spec:
   urls:
     - stun:stun.l.google.com:19302
 ---
-apiVersion: webnetes.felicitas.pojtinger.com/v1alpha1
+apiVersion: schema.webnetes.dev/v1alpha1
 kind: StunServer
 metadata:
   name: Twillio STUN Server
@@ -27,7 +27,7 @@ spec:
   urls:
     - stun:global.stun.twilio.com:3478?transport=udp
 ---
-apiVersion: webnetes.felicitas.pojtinger.com/v1alpha1
+apiVersion: schema.webnetes.dev/v1alpha1
 kind: TurnServer
 metadata:
   name: Twillio TURN Server (UDP)
@@ -38,7 +38,7 @@ spec:
   username: f4b4035eaa76f4a55de5f4351567653ee4ff6fa97b50b6b334fcc1be9c27212d
   credential: w1uxM55V9yVoqyVFjt+mxDBV0F87AUCemaYVQGxsPLw=
 ---
-apiVersion: webnetes.felicitas.pojtinger.com/v1alpha1
+apiVersion: schema.webnetes.dev/v1alpha1
 kind: TurnServer
 metadata:
   name: Twillio TURN Server (TCP)
@@ -49,7 +49,7 @@ spec:
   username: f4b4035eaa76f4a55de5f4351567653ee4ff6fa97b50b6b334fcc1be9c27212d
   credential: w1uxM55V9yVoqyVFjt+mxDBV0F87AUCemaYVQGxsPLw=
 ---
-apiVersion: webnetes.felicitas.pojtinger.com/v1alpha1
+apiVersion: schema.webnetes.dev/v1alpha1
 kind: TurnServer
 metadata:
   name: Twillio TURN Server Fallback (TCP)
@@ -60,7 +60,7 @@ spec:
   username: f4b4035eaa76f4a55de5f4351567653ee4ff6fa97b50b6b334fcc1be9c27212d
   credential: w1uxM55V9yVoqyVFjt+mxDBV0F87AUCemaYVQGxsPLw=
 ---
-apiVersion: webnetes.felicitas.pojtinger.com/v1alpha1
+apiVersion: schema.webnetes.dev/v1alpha1
 kind: NetworkInterface
 metadata:
   name: Management Network

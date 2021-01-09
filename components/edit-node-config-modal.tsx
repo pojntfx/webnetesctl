@@ -140,7 +140,7 @@ const EditNodeConfigModal: React.FC<IEditNodeConfigModalProps> = ({
           <MoreLink>
             {t("youCanFindAnExampleInThe")}{" "}
             <a
-              href="https://github.com/pojntfx/webnetes/blob/main/app/webnetes_node/node.yaml"
+              href="https://github.com/alphahorizonio/webnetes/blob/main/app/webnetes_node/node.yaml"
               target="_blank"
             >
               GitHub Repository <FontAwesomeIcon icon={faExternalLinkAlt} />

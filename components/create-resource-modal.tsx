@@ -196,7 +196,7 @@ const CreateResourceModal: React.FC<ICreateResourceModalProps> = ({
             <MoreLink>
               {t("youCanFindSomeExamplesInThe")}{" "}
               <a
-                href="https://github.com/pojntfx/webnetes/tree/main/examples"
+                href="https://github.com/alphahorizonio/webnetes/tree/main/examples"
                 target="_blank"
               >
                 GitHub Repository <FontAwesomeIcon icon={faExternalLinkAlt} />

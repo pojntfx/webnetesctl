@@ -92,7 +92,7 @@ export const ConfigPage: React.FC<IConfigPageProps> = ({
                 <dl>
                   <dt>
                     <BareLink
-                      href="https://github.com/pojntfx/webnetesctl"
+                      href="https://github.com/alphahorizonio/webnetesctl"
                       target="_blank"
                     >
                       webnetesctl <FontAwesomeIcon icon={faExternalLinkAlt} />
@@ -104,7 +104,7 @@ export const ConfigPage: React.FC<IConfigPageProps> = ({
 
                   <dt>
                     <BareLink
-                      href="https://github.com/pojntfx/webnetes"
+                      href="https://github.com/alphahorizonio/webnetes"
                       target="_blank"
                     >
                       webnetes <FontAwesomeIcon icon={faExternalLinkAlt} />
@@ -112,7 +112,7 @@ export const ConfigPage: React.FC<IConfigPageProps> = ({
                   </dt>
                   <dd>
                     <Text code>
-                      {packageJSON.dependencies["@pojntfx/webnetes"]}
+                      {packageJSON.dependencies["@alphahorizonio/webnetes"]}
                     </Text>
                   </dd>
                 </dl>
@@ -191,7 +191,7 @@ export const ConfigPage: React.FC<IConfigPageProps> = ({
           <MoreLink>
             {t("youCanFindAnExampleInThe")}{" "}
             <a
-              href="https://github.com/pojntfx/webnetes/blob/main/app/webnetes_node/node.yaml"
+              href="https://github.com/alphahorizonio/webnetes/blob/main/app/webnetes_node/node.yaml"
               target="_blank"
             >
               GitHub Repository <FontAwesomeIcon icon={faExternalLinkAlt} />
