@@ -129,4 +129,6 @@ export default {
     "The virtual subnet to create. Should be the first three octects of an IPv4 address, i.e. 152.134.231",
   clusterIdDescription:
     "The virtual subnet to join. Should be the first three octects of an IPv4 address, i.e. 152.134.231",
+  webnetesDescription:
+    "Distributed, peer-to-peer computing platform for the Browser and Node.",
 };

@@ -85,6 +85,8 @@ export const HomePage: React.FC<IHomePageProps> = ({
             {/* Logo */}
             <Logo alt={t("webnetesLogo")} src="/logo.svg" />
 
+            <Slogan>{t("webnetesDescription")}</Slogan>
+
             {/* Actions */}
             <ActionSplit>
               <div>
@@ -348,10 +350,19 @@ const Logo = styled.img`
   position: relative;
   width: 100%;
   padding-top: 2rem;
-  padding-bottom: 2rem;
   padding-right: 1rem;
   filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.5));
-  max-height: 10rem;
+  max-height: 10.5rem;
+`;
+
+const Slogan = styled.div`
+  position: relative;
+  width: 100%;
+  padding-bottom: 3rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  text-align: center;
+  font-weight: 600;
 `;
 
 // Action components
