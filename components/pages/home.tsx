@@ -1,4 +1,9 @@
-import { faCogs, faHandshake, faPlus } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCogs,
+  faHandshake,
+  faPlus,
+  faQuestionCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dropdown, Input, Menu, Space, Tooltip } from "antd";
 import Text from "antd/lib/typography/Text";
@@ -264,6 +269,14 @@ export const HomePage: React.FC<IHomePageProps> = ({
                 </Action>
               </div>
             </ActionSplit>
+
+            <DescriptionSlogan>
+              <FontAwesomeIcon fixedWidth icon={faQuestionCircle} />{" "}
+              {t("notSureWhatToDo")}{" "}
+              <a href="https://docs.webnetes.dev/" target="_blank">
+                {t("readTheDocs")}
+              </a>
+            </DescriptionSlogan>
           </div>
         </Animate>
       </HomeBlurWrapper>
@@ -352,7 +365,7 @@ const Logo = styled.img`
   padding-top: 2rem;
   padding-right: 1rem;
   filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.5));
-  max-height: 10.5rem;
+  max-height: 10rem;
 `;
 
 const Slogan = styled.div`
@@ -363,6 +376,14 @@ const Slogan = styled.div`
   padding-right: 1rem;
   text-align: center;
   font-weight: 600;
+`;
+
+const DescriptionSlogan = styled.div`
+  position: relative;
+  width: 100%;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  text-align: center;
 `;
 
 // Action components

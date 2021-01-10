@@ -130,5 +130,7 @@ export default {
   clusterIdDescription:
     "The virtual subnet to join. Should be the first three octects of an IPv4 address, i.e. 152.134.231",
   webnetesDescription:
-    "Distributed, peer-to-peer computing platform for the Browser and Node.",
+    "Peer-to-Peer Computing Platform for the Browser and Node.",
+  notSureWhatToDo: "Not sure what to do?",
+  readTheDocs: "Read the docs!",
 };
