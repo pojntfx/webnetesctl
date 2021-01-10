@@ -52,7 +52,7 @@ export default class MyDocument extends Document {
           <meta name="twitter:title" content="webnetesctl" />
           <meta
             name="twitter:description"
-            content="Like kubectl, but for webnetes."
+            content="Peer-to-Peer Computing Platform for the Browser and Node."
           />
           <meta
             name="twitter:image"
@@ -63,7 +63,7 @@ export default class MyDocument extends Document {
           <meta property="og:title" content="webnetesctl" />
           <meta
             property="og:description"
-            content="Like kubectl, but for webnetes."
+            content="Peer-to-Peer Computing Platform for the Browser and Node."
           />
           <meta property="og:site_name" content="webnetesctl" />
           <meta property="og:url" content="https://webnetesctl.vercel.app/" />
