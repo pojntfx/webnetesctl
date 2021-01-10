@@ -9,6 +9,7 @@ import {
   faNetworkWired,
   faPlus,
   faProjectDiagram,
+  faQuestionCircle,
   faSearch,
   faTerminal,
   faTimes,
@@ -541,6 +542,15 @@ function RoutesPage() {
               </Tooltip>
 
               <Space>
+                {/* Docs */}
+                <Tooltip title={t("documentation")}>
+                  <a href="https://docs.webnetes.dev/" target="_blank">
+                    <Button type="text" shape="circle">
+                      <FontAwesomeIcon icon={faQuestionCircle} />
+                    </Button>
+                  </a>
+                </Tooltip>
+
                 {/* Notifications */}
                 <Popover
                   title={t("notifications")}
@@ -658,6 +668,15 @@ function RoutesPage() {
               </SearchInput>
 
               <Space>
+                {/* Docs */}
+                <Tooltip title={t("documentation")}>
+                  <a href="https://docs.webnetes.dev/" target="_blank">
+                    <Button type="text" shape="circle">
+                      <FontAwesomeIcon icon={faQuestionCircle} />
+                    </Button>
+                  </a>
+                </Tooltip>
+
                 {/* Notifications */}
                 <Popover
                   title={t("notifications")}

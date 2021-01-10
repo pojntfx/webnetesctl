@@ -120,9 +120,10 @@ export const MobileTabs = styled(HeaderTmpl)`
  */
 export const SearchInput = styled(Select)`
   width: 100%;
-  max-width: 22.5rem;
+  max-width: 35rem;
   margin-left: 8px;
   margin-right: 8px;
+  padding-left: calc(32px + 8px);
 `;
 
 export default Navbar;

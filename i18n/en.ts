@@ -133,4 +133,5 @@ export default {
     "Peer-to-Peer Computing Platform for the Browser and Node.",
   notSureWhatToDo: "Not sure what to do?",
   readTheDocs: "Read the docs!",
+  documentation: "Documentation",
 };
