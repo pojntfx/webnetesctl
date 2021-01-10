@@ -1,20 +1,20 @@
 # webnetesctl
 
-Like kubectl, but for webnetes. Runs in the browser and in node.
+Frontend for webnetes, the peer-to-peer computing platform for the browser and node.
 
 ![Yarn CI](https://github.com/alphahorizonio/webnetesctl/workflows/Yarn%20CI/badge.svg)
 ![Mirror](https://github.com/alphahorizonio/webnetesctl/workflows/Mirror/badge.svg)
 [![TypeDoc](https://img.shields.io/badge/TypeScript-Documentation-informational)](https://alphahorizonio.github.io/webnetesctl/)
 [![npm](https://img.shields.io/npm/v/@alphahorizonio/webnetesctl)](https://www.npmjs.com/package/@alphahorizonio/webnetesctl)
-[![Demo](https://img.shields.io/badge/Demo-webnetesctl.vercel.app-blueviolet)](https://webnetesctl.vercel.app/)
+[![Demo](https://img.shields.io/badge/Demo-webnetes.dev-blueviolet)](https://webnetes.dev/)
 
 ## Overview
 
-TODO: Add overview docs
+Check out the [Documentation](https://docs.webnetes.dev/).
 
 ## Usage
 
-TODO: Add usage docs
+[![Launch now as web app](./img/launch.png)](https://webnetes.dev/)
 
 ## License
 

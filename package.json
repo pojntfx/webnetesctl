@@ -1,7 +1,7 @@
 {
   "name": "@alphahorizonio/webnetesctl",
   "version": "0.0.1",
-  "description": "Like kubectl, but for webnetes. Runs in the browser and in node.",
+  "description": "Frontend for webnetes, the peer-to-peer computing Platform for the Browser and Node",
   "source": "index.ts",
   "main": "dist/nodeLib/index.js",
   "module": "dist/webLib/index.js",
