@@ -429,7 +429,9 @@ function RoutesPage() {
                 }}
                 onCancel={() => setCreateResourceDialogOpen(false)}
                 onMinimize={() => setCreateResourceModalMaximized(false)}
-                nodes={cluster.nodes}
+                nodes={cluster.nodes.filter(
+                  (node) => node.privateIP !== local.nodeId // Don't allow deploying to self to prevent blocking duplex streams
+                )}
               />
             )}
 
