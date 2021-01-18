@@ -27,7 +27,7 @@ export default {
   delete: "Delete",
   noResourcesDeployed: "No resources deployed",
   noMatchingResourcesFound: "No matching resources found",
-  noMatchingNodesFound: "No matching nodes found",
+  noMatchingNodesFound: "No matching nodes found. Did you invite someone yet?",
   noMatchingReposFound: "No matching repos found",
   noMatchingNodesOrResourcesFound: "No matching nodes or resources found",
   privateIp: "Private IP",
