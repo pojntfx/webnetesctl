@@ -1,6 +1,6 @@
 {
   "name": "@alphahorizonio/webnetesctl",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Frontend for webnetes, the peer-to-peer computing Platform for the Browser and Node",
   "source": "index.ts",
   "main": "dist/nodeLib/index.js",
@@ -84,7 +84,7 @@
     "@fortawesome/react-fontawesome": "^0.1.14",
     "@ideditor/country-coder": "^4.0.0",
     "@monaco-editor/react": "^3.7.4",
-    "@alphahorizonio/webnetes": "^0.1.0",
+    "@alphahorizonio/webnetes": "^0.1.3",
     "aframe": "1.0.0",
     "antd": "^4.9.4",
     "ar.js": "^2.2.2",
