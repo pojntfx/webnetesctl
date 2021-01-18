@@ -55,7 +55,7 @@ import { JoinPage } from "../components/pages/join";
 import { OverviewPage } from "../components/pages/overview";
 import SearchModal from "../components/search-modal";
 import TerminalModal from "../components/terminal-modal";
-import { AppTray } from "../components/trays";
+import { AppTray, JoinTray } from "../components/trays";
 import { useWebnetes } from "../hooks/use-webnetes";
 import { parseResourceKey, stringifyResourceKey } from "../utils/resource-key";
 
@@ -350,19 +350,51 @@ function RoutesPage() {
     <Switch>
       <Route path="/join">
         {graphs.local && graphs.network && graphs.resources && (
-          <JoinPage
-            cluster={graphs.local}
-            network={graphs.network}
-            resources={graphs.resources}
-            latitude={local.location.latitude}
-            longitude={local.location.longitude}
-            nodeAddress={local.location.address || ""}
-            nodeCoordinatesLoading={local.location.loading}
-            nodeFlag={local.location.flag || ""}
-            refreshNodeLocation={local.location.refreshLocation}
-            nodeId={local.nodeId}
-            node={node}
-          />
+          <>
+            <JoinPage
+              cluster={graphs.local}
+              network={graphs.network}
+              resources={graphs.resources}
+              latitude={local.location.latitude}
+              longitude={local.location.longitude}
+              nodeAddress={local.location.address || ""}
+              nodeCoordinatesLoading={local.location.loading}
+              nodeFlag={local.location.flag || ""}
+              refreshNodeLocation={local.location.refreshLocation}
+              nodeId={local.nodeId}
+              node={node}
+            />
+
+            {terminalLabels?.length > 0 && cluster.resources && (
+              <TerminalModal
+                open={terminalsModalOpen}
+                onDone={() => setTerminalsModalOpen(false)}
+                onTerminalCreated={(label, xterm) => {
+                  terminalRefs.current?.set(label, xterm);
+                  terminalBus.current?.emit(label, true);
+                }}
+                onStdin={(label, key) => {
+                  const stdinHandler = terminalStdinHandlersRef.current?.get(
+                    label
+                  );
+
+                  stdinHandler && stdinHandler(key);
+                }}
+                labels={terminalLabels}
+              />
+            )}
+
+            {/* Join tray */}
+            {!terminalsModalOpen && terminalLabels?.length > 0 && (
+              <JoinTray>
+                <Button
+                  type="text"
+                  onClick={() => setTerminalsModalOpen(true)}
+                  icon={<FontAwesomeIcon icon={faTerminal} />}
+                />
+              </JoinTray>
+            )}
+          </>
         )}
       </Route>
 

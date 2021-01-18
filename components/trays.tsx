@@ -41,3 +41,17 @@ export const OverviewTray = styled.div`
     border-right: 1px solid #303030;
   }
 `;
+
+export const JoinTray = styled.div`
+  z-index: 999;
+  position: absolute !important;
+  border: 1px solid #303030;
+  display: flex;
+  align-items: center;
+  margin: 1rem;
+  right: 0;
+  left: auto;
+  top: 50%;
+  transform: translateY(-50%);
+  ${glass}
+`;
