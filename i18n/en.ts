@@ -104,7 +104,7 @@ export default {
   terminals: "Terminals",
   management: "Management",
   application: "Application",
-  loading: "Loading ...",
+  loading: "Waiting ...",
   notSet: "Not set.",
   requestedLocation: "Requested location.",
   resolvedLocation: "Resolved location.",
