@@ -2,7 +2,7 @@ import {
   API_VERSION,
   EBenchmarkKind,
   EResourceKind,
-  Node
+  Node,
 } from "@alphahorizonio/webnetes";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { unstable_batchedUpdates } from "react-dom";
@@ -114,7 +114,7 @@ export const useWebnetes = ({
 
   const [localCPUScore, setLocalCPUScore] = useState<number>();
   const [localNetworkScore, setLocalNetworkScore] = useState<number>();
-  const [nodePublicIPv6, setNodePublicIPv6] = useState<string>();
+  const [nodePublicIP, setNodePublicIP] = useState<string>();
 
   const cpuBenchmarkRunningRef = useRef<boolean>();
   const networkBenchmarkRunningRef = useRef<boolean>();
@@ -378,15 +378,15 @@ export const useWebnetes = ({
         try {
           ipLookupRunningRef.current = true;
 
-          const ip = nodePublicIPv6 || (await getIP());
+          const ip = nodePublicIP || (await getIP());
 
-          if (ip !== nodePublicIPv6) setNodePublicIPv6(ip);
+          if (ip !== nodePublicIP) setNodePublicIP(ip);
 
           // In the future, a message would only have to be sent to a designated manager node.
           clusterNodesRef.current?.forEach(async (clusterNode) => {
             if (
               clusterNode.privateIP === nodeIdRef.current &&
-              ip === nodePublicIPv6
+              ip === nodePublicIP
             ) {
               return;
             }
@@ -416,7 +416,7 @@ export const useWebnetes = ({
         }
       })();
     }
-  }, [node, nodeOpened, refreshNodeInformation, nodePublicIPv6]);
+  }, [node, nodeOpened, refreshNodeInformation, nodePublicIP]);
 
   useEffect(() => {
     // Create the resource graph
@@ -856,7 +856,7 @@ export const useWebnetes = ({
       nodeConfig,
       setNodeConfig,
       nodeId,
-      nodePublicIPv6,
+      nodePublicIP,
 
       location: {
         refreshLocation: refreshNodeLocation,

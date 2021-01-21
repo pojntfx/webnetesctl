@@ -26,7 +26,7 @@ import { BareLink, MoreLink } from "../typography";
 export interface IConfigPageProps {
   nodeId: string;
   nodeConfig: string;
-  nodePublicIPv6?: string;
+  nodePublicIP?: string;
   setNodeConfig: (newNodeConfig: string) => void;
   refreshNodeLocation: () => void;
   nodeCoordinatesLoading: boolean;
@@ -44,7 +44,7 @@ export const ConfigPage: React.FC<IConfigPageProps> = ({
   nodeId,
   nodeConfig,
   setNodeConfig,
-  nodePublicIPv6,
+  nodePublicIP,
   refreshNodeLocation,
   nodeCoordinatesLoading,
   latitude,
@@ -127,7 +127,7 @@ export const ConfigPage: React.FC<IConfigPageProps> = ({
                 <dt>
                   <FontAwesomeIcon icon={faGlobe} /> {t("publicIp")}
                 </dt>
-                <dd>{nodePublicIPv6 || t("loading")}</dd>
+                <dd>{nodePublicIP || t("loading")}</dd>
 
                 <dt>
                   <FontAwesomeIcon icon={faMapMarkerAlt} /> {t("location")}

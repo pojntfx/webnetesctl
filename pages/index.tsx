@@ -813,7 +813,7 @@ function RoutesPage() {
                     nodeConfig={local.nodeConfig}
                     setNodeConfig={local.setNodeConfig}
                     nodeId={local.nodeId}
-                    nodePublicIPv6={local.nodePublicIPv6}
+                    nodePublicIP={local.nodePublicIP}
                     latitude={local.location.latitude}
                     longitude={local.location.longitude}
                     nodeAddress={local.location.address || ""}
