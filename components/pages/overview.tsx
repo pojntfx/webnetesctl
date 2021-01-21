@@ -244,12 +244,19 @@ export const OverviewPage: React.FC<IOverviewPageProps> = ({
           labelText={(d: any) => {
             const node = d as typeof nodes[0];
 
-            return `${node.privateIP} (${node.location
-              .split(", ")
-              .filter((_: string, i: number) => i <= 1)
-              .join(", ")}, ${
-              node.location.split(", ")[node.location.split(", ").length - 1]
-            }, ${node.publicIP})`;
+            return `${node.privateIP}${
+              (node.location || node.publicIP) &&
+              ` (${
+                node.location == t("loading").toString()
+                  ? ""
+                  : node.location
+                      .split(", ")
+                      .filter((_: string, i: number) => i <= 1)
+                      .join(", ") + " ,"
+              }${
+                node.publicIP === t("loading").toString() ? "" : node.publicIP
+              })`
+            }`;
           }}
           labelSize={(d: any) => Math.sqrt((d as typeof nodes[0]).size) * 3e-4}
           labelDotRadius={(d: any) =>
