@@ -255,6 +255,8 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
         try {
           const config = urldecodeYAMLAll(rawNodeConfig as string);
 
+          setNodeConfig(config);
+
           node.open(config);
         } catch (e) {
           console.log("could not decode node config", e);
@@ -474,7 +476,6 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
 
                             return sprite;
                           }}
-                          ref={graphRef}
                         />
                       }
                     >
@@ -670,7 +671,6 @@ export const JoinPage: React.FC<IJoinPageProps> = ({
 
                             return sprite;
                           }}
-                          ref={graphRef}
                         />
                       }
                     >
