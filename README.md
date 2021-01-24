@@ -1,11 +1,14 @@
 # webnetesctl
 
-Frontend for [webnetes](https://github.com/alphahorizonio/webnetes), the peer-to-peer computing platform for the browser and node.
+[![webnetesctl start screen](https://docs.webnetes.dev/getting-started/img/start.png)](https://webnetes.dev/)
+
+Frontend for [Webnetes](https://github.com/alphahorizonio/webnetes), the peer-to-peer computing platform for the browser and node.
 
 ![Yarn CI](https://github.com/alphahorizonio/webnetesctl/workflows/Yarn%20CI/badge.svg)
 ![Mirror](https://github.com/alphahorizonio/webnetesctl/workflows/Mirror/badge.svg)
 [![TypeDoc](https://img.shields.io/badge/TypeScript-Documentation-informational)](https://alphahorizonio.github.io/webnetesctl/)
 [![npm](https://img.shields.io/npm/v/@alphahorizonio/webnetesctl)](https://www.npmjs.com/package/@alphahorizonio/webnetesctl)
+[![Part of webnetes](https://img.shields.io/badge/Part%20of-webnetes-black)](https://webnetes.dev/)
 
 ## Overview
 
