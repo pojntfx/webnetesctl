@@ -36,6 +36,7 @@ export const HomePage: React.FC<IHomePageProps> = ({
   const { t } = useTranslation();
   const router = useHistory();
   const [newClusterIdForm] = Form.useForm();
+  const [clusterIdForm] = Form.useForm();
 
   // State
   const [clusterId, setClusterId] = useState<string>();
@@ -192,78 +193,75 @@ export const HomePage: React.FC<IHomePageProps> = ({
 
                   <Text>{t("joinClusterDescription")}</Text>
 
-                  <Space>
+                  <ClusterForm
+                    layout="inline"
+                    form={clusterIdForm}
+                    onFinish={() => {
+                      if (clusterId) {
+                        router.push(
+                          `/join?nodeConfig=${urlencodeYAMLAll(
+                            nodeConfig.replace(
+                              CLUSTER_ID_TEMPLATE_KEY,
+                              clusterId
+                            )
+                          )}`
+                        );
+                      }
+                    }}
+                  >
                     <Tooltip
                       title={t("clusterIdDescription")}
                       placement="bottom"
                     >
-                      <Input
-                        placeholder={t("clusterId")}
-                        value={clusterId}
-                        onChange={(e) => setClusterId(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") {
-                            if (clusterId) {
-                              router.push(
-                                `/join?nodeConfig=${urlencodeYAMLAll(
-                                  nodeConfig.replace(
-                                    CLUSTER_ID_TEMPLATE_KEY,
-                                    clusterId
-                                  )
-                                )}`
-                              );
-                            } else {
-                              clusterIdRef.current?.focus();
-                            }
-                          }
-                        }}
-                        required
-                        ref={clusterIdRef}
-                      />
+                      <Form.Item
+                        name="clusterId"
+                        rules={[
+                          {
+                            required: true,
+                            message: t("pleaseInputClusterId"),
+                          },
+                        ]}
+                      >
+                        <Input
+                          placeholder={t("clusterId")}
+                          value={clusterId}
+                          onChange={(e) => setClusterId(e.target.value)}
+                          ref={clusterIdRef}
+                        />
+                      </Form.Item>
                     </Tooltip>
 
-                    <Dropdown.Button
-                      onClick={() => {
-                        if (clusterId) {
-                          router.push(
-                            `/join?nodeConfig=${urlencodeYAMLAll(
-                              nodeConfig.replace(
-                                CLUSTER_ID_TEMPLATE_KEY,
-                                clusterId
-                              )
-                            )}`
-                          );
-                        } else {
-                          clusterIdRef.current?.focus();
+                    <Form.Item>
+                      <Dropdown.Button
+                        htmlType="submit"
+                        overlay={
+                          <Menu>
+                            <Menu.Item
+                              key="cluster"
+                              onClick={() => {
+                                if (clusterId) {
+                                  unstable_batchedUpdates(() => {
+                                    setEditingWorker(true);
+                                    setEditNodeConfigModalOpen(true);
+                                  });
+                                } else {
+                                  clusterIdForm.validateFields();
+                                }
+                              }}
+                            >
+                              <Space>
+                                <FontAwesomeIcon fixedWidth icon={faCogs} />
+                                {t("advancedNodeConfig")}
+                              </Space>
+                            </Menu.Item>
+                          </Menu>
                         }
-                      }}
-                      overlay={
-                        <Menu>
-                          <Menu.Item
-                            key="cluster"
-                            onClick={() => {
-                              if (clusterId) {
-                                unstable_batchedUpdates(() => {
-                                  setEditingWorker(true);
-                                  setEditNodeConfigModalOpen(true);
-                                });
-                              } else {
-                                clusterIdRef.current?.focus();
-                              }
-                            }}
-                          >
-                            <Space>
-                              <FontAwesomeIcon fixedWidth icon={faCogs} />
-                              {t("advancedNodeConfig")}
-                            </Space>
-                          </Menu.Item>
-                        </Menu>
-                      }
-                      type="primary"
-                    >
-                      {t("joinCluster")}
-                    </Dropdown.Button>
-                  </Space>
+                        type="primary"
+                      >
+                        {t("joinCluster")}
+                      </Dropdown.Button>
+                    </Form.Item>
+                  </ClusterForm>
                 </Action>
               </div>
             </ActionSplit>
@@ -476,9 +474,13 @@ const MainDividerPart = styled.div`
 `;
 
 const ClusterForm = styled(Form)`
-  .ant-form-item {
-    flex: 1;
+  > .ant-form-item {
+    flex: 1 !important;
     margin-right: 0;
+
+    &:last-child {
+      flex: none !important;
+    }
 
     &:not(:last-child) {
       margin-right: 8px;
