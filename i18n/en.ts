@@ -134,4 +134,5 @@ export default {
   notSureWhatToDo: "Not sure what to do?",
   readTheDocs: "Read the docs!",
   documentation: "Documentation",
+  pleaseInputNewClusterId: "Please input a new cluster ID!",
 };

@@ -5,7 +5,7 @@ import {
   faQuestionCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Dropdown, Input, Menu, Space, Tooltip } from "antd";
+import { Dropdown, Form, Input, Menu, Space, Tooltip } from "antd";
 import Text from "antd/lib/typography/Text";
 import Animate from "rc-animate";
 import { createRef, useState } from "react";
@@ -35,6 +35,7 @@ export const HomePage: React.FC<IHomePageProps> = ({
   // Hooks
   const { t } = useTranslation();
   const router = useHistory();
+  const [newClusterIdForm] = Form.useForm();
 
   // State
   const [clusterId, setClusterId] = useState<string>();
@@ -103,78 +104,75 @@ export const HomePage: React.FC<IHomePageProps> = ({
 
                   <Text>{t("createClusterDescription")}</Text>
 
-                  <Space>
+                  <ClusterForm
+                    layout="inline"
+                    form={newClusterIdForm}
+                    onFinish={() => {
+                      if (newClusterId) {
+                        router.push(
+                          `/created?nodeConfig=${urlencodeYAMLAll(
+                            nodeConfig.replace(
+                              CLUSTER_ID_TEMPLATE_KEY,
+                              newClusterId
+                            )
+                          )}`
+                        );
+                      }
+                    }}
+                  >
                     <Tooltip
                       title={t("newClusterIdDescription")}
                       placement="bottom"
                     >
-                      <Input
-                        placeholder={t("newClusterId")}
-                        value={newClusterId}
-                        onChange={(e) => setNewClusterId(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") {
-                            if (newClusterId) {
-                              router.push(
-                                `/created?nodeConfig=${urlencodeYAMLAll(
-                                  nodeConfig.replace(
-                                    CLUSTER_ID_TEMPLATE_KEY,
-                                    newClusterId
-                                  )
-                                )}`
-                              );
-                            } else {
-                              newClusterIdRef.current?.focus();
-                            }
-                          }
-                        }}
-                        required
-                        ref={newClusterIdRef}
-                      />
+                      <Form.Item
+                        name="newClusterId"
+                        rules={[
+                          {
+                            required: true,
+                            message: t("pleaseInputNewClusterId"),
+                          },
+                        ]}
+                      >
+                        <Input
+                          placeholder={t("newClusterId")}
+                          value={newClusterId}
+                          onChange={(e) => setNewClusterId(e.target.value)}
+                          ref={newClusterIdRef}
+                        />
+                      </Form.Item>
                     </Tooltip>
 
-                    <Dropdown.Button
-                      onClick={() => {
-                        if (newClusterId) {
-                          router.push(
-                            `/created?nodeConfig=${urlencodeYAMLAll(
-                              nodeConfig.replace(
-                                CLUSTER_ID_TEMPLATE_KEY,
-                                newClusterId
-                              )
-                            )}`
-                          );
-                        } else {
-                          newClusterIdRef.current?.focus();
+                    <Form.Item>
+                      <Dropdown.Button
+                        htmlType="submit"
+                        overlay={
+                          <Menu>
+                            <Menu.Item
+                              key="cluster"
+                              onClick={() => {
+                                if (newClusterId) {
+                                  unstable_batchedUpdates(() => {
+                                    setEditingWorker(false);
+                                    setEditNodeConfigModalOpen(true);
+                                  });
+                                } else {
+                                  newClusterIdForm.validateFields();
+                                }
+                              }}
+                            >
+                              <Space>
+                                <FontAwesomeIcon fixedWidth icon={faCogs} />
+                                {t("advancedNodeConfig")}
+                              </Space>
+                            </Menu.Item>
+                          </Menu>
                         }
-                      }}
-                      overlay={
-                        <Menu>
-                          <Menu.Item
-                            key="cluster"
-                            onClick={() => {
-                              if (newClusterId) {
-                                unstable_batchedUpdates(() => {
-                                  setEditingWorker(false);
-                                  setEditNodeConfigModalOpen(true);
-                                });
-                              } else {
-                                newClusterIdRef.current?.focus();
-                              }
-                            }}
-                          >
-                            <Space>
-                              <FontAwesomeIcon fixedWidth icon={faCogs} />
-                              {t("advancedNodeConfig")}
-                            </Space>
-                          </Menu.Item>
-                        </Menu>
-                      }
-                      type="primary"
-                    >
-                      {t("createCluster")}
-                    </Dropdown.Button>
-                  </Space>
+                        type="primary"
+                      >
+                        {t("createCluster")}
+                      </Dropdown.Button>
+                    </Form.Item>
+                  </ClusterForm>
                 </Action>
 
                 {/* Main divider */}
@@ -474,5 +472,16 @@ const MainDividerPart = styled.div`
 
   @media screen and (min-width: 812px) {
     border-right: 0.5px solid rgba(255, 255, 255, 0.85) !important;
+  }
+`;
+
+const ClusterForm = styled(Form)`
+  .ant-form-item {
+    flex: 1;
+    margin-right: 0;
+
+    &:not(:last-child) {
+      margin-right: 8px;
+    }
   }
 `;
